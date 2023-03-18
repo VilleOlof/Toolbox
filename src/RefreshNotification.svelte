@@ -1,4 +1,8 @@
 <script lang="ts">
+    import moduleIgnores from '../module_ignore.json'
+
+    const NPM_Command: string = 'npm run build';
+    const moduleListPath: string = '../module_list.json';
     
     let ShowNotification: boolean = false;
     let NoNotification: boolean = false;
@@ -6,12 +10,13 @@
     function GetModulesInDirectory(): string[] {
         const fs = require('fs');
         const path = require('path');
-
+        
         const modulesDirectory: string = path.join(__dirname, '../modules');
         let modules: string[] = [];
 
         fs.readdirSync(modulesDirectory).forEach((file: string) => {
             const Name: string = path.basename(file, '.svelte');
+            if (moduleIgnores.includes(Name)) return;
             modules.push(Name);
         });
 
@@ -19,7 +24,7 @@
     }
 
     function GetCurrentModules(): string[] {
-        const modules: string[] = require('../module_list.json');
+        const modules: string[] = require(moduleListPath);
         return modules;
     }
 
@@ -43,7 +48,7 @@
     function RefreshAppWithNewModules(): void {
         const { exec } = require('child_process');
 
-        exec('npm run build',{
+        exec(NPM_Command,{
             cwd: __dirname
         }, (error: any) => {
             if (error) console.log(`error: ${error.message}`);

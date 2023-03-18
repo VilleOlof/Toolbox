@@ -8,3 +8,7 @@
 <button on:click={increment}>
 	count is {count}
 </button>
+
+<div class="module">
+a
+</div>
