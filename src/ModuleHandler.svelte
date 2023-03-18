@@ -4,9 +4,9 @@
 
     let moduleImports: Function[] = []
     modules.forEach(module => {
-        moduleImports[moduleImports.length] = async function() {
+        moduleImports.push(async function() {
             return (await import(/* @vite-ignore*/ `../modules/${module}.svelte`)).default
-        }
+        });
     });
 
     function AddModulesAsComponents(imports: Function[], div: HTMLDivElement): void {

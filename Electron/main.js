@@ -12,7 +12,8 @@ function createWindow () {
         webPreferences: {
             preload: path.join(__dirname, './preload.js'),
             // NOTE: Replace the below variable with a more secure implementation. Reference: https://www.electronjs.org/docs/tutorial/security
-            nodeIntegration: true
+            nodeIntegration: true,
+            enableRemoteModule: true
         }
     })
 
