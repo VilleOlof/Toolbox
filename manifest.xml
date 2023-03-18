@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BlackmagicDesign>
+    <Plugin>
+        <Id>com.villeolof.toolbox</Id>
+        <Name>Toolbox</Name>
+        <Version>1.0</Version>
+        <Description></Description>
+        <FilePath>./Electron/main.js</FilePath>
+    </Plugin>
+</BlackmagicDesign>
