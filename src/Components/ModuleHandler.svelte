@@ -23,8 +23,6 @@
 
     onMount(() => {
         AddModulesAsComponents(moduleImports, (document.getElementById('modules') as HTMLDivElement));
-
-
     });
 </script>
 
@@ -32,7 +30,7 @@
 
 <style lang="scss">
     //Applies to all modules in ./modules
-    :global(#modules > *) {
+    :global(:is(#modules, #modules2) > *) {
         max-width: 400px;
         max-height: 400px;
     }

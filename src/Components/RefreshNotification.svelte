@@ -92,6 +92,7 @@
 
 <style lang="scss">
     @use '../scss/Flex' as *;
+    
     #notificationContainer {
         @include FlexContainer(center, center, column);
 
