@@ -91,17 +91,19 @@
 {/if}
 
 <style lang="scss">
+    @use '../scss/Flex' as *;
     #notificationContainer {
+        @include FlexContainer(center, center, column);
+
         position: absolute;
+
         top: 0;
         left: 0;
+
         width: 100%;
         height: 100%;
+
         background-color: rgba(0, 0, 0, 0.5);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
 
         color: white;
 
@@ -109,9 +111,6 @@
     }
     
     #buttons {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
+        @include FlexContainer();
     }
 </style>
