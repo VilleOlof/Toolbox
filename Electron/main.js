@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, nativeImage} = require('electron')
 const path = require('path')
 const os = require('os')
 
@@ -14,7 +14,7 @@ function createWindow () {
             // NOTE: Replace the below variable with a more secure implementation. Reference: https://www.electronjs.org/docs/tutorial/security
             nodeIntegration: true,
             enableRemoteModule: true
-        }
+        },
     })
 
     // Hide the menu bar (enable below code to hide menu bar)

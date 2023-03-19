@@ -1,13 +1,13 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import modules from '../module_list.json'
-    import moduleIgnores from '../module_ignore.json'
+    import modules from '../../module_list.json'
+    import moduleIgnores from '../../module_ignore.json'
 
     let moduleImports: Function[] = []
     modules.forEach(module => {
         if (moduleIgnores.includes(module)) return;
         moduleImports.push(async function() {
-            return (await import(/* @vite-ignore*/ `../modules/${module}.svelte`)).default
+            return (await import(/* @vite-ignore*/ `../../modules/${module}.svelte`)).default
         });
     });
 

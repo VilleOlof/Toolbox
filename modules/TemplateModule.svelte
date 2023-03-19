@@ -1,6 +1,5 @@
 <script lang="ts">
-    import { GetResolve } from "../src/DavinciResolve";
-    const Resolve: Resolve = GetResolve();
+    import { Resolve } from "../src/Lib/DavinciResolve";
 
 </script>
 

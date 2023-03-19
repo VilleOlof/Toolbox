@@ -1,5 +1,5 @@
 <script lang="ts">
-    import moduleIgnores from '../module_ignore.json'
+    import moduleIgnores from '../../module_ignore.json'
 
     const NPM_Command: string = 'npm run build';
     const moduleListPath: string = '../module_list.json';
@@ -25,7 +25,14 @@
 
     function GetCurrentModules(): string[] {
         const modules: string[] = require(moduleListPath);
-        return modules;
+        let outModules: string[] = [];
+
+        modules.forEach((module: string) => {
+            if (moduleIgnores.includes(module)) return;
+            outModules.push(module);
+        });
+
+        return outModules;
     }
 
     function CheckForNewModules(): void {
