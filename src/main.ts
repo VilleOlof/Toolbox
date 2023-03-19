@@ -1,4 +1,4 @@
-import './app.scss'
+import './App.scss'
 import App from './App.svelte'
 
 import { InitPlugin } from './Lib/DavinciResolve'
