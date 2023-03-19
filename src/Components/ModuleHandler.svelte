@@ -17,25 +17,23 @@
 
             new component({
                 target: div,
-                class: 'module',
             });
         });
     }
 
     onMount(() => {
         AddModulesAsComponents(moduleImports, (document.getElementById('modules') as HTMLDivElement));
+
+
     });
 </script>
 
-<div id=modules>
-    <!--here to keep the css style-->
-    <div class="module"></div>
-</div>
+<div id="modules"></div>
 
 <style lang="scss">
-    :global(.module) {
-        max-width: 50px;
-        max-height: 50px;
-        color: red;
+    //Applies to all modules in ./modules
+    :global(#modules > *) {
+        max-width: 400px;
+        max-height: 400px;
     }
 </style>

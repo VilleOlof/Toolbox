@@ -3,10 +3,11 @@
 
 </script>
 
-<!--Keep all elements inside this div-->
-<div class="module">
 
-</div>
+<main>
+
+</main>
+
 
 <style lang="scss">
 
