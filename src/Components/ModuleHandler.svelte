@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
+    import { onMount, SvelteComponent } from 'svelte';
     import modules from '../../module_list.json'
     import moduleIgnores from '../../module_ignore.json'
 
@@ -30,7 +30,7 @@
 
 <style lang="scss">
     //Applies to all modules in ./modules
-    :global(:is(#modules, #modules2) > *) {
+    :global(#modules > *) {
         max-width: 400px;
         max-height: 400px;
     }
