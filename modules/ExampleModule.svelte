@@ -9,6 +9,7 @@
 -->
 
 <script lang="ts">
+  import { onDestroy } from "svelte";
     import { Resolve } from "../src/Lib/DavinciResolve";
     import { ResolveEnums } from "../src/Lib/ResolveEnums";
     import DataStore from "../src/Stores/DataStore";
@@ -62,6 +63,11 @@
 
         return totalItems;
     }
+
+    // Delete the DataStore when the module is destroyed
+    onDestroy(() => {
+        DataStore.DeleteDataStore(Data);
+    });
 
     // Update the DataStore every second
     setInterval(() => {

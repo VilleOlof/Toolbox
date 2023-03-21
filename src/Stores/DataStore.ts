@@ -1,3 +1,7 @@
+/**
+ * A record of all the data stores that have been created.
+ */
+let _DataStores: Record<string, DataStore> = {};
 
 /**
  * The CallbackFunction type for the _Subcribers record value.
@@ -18,6 +22,8 @@ class DataStore {
         if (loadUponStart) {
             this.Load();
         }
+
+        _DataStores[componentID] = this;
 
         return this;
     }
@@ -133,6 +139,55 @@ class DataStore {
     public Unsubscribe(key: string, callback: (value: any) => void) {
         if (this._Subscribers[key]) {
             this._Subscribers[key] = this._Subscribers[key].filter((cb) => cb !== callback);
+        }
+    }
+
+    /**
+     * Gets the ID of the component that the data is for.
+     */
+    public GetComponentID(): string {
+        return this._ComponentID;
+    }
+
+    /**
+     * Gets the data store for a component ID.
+     * 
+     * @param componentID The ID of the component to get the data store for.
+     */
+    public static GetDataStoreByID(componentID: string): DataStore {
+        return _DataStores[componentID];
+    }
+
+    /**
+     * Gets all the data stores.
+     */
+    public static GetAllDataStores(): Record<string, DataStore> {
+        return _DataStores;
+    }
+
+    /**
+     * Deletes the data store by the component ID.
+     * 
+     * @param componentID The ID of the component to delete the data store for.
+     */
+    public static DeleteDataStore(componentID: string): void
+    /**
+     * Deletes the data store by the data store instance.
+     * 
+     * @param DataStoreInstance The data store to delete.
+     */
+    public static DeleteDataStore(DataStoreInstance: DataStore): void
+    /**
+     * Deletes the data store.
+     * 
+     * @param input The input to delete the data store for.
+     */
+    public static DeleteDataStore(input?: string | DataStore): void {
+        if (typeof input === "string") {
+            delete _DataStores[input];
+        }
+        else if (input instanceof DataStore) {
+            delete _DataStores[input.GetComponentID()];
         }
     }
 }
