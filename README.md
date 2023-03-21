@@ -15,6 +15,7 @@ It is recommended to copy the example module and rename it to the name of the ne
 
 ## Install
 
+**Requires: Node.js / NPM**  
 Copy the repository to your local machine.  
 And put the folder in the following directory:  
 
