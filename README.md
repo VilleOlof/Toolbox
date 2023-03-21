@@ -3,7 +3,7 @@
 A Davinci Resolve plugin that provides a modular toolbox for creating custom tools.  
 This plugin runs with Electron, and uses Svelte for the UI and custom modules.  
 
-With Svelte has the framework, it provides an easy way to drag and drop modules into the ./modules folder  
+With Svelte as the framework, it provides an easy way to drag and drop modules into the ./modules folder  
 and have them automatically added to the toolbox (after a refresh, which the plugin will auto-detect).  
 
 If any new dependencies are added alongside a new module, they will need to be added to the ./package.json file.  

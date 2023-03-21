@@ -1,5 +1,6 @@
 <script lang="ts">
     import { Resolve } from "../src/Lib/DavinciResolve";
+    import DataStore from "../src/Stores/DataStore";
 
 </script>
 
