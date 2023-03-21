@@ -15,21 +15,23 @@ It is recommended to copy the example module and rename it to the name of the ne
 
 ## Install
 
-    Copy the repository to your local machine.  
-    And put the folder in the following directory:  
+Copy the repository to your local machine.  
+And put the folder in the following directory:  
 
-    `%ProgramData%\Blackmagic Design\DaVinci Resolve\Support\Workflow Integration Plugins\Toolbox`  
-    *(Note that neither `\Workflow Integration Plugins\` nor `\Toolbox` exist, so you will need to create them)*  
+`%ProgramData%\Blackmagic Design\DaVinci Resolve\Support\Workflow Integration Plugins\Toolbox`  
+*(Note that neither `\Workflow Integration Plugins\` nor `\Toolbox` exist, so you will need to create them)*  
 
-    Run the following command in the root directory of the project:  
-    ```bash  
-    npm install  
-    npm run build  
-    ```  
-    This will install all the dependencies and build the project.  
+Run the following command in the root directory of the project:  
 
-    And then you can run the plugin inside Davinci Resolve:  
-    `DaVinci Resolve > Workspace > Workflow Integrations > Toolbox`  
+```bash  
+npm install  
+npm run build  
+```  
 
-    *Since Davinci Resolve looks for a folder with a manifest.xml file inside of it.  
-    It is currently recommended to just have the entire project folder inside the plugin folder.*  
+This will install all the dependencies and build the project.  
+
+And then you can run the plugin inside Davinci Resolve:  
+`DaVinci Resolve > Workspace > Workflow Integrations > Toolbox`  
+
+*Since Davinci Resolve looks for a folder with a manifest.xml file inside of it.  
+It is currently recommended to just have the entire project folder inside the plugin folder.*  
