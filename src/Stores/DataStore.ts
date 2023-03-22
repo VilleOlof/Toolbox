@@ -10,9 +10,9 @@ type CallbackFunction = (value: any) => void;
 
 /**
  * A simple data store that can be used to store and retrieve data for a component.
+ * 
  * @param componentID The ID of the component that the data is for.
  * @param loadUponStart Whether or not to load the data upon creation of the store.
- * @returns The data store.
  */
 class DataStore {
 
@@ -79,7 +79,6 @@ class DataStore {
      * 
      * @param key The key of the data to get.
      * @param defaultValue The default value to return if the key does not exist.
-     * @returns The value of the data.
      */
     public Get<T>(key: string, defaultValue: any = undefined): T {
         return this._Data[key] || defaultValue;
@@ -166,22 +165,14 @@ class DataStore {
     }
 
     /**
-     * Deletes the data store by the component ID.
+     * Deletes the data store by the component ID / DataStoreInstance.
      * 
      * @param componentID The ID of the component to delete the data store for.
-     */
-    public static DeleteDataStore(componentID: string): void
-    /**
-     * Deletes the data store by the data store instance.
-     * 
      * @param DataStoreInstance The data store to delete.
-     */
-    public static DeleteDataStore(DataStoreInstance: DataStore): void
-    /**
-     * Deletes the data store.
-     * 
      * @param input The input to delete the data store for.
      */
+    public static DeleteDataStore(componentID: string): void
+    public static DeleteDataStore(DataStoreInstance: DataStore): void
     public static DeleteDataStore(input?: string | DataStore): void {
         if (typeof input === "string") {
             delete _DataStores[input];

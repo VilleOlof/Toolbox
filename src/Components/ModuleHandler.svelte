@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount, SvelteComponent } from 'svelte';
+    import { onMount } from 'svelte';
     import modules from '../../module_list.json'
     import moduleIgnores from '../../module_ignore.json'
 
