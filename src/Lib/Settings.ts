@@ -107,6 +107,16 @@ class Settings {
 
     public static SaveToJSON(JSON: string): void {
         const fs = require("fs");
+
+        //Clear the file
+        fs.writeFile(__dirname + "./../Settings.json", "", (err: any) => {
+            if (err) {
+                console.error(err);
+                return;
+            }
+        });
+
+        //Write the new data
         fs.writeFile(__dirname + "./../Settings.json", JSON, (err: any) => {
             if (err) {
                 console.error(err);
