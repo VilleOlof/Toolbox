@@ -4,8 +4,8 @@ import App from './App.svelte'
 import { InitPlugin } from './Lib/DavinciResolve'
 InitPlugin();
 
-import { LoadGlobalSettings } from './Lib/Settings'
-LoadGlobalSettings();
+import { GlobalSettings } from './Lib/Settings'
+GlobalSettings.LoadGlobalSettings();
 
 const app = new App({
   target: document.getElementById('app'),

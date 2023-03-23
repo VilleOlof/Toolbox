@@ -9,7 +9,7 @@
 -->
 
 <script lang="ts">
-  import { onDestroy } from "svelte";
+    import { onDestroy } from "svelte";
     import { Resolve } from "../src/Lib/DavinciResolve";
     import { ResolveEnums } from "../src/Lib/ResolveEnums";
     import DataStore from "../src/Stores/DataStore";

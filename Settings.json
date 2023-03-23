@@ -1,19 +1,9 @@
 {
     "Counter": {
         "increment": {
-            "Value": 2,
+            "Value": 5,
             "Type": 1,
             "Description": "The value increment"
-        },
-        "testslider": {
-            "Value": 5,
-            "Type": 3,
-            "Description": "a slide info test",
-            "ExtraData": {
-                "Min": 0,
-                "Max": 10,
-                "Step": 1
-            }
         }
     }
 }

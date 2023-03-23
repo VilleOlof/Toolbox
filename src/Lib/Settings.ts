@@ -1,49 +1,163 @@
 import SettingsJSON from "../../Settings.json";
 
-let GlobalSettings: Record<string, Record<string, SettingInfo>>;
+/**
+ * The global settings namespace.
+ */
+namespace GlobalSettings {
 
-function LoadGlobalSettings(): void {
-    GlobalSettings = {};
+    /**
+     * The global settings object.  
+     * This holds all the settings for all the components.
+     */
+    // Maybe take settings instances instead of _Settings Record type?;
+    export let _Settings: Record<string, Record<string, SettingTypes.Info>>;
 
-    for (let componentID in SettingsJSON) {
-        let settings = new Settings(componentID);
-        settings.Load(SettingsJSON[componentID]);
-        GlobalSettings[componentID] = settings.GetAll();
+    /**
+     * Loads all the global settings.  
+     * This should be called when the app starts.
+     */
+    export function LoadGlobalSettings(): void {
+        _Settings = {};
+
+        for (let componentID in SettingsJSON) {
+            let settings = new Settings(componentID);
+            settings.Load(SettingsJSON[componentID]);
+            _Settings[componentID] = settings.GetAllComponentSettings();
+        }
+    }
+
+    /**
+     * Gets the settings for a component by ID in the GlobalSettings.
+     * 
+     * @param componentID The component ID.
+     */
+    export function GetComponentSettingsByID(componentID: string): Record<string, SettingTypes.Info> {
+        return GlobalSettings._Settings[componentID];
+    }
+
+    /**
+     * Saves the settings to the JSON file.
+     * 
+     * @param JSON The JSON string to save.
+     * @param SettingsPath The path to the settings file.
+     */
+    export function SaveToJSON(JSON: string, SettingsPath: string = "./../Settings.json"): void {
+        const fs = require("fs");
+
+        fs.writeFileSync(SettingsPath, JSON, (err: any) => {
+            if (err) console.error(err);
+        });
+    }
+
+    /**
+     * Saves the settings to the GlobalSettings.
+     * 
+     * @param componentID The component ID.
+     * @param _Settings The settings to save.
+     */
+    export function Save(componentID: string, _Settings: Record<string, SettingTypes.Info>): void {
+        GlobalSettings._Settings[componentID] = _Settings;
+
+        let settingsJSON: string = JSON.stringify(GlobalSettings._Settings, null, 4);
+
+        GlobalSettings.SaveToJSON(settingsJSON);
+    }
+
+    /**
+     * Deletes an entire component's settings.  
+     * Including its instance.
+     * 
+     * @param SettingsInstance The settings instance to delete. 
+     */
+    export function DeleteComponentSettings(SettingsInstance: Settings ): void {
+        let componentID = SettingsInstance.GetComponentID();
+
+        delete GlobalSettings._Settings[componentID];
+        SettingsInstance.DeleteAllLocalSettings();
+
+        let _Settings: Record<string, SettingTypes.Info> = GlobalSettings.GetComponentSettingsByID(componentID);
+
+        SettingsInstance = undefined;
+
+        GlobalSettings.Save(componentID, _Settings);
     }
 }
 
-enum SettingsType {
-    Text = 0, // String
-    Numeric = 1, // Number
-    Checkbox = 2, // Boolean
-    Slider = 3, // Number ( Min, Max, Step )
-    Dropdown = 4, // String ( Array of options(string) )
-    Color = 5, // String
-    Date = 6, // Date
-    RegExp = 7, // String
+/**
+ * The settings type namespace.
+ * Holds all enums and types for the settings.
+ */
+namespace SettingTypes {
+
+    /**
+     * The type of setting.
+     * 
+     * @param Text A text input.
+     * @param Numeric A numeric input.
+     * @param Checkbox A checkbox.
+     * @param Slider A slider.
+     * @param Dropdown A dropdown.
+     * @param Color A color picker.
+     * @param Date A date picker.
+     * @param RegExp A regular expression input.
+     * @param File A file prompt.
+     */
+    export enum Type {
+        Text = 0, // String
+        Numeric = 1, // Number
+        Checkbox = 2, // Boolean
+        Slider = 3, // Number ( Min, Max, Step )
+        Dropdown = 4, // String ( Array of options(string) )
+        Color = 5, // String
+        Date = 6, // Date
+        RegExp = 7, // String
+        File = 8, // String
+    }
+    
+    /**
+     * The setting info type.
+     * 
+     * @param Value The value of the setting.
+     * @param Type The type of the setting.
+     * @param Description The description of the setting.
+     * @param ExtraData Extra data for the setting.
+     */
+    export type Info = {
+        Value: any;
+        Type: Type;
+        Description: string;
+        ExtraData?: Slider | Dropdown;
+    }
+    
+    /**
+     * The slider extra data type.
+     * 
+     * @param Min The minimum value of the slider.
+     * @param Max The maximum value of the slider.
+     * @param Step The step value of the slider.
+     */
+    export type Slider = {
+        Min: number;
+        Max: number;
+        Step: number;
+    }
+    
+    /**
+     * The dropdown extra data type.
+     * 
+     * @param Options The options of the dropdown.
+     */
+    export type Dropdown = {
+        Options: string[];
+    }
 }
 
-type SliderSetting = {
-    Min: number;
-    Max: number;
-    Step: number;
-}
-
-type DropdownSetting = {
-    Options: string[];
-}
-
-type SettingInfo = {
-    Value: any;
-    Type: SettingsType;
-    Description: string;
-    ExtraData?: SliderSetting | DropdownSetting;
-}
-
+/**
+ * The settings class.
+ * 
+ * @param componentID The ID of the component that the settings are for.
+ */
 class Settings {
-    private _ComponentID: string;
-
-    private _Settings: Record<string, SettingInfo>;
 
     constructor(componentID: string) {
         this._ComponentID = componentID;
@@ -53,12 +167,31 @@ class Settings {
         return this;
     }
 
-    //RegisterSetting("TestSetting", "A value for testing", 5, SettingsType.Slider, { Min: 0, Max: 10, Step: 1 });
-    public RegisterSetting(settingName: string, settingDescription: string, defaultValue: any, type: SettingsType, ExtraData?: SliderSetting | DropdownSetting, loadOldValues: boolean = true) {
+    /**
+     * The ID of the component that the settings are for.
+     */
+    private _ComponentID: string;
+
+    /**
+     * The settings that are stored for the component.
+     */
+    private _Settings: Record<string, SettingTypes.Info>;
+
+    /**
+     * Registers a setting.
+     * 
+     * @param settingName The name
+     * @param settingDescription The description
+     * @param defaultValue The default value
+     * @param type The type of the setting input
+     * @param ExtraData Extra data for the setting type (Optional)
+     * @param loadOldValues Whether to load old values from the settings file (Optional)
+     */
+    public RegisterSetting(settingName: string, settingDescription: string, defaultValue: any, type: SettingTypes.Type, ExtraData?: SettingTypes.Slider | SettingTypes.Dropdown, loadOldValues: boolean = true) {
         
         //a bit jank, copilot generated and had issues with loading old values before. but this works
         if (loadOldValues) {
-            let oldSettings = Settings.GetSettingsByID(this._ComponentID);
+            let oldSettings = GlobalSettings.GetComponentSettingsByID(this._ComponentID);
             if (oldSettings) {
                 let oldSetting = oldSettings[settingName];
                 if (oldSetting) {
@@ -74,78 +207,84 @@ class Settings {
             ExtraData: ExtraData,
         };
 
-        Settings.Save(this._ComponentID, this._Settings);
+        GlobalSettings.Save(this._ComponentID, this._Settings);
     }
 
+    /**
+     * Sets a setting value.
+     * 
+     * @param settingName The name of the setting
+     * @param value The value to set the setting to
+     */
     public Set(settingName: string, value: any) {
         this._Settings[settingName].Value = value;
 
-        Settings.Save(this._ComponentID, this._Settings);
+        GlobalSettings.Save(this._ComponentID, this._Settings);
     }
 
-    public Get(settingName: string): SettingInfo {
+    /**
+     * Gets the setting info for specified setting.
+     * 
+     * @param settingName The name of the setting
+     */
+    public GetSettingInfo(settingName: string): SettingTypes.Info {
         return this._Settings[settingName];
     }
 
+    /**
+     * Gets the value of a setting.
+     * 
+     * @param settingName The name of the setting
+     * @param defaultValue The default value to return if the setting doesn't exist (Optional)
+     */
     public GetSettingValue(settingName: string, defaultValue?: any): any {
         return this._Settings[settingName]?.Value || defaultValue;
     }
 
-    public GetAll(): Record<string, SettingInfo> {
+    /**
+     * Gets all the settings for the component.
+     */
+    public GetAllComponentSettings(): Record<string, SettingTypes.Info> {
         return this._Settings;
     }
 
-    public static GetSettingsByID(componentID: string): Record<string, SettingInfo> {
-        return GlobalSettings[componentID];
+    /**
+     * Gets the component ID of the current instance.
+     */
+    public GetComponentID(): string {
+        return this._ComponentID;
     }
 
+    /**
+     * Loads the settings from "JSON".
+     * 
+     * @param settingData The setting data to load
+     */
     public Load(settingData: any): void {
         for (let key in settingData) {
             this._Settings[key] = settingData[key];
         }
     }
 
-    public static SaveToJSON(JSON: string): void {
-        const fs = require("fs");
-
-        //Clear the file
-        fs.writeFile(__dirname + "./../Settings.json", "", (err: any) => {
-            if (err) {
-                console.error(err);
-                return;
-            }
-        });
-
-        //Write the new data
-        fs.writeFile(__dirname + "./../Settings.json", JSON, (err: any) => {
-            if (err) {
-                console.error(err);
-                return;
-            }
-        });
-    }
-
-    public static Save(componentID: string, _Settings: Record<string, SettingInfo>): void {
-        GlobalSettings[componentID] = _Settings;
-
-        let settingsJSON: string = JSON.stringify(GlobalSettings, null, 4);
-
-        Settings.SaveToJSON(settingsJSON);
-    }
-
-    public static DeleteComponentSettings(componentID: string): void {
-        delete GlobalSettings[componentID];
-
-        let _Settings: Record<string, SettingInfo> = Settings.GetSettingsByID(componentID);
-
-        Settings.Save(componentID, _Settings);
-    }
-
+    /**
+     * Deletes a setting.
+     * 
+     * @param settingName The name of the setting 
+     */
     public DeleteSetting(settingName: string): void {
         delete this._Settings[settingName];
 
-        Settings.Save(this._ComponentID, this._Settings);
+        GlobalSettings.Save(this._ComponentID, this._Settings);
+    }
+
+    /**
+     * Deletes all the settings for the component.
+     */
+    public DeleteAllLocalSettings(): void {
+        delete this._Settings
+
+        GlobalSettings.Save(this._ComponentID, this._Settings);
     }
 }
 
-export { Settings, SettingsType, LoadGlobalSettings, GlobalSettings };
+export { Settings, SettingTypes, GlobalSettings };
