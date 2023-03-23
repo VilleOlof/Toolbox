@@ -43,6 +43,7 @@ namespace GlobalSettings {
      */
     export function SaveToJSON(JSON: string, SettingsPath: string = "./../Settings.json"): void {
         const fs = require("fs");
+        SettingsPath = __dirname + SettingsPath;
 
         fs.writeFileSync(SettingsPath, JSON, (err: any) => {
             if (err) console.error(err);

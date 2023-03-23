@@ -1,7 +1,7 @@
 {
     "Counter": {
         "increment": {
-            "Value": 5,
+            "Value": 2,
             "Type": 1,
             "Description": "The value increment"
         }
