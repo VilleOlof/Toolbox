@@ -1,10 +1,10 @@
 <script lang="ts">
     import ModuleHandler from "./Components/ModuleHandler.svelte";
+    import Navbar from "./Components/Navbar.svelte";
     import RefreshNotification from "./Components/RefreshNotification.svelte";
 </script>
 
-<h1>Davinki</h1>
-
+<Navbar />
 <ModuleHandler />
 <RefreshNotification />
 
