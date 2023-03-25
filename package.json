@@ -10,13 +10,15 @@
     "build": "node ./PrepareModules.js && vite build",
     "prepare": "node ./PrepareModules.js",
     "dev": "vite dev",
-    "docs": "npx typedoc"
+    "docs": "npx typedoc",
+    "docs:serve": "serve ./docs/"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.0.3",
     "@tsconfig/svelte": "^3.0.0",
     "electron": "^23.1.4",
     "sass": "^1.59.3",
+    "serve": "^14.2.0",
     "svelte": "^3.57.0",
     "svelte-check": "^3.1.4",
     "tslib": "^2.5.0",
