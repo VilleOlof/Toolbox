@@ -1,6 +1,11 @@
 
 # Toolbox Specs
 
+## Resources  
+
+[Simple Icons](https://simpleicons.org/)  
+[Google Icons](https://fonts.google.com/icons)
+
 ## Inhouse Module Standards
 
 A set of standards for modules to follow.  
