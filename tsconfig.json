@@ -107,6 +107,15 @@
     "name": "Davinci Toolbox",
     "navigationLinks": {
       "Github": "https://github.com/VilleOlof/Toolbox"
-    }
+    },
+    "sort": "source-order",
+    "visibilityFilters": {
+      "protected": false,
+      "private": true,
+      "inherited": true,
+      "external": false,
+      "@alpha": false,
+      "@beta": false
+  }
   }
 }
