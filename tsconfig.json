@@ -116,6 +116,8 @@
       "external": false,
       "@alpha": false,
       "@beta": false
-  }
+    },
+    "skipErrorChecking": true,
+    "logLevel": "Error",
   }
 }
