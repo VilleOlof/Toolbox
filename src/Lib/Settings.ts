@@ -16,7 +16,7 @@ namespace GlobalSettings {
      * Loads all the global settings.  
      * This should be called when the app starts.
      * 
-     * **Example:**
+     * @example
      * 
      * ```ts
      * GlobalSettings.LoadGlobalSettings();
@@ -37,7 +37,7 @@ namespace GlobalSettings {
      * 
      * @param componentID The component ID.
      * 
-     * **Example:**
+     * @example
      * 
      * ```ts
      * let settings: Record<string, SettingTypes.Info> = GlobalSettings.GetComponentSettingsByID("ComponentID");
@@ -53,7 +53,7 @@ namespace GlobalSettings {
      * @param JSON The JSON string to save.
      * @param SettingsPath The path to the settings file.
      * 
-     * **Example:**
+     * @example
      * 
      * ```ts
      * let settingsJSON: string = JSON.stringify(GlobalSettings._Settings, null, 4);
@@ -75,7 +75,7 @@ namespace GlobalSettings {
      * @param componentID The component ID.
      * @param _Settings The settings to save.
      * 
-     * **Example:**
+     * @example
      * 
      * ```ts
      * let componentID: string = settings.GetComponentID();
@@ -96,7 +96,7 @@ namespace GlobalSettings {
      * 
      * @param SettingsInstance The settings instance to delete. 
      * 
-     * **Example:**
+     * @example
      * 
      * ```ts
      * GlobalSettings.DeleteComponentSettings(settings);
@@ -207,7 +207,7 @@ class Settings {
      * @constructor
      * @param componentID The ID of the component that the settings are for.
      * 
-     * **Example:**
+     * @example
      * 
      * ```ts
      * let settings: Settings = new Settings("ComponentID");
@@ -241,31 +241,25 @@ class Settings {
      * @param ExtraData Extra data for the setting type (Optional)
      * @param loadOldValues Whether to load old values from the settings file (Optional)
      * 
-     * **Basic example:**
-     * 
+     * @example
      * ```ts
-     *  settings.RegisterSetting("Increment", "The value to increment the count of", 1, SettingTypes.Type.Numeric);
-     * ```    
+     *  // Basic example:
+     *  settings.RegisterSetting("Increment", "The value to increment", 1, SettingTypes.Type.Numeric);
      * 
-     * **Slider example:**
-     * 
-     * ```ts
+     *  // Slider example:
      *  settings.RegisterSetting("Default Zoom", "The default zoom level", 1.5, SettingTypes.Type.Slider, {
-            Min: 0.5,
-            Max: 2,
-            Step: 0.1
-        });
-     * ```
-     * 
-     * **Button example:**
-     * 
-     * ```ts
+     *      Min: 0.5,
+     *      Max: 2,
+     *      Step: 0.1
+     *  });
+     *
+     *  // Button example:
      *  settings.RegisterSetting("Reset", "Resets the settings", null, SettingTypes.Type.Button, {
-            Label: "Reset",
-            Function: () => {
-                settings.DeleteAllLocalSettings();
-            }
-        }
+     *      Label: "Reset",
+     *      Function: () => {
+     *          settings.DeleteAllLocalSettings();
+     *      }
+     *  });
      * ```
      */
     public RegisterSetting(settingName: string, settingDescription: string, defaultValue: any, type: SettingTypes.Type, ExtraData?: SettingTypes.ExtraDataTypes, loadOldValues: boolean = true) {
@@ -297,7 +291,7 @@ class Settings {
      * @param settingName The name of the setting
      * @param value The value to set the setting to
      * 
-     * **Example:**
+     * @example
      * 
      * ```ts
      * settings.Set("Increment", 2);
@@ -314,7 +308,7 @@ class Settings {
      * 
      * @param settingName The name of the setting
      * 
-     * **Example:**
+     * @example
      * 
      * ```ts
      * let settingInfo: SettingTypes.Info = settings.GetSettingInfo("Increment");
@@ -330,7 +324,7 @@ class Settings {
      * @param settingName The name of the setting
      * @param defaultValue The default value to return if the setting doesn't exist (Optional)
      * 
-     * **Example:**
+     * @example
      * 
      * ```ts
      * let increment: number = settings.GetSettingValue<number>("Increment");
@@ -343,7 +337,7 @@ class Settings {
     /**
      * Gets all the settings for the component.
      * 
-     * **Example:**
+     * @example
      * 
      * ```ts
      * let allSettings: Record<string, SettingTypes.Info> = settings.GetAllComponentSettings();
@@ -356,7 +350,7 @@ class Settings {
     /**
      * Gets the component ID of the current instance.
      * 
-     * **Example:**
+     * @example
      * 
      * ```ts
      * let componentID: string = settings.GetComponentID();
@@ -371,7 +365,7 @@ class Settings {
      * 
      * @param settingData The setting data to load
      * 
-     * **Example:**
+     * @example
      * 
      * ```ts
      * settings.Load({
@@ -390,7 +384,7 @@ class Settings {
      * 
      * @param settingName The name of the setting 
      * 
-     * **Example:**
+     * @example
      * 
      * ```ts
      * settings.DeleteSetting("Increment");
@@ -405,7 +399,7 @@ class Settings {
     /**
      * Deletes all the settings for the component.
      * 
-     * **Example:**
+     * @example
      * 
      * ```ts
      * settings.DeleteAllLocalSettings();

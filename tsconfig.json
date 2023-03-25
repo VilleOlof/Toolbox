@@ -119,5 +119,7 @@
     },
     "skipErrorChecking": true,
     "logLevel": "Error",
+    "plugin": ["typedoc-theme-yaf"],
+    "theme": "yaf"
   }
 }
