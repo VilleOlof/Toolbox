@@ -4,7 +4,7 @@ export namespace ResolveEnums {
      * All pages.
      * @enum {string}
      */
-    declare enum Pages {
+    export enum Pages {
         Media = "media",
         Cut = "cut",
         Edit = "edit",
@@ -19,7 +19,7 @@ export namespace ResolveEnums {
      * All track types.
      * @enum {string}
      */
-    declare enum TrackType {
+    export enum TrackType {
         Audio = "audio",
         Video = "video",
         Subtitle = "subtitle"
@@ -29,7 +29,7 @@ export namespace ResolveEnums {
      * All timeline generators.
      * @enum {string}
      */
-    declare enum TimelineGenerator {
+    export enum TimelineGenerator {
         __10_Step = '10 Step',
         __100mV_Steps = '100mV Steps',
         __BT2111_Color_Bar_HLG_Narrow = 'BT.2111 Color Bar HLG Narrow',
@@ -48,7 +48,7 @@ export namespace ResolveEnums {
      * All fusion generators.
      * @enum {string}
      */
-    declare enum FusionGenerator {
+    export enum FusionGenerator {
         __Contours = 'Contours',
         __Noise_Gradient = 'Noise Gradient',
         __Paper = 'Paper',
@@ -59,7 +59,7 @@ export namespace ResolveEnums {
      * All title names.
      * @enum {string}
      */
-    declare enum TitleNames {
+    export enum TitleNames {
         __Left_Lower_Third = 'Left Lower Third',
         __Middle_Lower_Third = 'Middle Lower Third',
         __Right_Lower_Third = 'Right Lower Third',
@@ -71,7 +71,7 @@ export namespace ResolveEnums {
      * All timeline item version types.
      * @enum {number}
      */
-    declare enum TimelineItemVersionType {
+    export enum TimelineItemVersionType {
         Local = 0,
         Remote = 1
     }
@@ -80,7 +80,7 @@ export namespace ResolveEnums {
      * All grade modes.
      * @enum {number}
      */
-    declare enum GradeMode {
+    export enum GradeMode {
         'No keyframes' = 0,
         'Source Timecode aligned' = 1,
         'Start Frames aligned' = 2
@@ -90,7 +90,7 @@ export namespace ResolveEnums {
      * All still export formats.
      * @enum {string}
      */
-    declare enum StillExportFormat {
+    export enum StillExportFormat {
         DPX = 'dpx',
         CIN = 'cin',
         TIF = 'tif',
@@ -105,7 +105,7 @@ export namespace ResolveEnums {
      * All clip colors.
      * @enum {string}
      */
-    declare enum ClipColor {
+    export enum ClipColor {
         Apricot = "Apricot",
         Beige = "Beige",
         Blue = "Blue",
@@ -128,7 +128,7 @@ export namespace ResolveEnums {
      * All marker colors.
      * @enum {string}
      */
-    declare enum MarkerColor {
+    export enum MarkerColor {
         Blue = "Blue",
         Cocoa = "Cocoa",
         Cream = "Cream",
@@ -151,7 +151,7 @@ export namespace ResolveEnums {
      * All flag colors.
      * @enum {string}
      */
-    declare enum FlagColor {
+    export enum FlagColor {
         Blue = "Blue",
         Cocoa = "Cocoa",
         Cream = "Cream",
@@ -174,7 +174,7 @@ export namespace ResolveEnums {
      * All Dynamic Zoom Ease Settings.
      * @enum {number}
      */
-    declare enum DynamicZoomEaseSetting {
+    export enum DynamicZoomEaseSetting {
         DYNAMIC_ZOOM_EASE_LINEAR = 0,
         DYNAMIC_ZOOM_EASE_IN,
         DYNAMIC_ZOOM_EASE_OUT,
@@ -185,7 +185,7 @@ export namespace ResolveEnums {
      * All Composite Mode Settings.
      * @enum {number}
      */
-    declare enum CompositeModeSetting {
+    export enum CompositeModeSetting {
         COMPOSITE_NORMAL = 0,
         COMPOSITE_ADD,
         COMPOSITE_SUBTRACT,
@@ -224,7 +224,7 @@ export namespace ResolveEnums {
      * All Retime Process Settings.
      * @enum {number}
      */
-    declare enum RetimeProcessSetting {
+    export enum RetimeProcessSetting {
         RETIME_USE_PROJECT = 0,
         RETIME_NEAREST,
         RETIME_FRAME_BLEND,
@@ -235,7 +235,7 @@ export namespace ResolveEnums {
      * All Motion Estimation Settings.
      * @enum {number}
      */
-    declare enum MotionEstimationSetting {
+    export enum MotionEstimationSetting {
         MOTION_EST_USE_PROJECT = 0,
         MOTION_EST_STANDARD_FASTER,
         MOTION_EST_STANDARD_BETTER,
@@ -248,7 +248,7 @@ export namespace ResolveEnums {
      * All Scaling Settings.
      * @enum {number}
      */
-    declare enum ScalingSetting {
+    export enum ScalingSetting {
         SCALE_USE_PROJECT = 0,
         SCALE_CROP,
         SCALE_FIT,
@@ -260,7 +260,7 @@ export namespace ResolveEnums {
      * All Resize Filter Settings.
      * @enum {number}
      */
-    declare enum ResizeFilterSetting {
+    export enum ResizeFilterSetting {
         RESIZE_FILTER_USE_PROJECT = 0,
         RESIZE_FILTER_SHARPER,
         RESIZE_FILTER_SMOOTHER,
@@ -283,7 +283,7 @@ export namespace ResolveEnums {
      * All Timeline Export Types.
      * @enum {number}
      */
-    declare enum TimelineExportType {
+    export enum TimelineExportType {
         EXPORT_AAF,
         EXPORT_DRT,
         EXPORT_EDL,
@@ -308,7 +308,7 @@ export namespace ResolveEnums {
      * All Timeline Export Sub Types.
      * @enum {number}
      */
-    declare enum TimelineExportSubType {
+    export enum TimelineExportSubType {
         EXPORT_NONE,
         EXPORT_AAF_NEW,
         EXPORT_AAF_EXISTING,
