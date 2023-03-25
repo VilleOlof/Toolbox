@@ -1,26 +1,39 @@
 // Some undocumented types were taken from: https://gist.github.com/bradcordeiro/2f00120fad252a1b2bffcb882c9c941b
 
+/**
+ * Enum types for DaVinci Resolve related things.
+ */
 declare namespace ResolveEnums {
+
     /**
-     * All pages in DaVinci Resolve.
+     * All pages.
+     * @enum {string}
      */
     declare enum Pages {
-        "media",
-        "cut",
-        "edit",
-        "fusion",
-        "color",
-        "fairlight",
-        "deliver",
-        None,
+        Media = "media",
+        Cut = "cut",
+        Edit = "edit",
+        Fusion = "fusion",
+        Color = "color",
+        Fairlight = "fairlight",
+        Deliver = "deliver",
+        None = "none",
     }
 
+    /**
+     * All track types.
+     * @enum {string}
+     */
     declare enum TrackType {
         Audio = "audio",
         Video = "video",
         Subtitle = "subtitle"
     }
 
+    /**
+     * All timeline generators.
+     * @enum {string}
+     */
     declare enum TimelineGenerator {
         __10_Step = '10 Step',
         __100mV_Steps = '100mV Steps',
@@ -36,6 +49,10 @@ declare namespace ResolveEnums {
         __YCbCr_Ramp = 'YCbCr Ramp'
     }
     
+    /**
+     * All fusion generators.
+     * @enum {string}
+     */
     declare enum FusionGenerator {
         __Contours = 'Contours',
         __Noise_Gradient = 'Noise Gradient',
@@ -43,6 +60,10 @@ declare namespace ResolveEnums {
         __Texture_Background = 'Texture Background',
     }
     
+    /**
+     * All title names.
+     * @enum {string}
+     */
     declare enum TitleNames {
         __Left_Lower_Third = 'Left Lower Third',
         __Middle_Lower_Third = 'Middle Lower Third',
@@ -51,85 +72,113 @@ declare namespace ResolveEnums {
         __Text = 'Text'
     }
     
+    /**
+     * All timeline item version types.
+     * @enum {number}
+     */
     declare enum TimelineItemVersionType {
         Local = 0,
         Remote = 1
     }
 
+    /**
+     * All grade modes.
+     * @enum {number}
+     */
     declare enum GradeMode {
         'No keyframes' = 0,
         'Source Timecode aligned' = 1,
         'Start Frames aligned' = 2
     }
     
+    /**
+     * All still export formats.
+     * @enum {string}
+     */
     declare enum StillExportFormat {
-        'dpx',
-        'cin',
-        'tif',
-        'jpg',
-        'png',
-        'ppm',
-        'bmp',
-        'xpm'
+        DPX = 'dpx',
+        CIN = 'cin',
+        TIF = 'tif',
+        JPG = 'jpg',
+        PNG = 'png',
+        PPM = 'ppm',
+        BMP = 'bmp',
+        XPM = 'xpm',
     }
     
+    /**
+     * All clip colors.
+     * @enum {string}
+     */
     declare enum ClipColor {
-        "Apricot",
-        "Beige",
-        "Blue",
-        "Brown",
-        "Chocolate",
-        "Green",
-        "Lime",
-        "Navy",
-        "Olive",
-        "Orange",
-        "Pink",
-        "Purple",
-        "Tan",
-        "Teal",
-        "Violet",
-        "Yellow"
+        Apricot = "Apricot",
+        Beige = "Beige",
+        Blue = "Blue",
+        Brown = "Brown",
+        Chocolate = "Chocolate",
+        Green = "Green",
+        Lime = "Lime",
+        Navy = "Navy",
+        Olive = "Olive",
+        Orange = "Orange",
+        Pink = "Pink",
+        Purple = "Purple",
+        Tan = "Tan",
+        Teal = "Teal",
+        Violet = "Violet",
+        Yellow = "Yellow",
     }
     
+    /**
+     * All marker colors.
+     * @enum {string}
+     */
     declare enum MarkerColor {
-        "Blue",
-        "Cocoa",
-        "Cream",
-        "Cyan",
-        "Fushsia",
-        "Green",
-        "Lavender",
-        "Lemon",
-        "Mint",
-        "Pink",
-        "Purple",
-        "Red",
-        "Rose",
-        "Sand",
-        "Sky",
-        "Yellow"
+        Blue = "Blue",
+        Cocoa = "Cocoa",
+        Cream = "Cream",
+        Cyan = "Cyan",
+        Fushsia = "Fushsia",
+        Green = "Green",
+        Lavender = "Lavender",
+        Lemon = "Lemon",
+        Mint = "Mint",
+        Pink = "Pink",
+        Purple = "Purple",
+        Red = "Red",
+        Rose = "Rose",
+        Sand = "Sand",
+        Sky = "Sky",
+        Yellow = "Yellow",
     }
     
+    /**
+     * All flag colors.
+     * @enum {string}
+     */
     declare enum FlagColor {
-        "Blue",
-        "Cocoa",
-        "Cream",
-        "Cyan",
-        "Fushsia",
-        "Green",
-        "Lavender",
-        "Lemon",
-        "Mint",
-        "Pink",
-        "Purple",
-        "Red",
-        "Rose",
-        "Sand",
-        "Sky",
-        "Yellow"
+        Blue = "Blue",
+        Cocoa = "Cocoa",
+        Cream = "Cream",
+        Cyan = "Cyan",
+        Fushsia = "Fushsia",
+        Green = "Green",
+        Lavender = "Lavender",
+        Lemon = "Lemon",
+        Mint = "Mint",
+        Pink = "Pink",
+        Purple = "Purple",
+        Red = "Red",
+        Rose = "Rose",
+        Sand = "Sand",
+        Sky = "Sky",
+        Yellow = "Yellow",
     }
 
+    /**
+     * All Dynamic Zoom Ease Settings.
+     * @enum {number}
+     */
     declare enum DynamicZoomEaseSetting {
         DYNAMIC_ZOOM_EASE_LINEAR = 0,
         DYNAMIC_ZOOM_EASE_IN,
@@ -137,6 +186,10 @@ declare namespace ResolveEnums {
         DYNAMIC_ZOOM_EASE_IN_AND_OUT,
     };
     
+    /**
+     * All Composite Mode Settings.
+     * @enum {number}
+     */
     declare enum CompositeModeSetting {
         COMPOSITE_NORMAL = 0,
         COMPOSITE_ADD,
@@ -172,6 +225,10 @@ declare namespace ResolveEnums {
         COMPOSITE_INVERTED_LUM,
     };
     
+    /**
+     * All Retime Process Settings.
+     * @enum {number}
+     */
     declare enum RetimeProcessSetting {
         RETIME_USE_PROJECT = 0,
         RETIME_NEAREST,
@@ -179,6 +236,10 @@ declare namespace ResolveEnums {
         RETIME_OPTICAL_FLOW,
     };
     
+    /**
+     * All Motion Estimation Settings.
+     * @enum {number}
+     */
     declare enum MotionEstimationSetting {
         MOTION_EST_USE_PROJECT = 0,
         MOTION_EST_STANDARD_FASTER,
@@ -188,6 +249,10 @@ declare namespace ResolveEnums {
         MOTION_EST_SPEED_WRAP,
     };
     
+    /**
+     * All Scaling Settings.
+     * @enum {number}
+     */
     declare enum ScalingSetting {
         SCALE_USE_PROJECT = 0,
         SCALE_CROP,
@@ -196,6 +261,10 @@ declare namespace ResolveEnums {
         SCALE_STRETCH,
     };
     
+    /**
+     * All Resize Filter Settings.
+     * @enum {number}
+     */
     declare enum ResizeFilterSetting {
         RESIZE_FILTER_USE_PROJECT = 0,
         RESIZE_FILTER_SHARPER,
@@ -215,6 +284,10 @@ declare namespace ResolveEnums {
         RESIZE_FILTER_LINEAR,
     };
     
+    /**
+     * All Timeline Export Types.
+     * @enum {number}
+     */
     declare enum TimelineExportType {
         EXPORT_AAF,
         EXPORT_DRT,
@@ -236,6 +309,10 @@ declare namespace ResolveEnums {
         EXPORT_DOLBY_VISION_VER_4_0,
     }
     
+    /**
+     * All Timeline Export Sub Types.
+     * @enum {number}
+     */
     declare enum TimelineExportSubType {
         EXPORT_NONE,
         EXPORT_AAF_NEW,
@@ -253,11 +330,17 @@ declare namespace ResolveEnums {
 declare type dbInfo = {
     DbType: 'Disk' | 'PostgreSQL';
     DbName: string;
-    IpAdress: string = '127.0.0.1';
+    IpAdress?: string = '127.0.0.1';
 }
 
+/**
+ * A Render preset type.
+ */
 declare type Preset = string;
 
+/**
+ * A Render job.
+ */
 declare type RenderJob = {
     AudioCodec: string
     AudioSampleRate: number
@@ -282,6 +365,9 @@ declare type RenderJob = {
     RenderJobName: string
 };
 
+/**
+ * Settings for rendering.
+ */
 declare type RenderSettings = {
 
     /**
@@ -365,16 +451,25 @@ declare type RenderSettings = {
     NetworkOptimization: boolean;
 };
 
+/**
+ * A Render format.
+ */
 declare type RenderFormat = {
     Format: string;
     FileExtension: string;
 };
 
+/**
+ * A Render codec.
+ */
 declare type RenderCodec = {
     CodecDescription: string;
     CodecName: string;
 };
 
+/**
+ * The status of a render job.
+ */
 declare type RenderJobStatus = {
     CompletionPercentage: number
     JobStatus: 'Ready' | 'Rendering' | 'Cancelled' | 'Complete' | 'Failed',
@@ -383,11 +478,17 @@ declare type RenderJobStatus = {
     Error?: string
 };
 
+/**
+ * Resolution type.
+ */
 declare type Resolution = {
     width: number;
     height: number;
 };
 
+/**
+ * Clip Information
+ */
 declare type ClipInfo = {
     mediaPoolItem: MediaPoolItem;
     startFrame: number;
@@ -395,6 +496,9 @@ declare type ClipInfo = {
     mediaType?: number = 1 | 2;
 }
 
+/**
+ * Timeline Import Options
+ */
 declare type TimelineImportOptions = {
     timelineName: string;
     importSourceClips: boolean;
@@ -403,6 +507,9 @@ declare type TimelineImportOptions = {
     interlaceProcessing: boolean;
 }
 
+/**
+ * Type for a marker.
+ */
 declare type Marker = {
     frameId: number;
     color: MarkerColor;
@@ -412,6 +519,9 @@ declare type Marker = {
     customData: string;
 };
 
+/**
+ * CDL type.
+ */
 declare type CDL = {
     NodeIndex: string;
     Slope: string
@@ -420,18 +530,28 @@ declare type CDL = {
     Saturation: string;
 }
 
+/**
+ * A Take.
+ */
 declare type Take = {
     startFrame: number;
     endFrame: number;
     mediaPoolItem: MediaPoolItem;
 }
 
+/**
+ * Properties for a timeline item.
+ */
 declare type TimelineItemProperties = {
     Pan: number;
     Tilt: number;
 
     ZoomX: number;
     ZoomY: number;
+
+    /**
+     * If ZoomX and ZoomY are linked together.
+     */
     ZoomGang: boolean;
 
     RotationAngle: number;
@@ -469,6 +589,10 @@ declare type TimelineItemProperties = {
     ResizeFilter: ResizeFilterSetting;
 };
 
+/**
+ * Properties for a Project.
+ * Most Properties are Readonly.
+ */
 declare type ProjectProperties = { 
     audioCaptureNumChannels: string,
     audioOutputHasTimecode: string,
@@ -621,6 +745,9 @@ declare type ProjectProperties = {
     videoPlayoutShowSourceTimecode: string, 
 };
 
+/**
+ * Properties of a media pool item
+ */
 declare type MediaPoolItemProperties = {
     'Alpha mode': string
     'Audio Bit Depth': string
@@ -685,76 +812,144 @@ declare type MediaPoolItemProperties = {
     Usage: string
 };
 
+/**
+ * The main Resolve object.
+ */
 declare type Resolve = {
 
     /**
      * Returns the Fusion object. Starting point for Fusion scripts.
+     * 
+     * @example
+     * ```ts
+     * const fusion: Fusion = resolve.Fusion();
+     * ```
     */
     Fusion(): Fusion;
 
     /**
      * Returns the media storage object to query and act on media locations.
+     * 
+     * @example
+     * ```ts
+     * const mediaStorage: MediaStorage = resolve.GetMediaStorage();
+     * ```
     */
     GetMediaStorage(): MediaStorage;
 
     /**
      * Returns the project manager object for currently open database.
+     * 
+     * @example
+     * ```ts
+     * const projectManager: ProjectManager = resolve.GetProjectManager();
+     * ```
     */
     GetProjectManager(): ProjectManager;
 
     /**
      * Switches to indicated page in DaVinci Resolve
      * @param pageName Name of the page to switch to.
+     * 
+     * @example
+     * ```ts
+     * resolve.OpenPage(ResolveEnums.Pages.Edit);
+     * ```
     */
-    OpenPage(pageName: Pages): boolean;
+    OpenPage(pageName: ResolveEnums.Pages): boolean;
 
     /**
      * Returns the page currently displayed in the main window.
+     * 
+     * @example
+     * ```ts
+     * const currentPage: ResolveEnums.Pages = resolve.GetCurrentPage();
+     * ```
     */
-    GetCurrentPage(): Pages;
+    GetCurrentPage(): ResolveEnums.Pages;
 
     /**
      * Returns product name.
+     * 
+     * @example
+     * ```ts
+     * const productName: string = resolve.GetProductName();
+     * ```
     */
     GetProductName(): string;
 
     /**
      * Returns list of product version fields in [major, minor, patch, build, suffix] format.
+     * 
+     * @example
+     * ```ts
+     * const version: number[] = resolve.GetVersion();
+     * ```
     */
     GetVersion(): number[];
 
     /**
      * Returns product version in “major.minor.patch[suffix].build” format.
+     * 
+     * @example
+     * ```ts
+     * const versionString: string = resolve.GetVersionString();
+     * ```
     */
     GetVersionString(): string;
 
     /**
      * Loads UI layout from saved preset named ‘presetName’.
      * @param presetName Name of the preset to load.
+     * 
+     * @example
+     * ```ts
+     * resolve.LoadLayoutPreset('MyLayout');
+     * ```
     */
     LoadLayoutPreset(presetName: string): boolean;
 
     /**
      * Overwrites preset named ‘presetName’ with current UI layout.
      * @param presetName Name of the preset to update.
+     * 
+     * @example
+     * ```ts
+     * resolve.UpdateLayotPreset('MyLayout');
+     * ```
     */
     UpdateLayotPreset(presetName: string): boolean;
 
     /**
      * Exports preset named ‘presetName’ to path ‘presetFilePath’.
      * @param presetName Name of the preset to export.
+     * 
+     * @example
+     * ```ts
+     * resolve.ExportLayoutPreset('MyLayout', 'C:\\MyLayout\\');
+     * ```
     */
     ExportLayoutPreset(presetName: string, presetFilePath: string): boolean;
 
     /**
      * Deletes preset named ‘presetName’.
      * @param presetName Name of the preset to delete.
+     * 
+     * @example
+     * ```ts
+     * resolve.DeleteLayoutPreset('MyLayout');
+     * ```
     */
     DeleteLayoutPreset(presetName: string): boolean;
 
     /**
      * Saves current UI layout as a preset named ‘presetName’.
      * @param presetName Name of the preset to save.
+     * 
+     * @example
+     * ```ts
+     * resolve.SaveLayoutPreset('MyLayout');
+     * ```
     */
     SaveLayoutPreset(presetName: string): boolean;
 
@@ -762,11 +957,21 @@ declare type Resolve = {
      * Imports preset from path ‘presetFilePath’. The optional argument ‘presetName’ specifies how the preset shall be named. If not specified, the preset is named based on the filename.
      * @param presetFilePath Path to the preset file.
      * @param presetName Name of the preset to import.
+     * 
+     * @example
+     * ```ts
+     * resolve.ImportLayoutPresets('C:\\MyLayout\\');
+     * ```
     */
     ImportLayoutPresets(presetFilePath: string, presetName?: string): boolean;
 
     /**
      * Quits the Resolve App.
+     * 
+     * @example
+     * ```ts
+     * resolve.Quit();
+     * ```
     */
     Quit(): void;
 };
@@ -775,11 +980,28 @@ declare type ProjectManager = {
 
     /**
      * Archives project to provided file path with the configuration as provided by the optional arguments
+     * 
+     * @param projectName Name of the project to archive
+     * @param filePath Path to the archive file
+     * @param isArchiveSrcMedia Archive source media
+     * @param isArchiveRenderCache Archive render cache
+     * @param isArchiveProxyMedia Archive proxy media
+     * 
+     * @example
+     * ```ts
+     * projectManager.ArchiveProject('MyProject', 'C:\\MyProject\\MyProject.drp');
+     * ```
      */
     ArchiveProject(projectName: string, filePath: string, isArchiveSrcMedia: boolean = true, isArchiveRenderCache: boolean = true, isArchiveProxyMedia: boolean = false): void;
 
     /**
      * Creates and returns a project if projectName (string) is unique, and None if it is not.
+     * 
+     * @param projectName Name of the project to create
+     * 
+     * @example
+     * ```ts
+     * const project: Project = projectManager.CreateProject('MyProject');
      */
     CreateProject(projectName: string): Project;
     
