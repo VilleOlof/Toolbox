@@ -101,7 +101,12 @@
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
   "typedocOptions": {
+    //figure out how to remove the single src/Main.ts file from the docs. cause its now double in the docs kinda?
     "entryPoints": ["src/Main.ts","src/**/*.ts"],
-    "out": "docs"
+    "out": "docs",
+    "name": "Davinci Toolbox",
+    "navigationLinks": {
+      "Github": "https://github.com/VilleOlof/Toolbox"
+    }
   }
 }
