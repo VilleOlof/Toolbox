@@ -9,7 +9,8 @@
     "vite": "vite build --watch",
     "build": "node ./PrepareModules.js && vite build",
     "prepare": "node ./PrepareModules.js",
-    "dev": "vite dev"
+    "dev": "vite dev",
+    "docs": "npx typedoc --skipErrorChecking --logLevel Error"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.0.3",
