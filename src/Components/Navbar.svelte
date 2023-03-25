@@ -1,4 +1,5 @@
 <script lang="ts">
+    import RefreshNotification from "./RefreshNotification.svelte";
 
     const GithubEvent = () => {
         console.log('GithubEvent');
@@ -15,6 +16,13 @@
     </div>
 
     <div id=rightSide>
+        <RefreshNotification />
+
+        <div id="columnContainer">
+            <p>Add Column</p>
+            <img id="arrowDownIcon" class=reverseColor src="../src/assets/arrowDown.svg" alt="Dropdown">
+        </div>
+
         <div id="moduleContainer">
             <p>Add Module</p>
             <img id="arrowDownIcon" class=reverseColor src="../src/assets/arrowDown.svg" alt="Dropdown">
@@ -26,33 +34,24 @@
 </div>
 
 <style lang="scss">
-    @use '../scss/Flex' as *;
+    @use '../scss/Flex';
     @use '../scss/Variables' as vars;
-
-    @mixin IconAnimation($hoverScale: 1.1,$activeScale: 0.9, $duration: 0.2s) {
-        &:hover {
-            cursor: pointer;
-
-            transform: scale($hoverScale);
-        }
-
-        &:active {
-            transform: scale($activeScale);
-        }
-
-        transition: $duration;
-    }
+    @use '../scss/Animation';
 
     #navbarContainer {
-        @include FlexContainer(center, center, row);
+        @include Flex.Container(center, center, row);
 
         background-color: darken(vars.$BackgroundColor, 5%);
         height: 3rem;
         width: 100%;
+
+        box-shadow: 0 1rem 1rem rgba(19, 19, 19, 0.384);
+
+        z-index: 3;
     }
 
     #leftSide {
-        @include FlexContainer(flex-start, center, row);
+        @include Flex.Container(flex-start, center, row);
 
         margin-right: auto;
 
@@ -66,20 +65,24 @@
 
             margin-left: 1rem;
 
-            @include IconAnimation(1.2, 0.9, 0.3s);
+            @include Animation.Icon(1.2, 0.9, 0.3s);
         }
     }
 
     #rightSide {
-        @include FlexContainer(flex-end, center, row);
+        @include Flex.Container(flex-end, center, row);
 
         margin-left: auto;
     }
 
     #moduleContainer {
-        @include FlexContainer(center, center, row);
+        @include Flex.Container(center, center, row);
 
         margin-right: 1rem;
+    }
+
+    #columnContainer {
+        @extend #moduleContainer;
     }
 
     #settingsIcon {
@@ -88,11 +91,11 @@
         width: 2.5rem;
         height: auto;
 
-        @include IconAnimation;
+        @include Animation.Icon;
     }
 
     #arrowDownIcon {
-        @include IconAnimation(1.2, 0.9, 0.2s);
+        @include Animation.Icon(1.2, 0.9, 0.2s);
     }
 
     .reverseColor {

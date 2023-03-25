@@ -102,6 +102,7 @@ namespace SettingTypes {
      * @param Date A date picker.
      * @param RegExp A regular expression input.
      * @param File A file prompt.
+     * @param Button A button.
      */
     export enum Type {
         Text = 0, // String
@@ -113,6 +114,7 @@ namespace SettingTypes {
         Date = 6, // Date
         RegExp = 7, // String
         File = 8, // String
+        Button = 9, // Function
     }
     
     /**
@@ -127,7 +129,7 @@ namespace SettingTypes {
         Value: any;
         Type: Type;
         Description: string;
-        ExtraData?: Slider | Dropdown;
+        ExtraData?: Slider | Dropdown | Button;
     }
     
     /**
@@ -150,6 +152,17 @@ namespace SettingTypes {
      */
     export type Dropdown = {
         Options: string[];
+    }
+
+    /**
+     * The button extra data type.
+     * 
+     * @param Label The label of the button.
+     * @param Function The function of the button.
+     */
+    export type Button = {
+        Label: string;
+        Function: Function;
     }
 }
 
@@ -188,7 +201,7 @@ class Settings {
      * @param ExtraData Extra data for the setting type (Optional)
      * @param loadOldValues Whether to load old values from the settings file (Optional)
      */
-    public RegisterSetting(settingName: string, settingDescription: string, defaultValue: any, type: SettingTypes.Type, ExtraData?: SettingTypes.Slider | SettingTypes.Dropdown, loadOldValues: boolean = true) {
+    public RegisterSetting(settingName: string, settingDescription: string, defaultValue: any, type: SettingTypes.Type, ExtraData?: SettingTypes.Slider | SettingTypes.Dropdown | SettingTypes.Button, loadOldValues: boolean = true) {
         
         //a bit jank, copilot generated and had issues with loading old values before. but this works
         if (loadOldValues) {

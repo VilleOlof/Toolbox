@@ -1,0 +1,23 @@
+@mixin Icon($hoverScale: 1.1,$activeScale: 0.9, $duration: 0.2s) {
+    &:hover {
+        cursor: pointer;
+
+        transform: scale($hoverScale);
+    }
+
+    &:active {
+        transform: scale($activeScale);
+    }
+
+    transition: $duration;
+}
+
+@mixin FadeIn() {
+    opacity: 0;
+    animation: FadeInKeyFrames 2s linear;
+}
+
+@keyframes FadeInKeyFrames {
+    0% { opacity: 0 }
+    100% { opacity: 1 }
+}

@@ -69,6 +69,11 @@
         ShowNotification = false;
     }
 
+    function ToggleRefreshHoverText(state: boolean): void {
+        const refreshHoverText: HTMLElement = document.getElementById('refreshHoverText');
+        refreshHoverText.style.display = state ? 'block' : 'none';
+    }
+
     setInterval(() => {
         if (NoNotification) return;
 
@@ -77,7 +82,13 @@
 
 </script>
 
-<button on:click={RefreshAppWithNewModules}>Refresh App</button>
+<div id="refreshButtonContainer">
+    <img on:click={RefreshAppWithNewModules} on:keydown={RefreshAppWithNewModules} 
+    on:mouseenter={() => {ToggleRefreshHoverText(true)}} on:mouseleave={() => {ToggleRefreshHoverText(false)}}
+    id=refreshIcon class="reverseColor" src="../src/assets/refresh_icon.svg" alt="Refresh" >
+    
+    <p id="refreshHoverText" class=FadeIn >Restarts The Plugin</p>
+</div>
 
 {#if ShowNotification}
     <div id="notificationContainer">
@@ -91,10 +102,11 @@
 {/if}
 
 <style lang="scss">
-    @use '../scss/Flex' as *;
+    @use '../scss/Flex';
+    @use '../scss/Animation';
     
     #notificationContainer {
-        @include FlexContainer(center, center, column);
+        @include Flex.Container(center, center, column);
 
         position: absolute;
 
@@ -112,6 +124,40 @@
     }
     
     #buttons {
-        @include FlexContainer();
+        @include Flex.Container();
+    }
+
+    #refreshIcon {
+        @include Animation.Icon(1.2, 0.9, 0.2s);
+
+        width: 2rem;
+
+        margin-right: 1rem;
+    }
+
+    #refreshHoverText {
+        display: none;
+
+        position: absolute;
+
+        top: 2.2rem;
+
+        background-color: #222222d5;
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+    }
+
+    .FadeIn {
+        opacity: 0;
+        animation: fadeIn 0.2s linear 1 forwards;
+    }
+
+    @keyframes fadeIn {
+        0% { opacity: 0 }
+        100% { opacity: 1 }
+    }
+
+    .reverseColor {
+        filter: invert(100%);
     }
 </style>
