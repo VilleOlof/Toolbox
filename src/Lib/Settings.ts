@@ -135,9 +135,8 @@ namespace SettingTypes {
         Dropdown = 4, // String ( Array of options(string) )
         Color = 5, // String
         Date = 6, // Date
-        RegExp = 7, // String
-        File = 8, // String
-        Button = 9, // Function
+        File = 7, // String
+        Button = 8, // Function
     }
 
     /**
