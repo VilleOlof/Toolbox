@@ -7,11 +7,11 @@
 		'increment',
 		'The value increment', 
 		1,
-		SettingTypes.Type.Numeric
+		SettingTypes.Type.Text
 	);
 	//settings.Set('increment', 2);
 
-	const incrementValue = settings.GetSettingInfo('increment').Value;
+	let incrementValue = settings.GetSettingInfo('increment').Value;
 
 	//###############################
 
@@ -23,6 +23,7 @@
 
 	let count: number = Data.Get('count', 0);
 	const increment = () => {
+		incrementValue = settings.GetSettingValue('increment');
 		count += incrementValue;
 		Data.Set('count', count);
 	}

@@ -1,9 +1,3 @@
 {
-    "Counter": {
-        "increment": {
-            "Value": 2,
-            "Type": 1,
-            "Description": "The value increment"
-        }
-    }
+
 }

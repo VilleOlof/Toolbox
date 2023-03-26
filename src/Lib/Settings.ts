@@ -11,6 +11,7 @@ namespace GlobalSettings {
      */
     // Maybe take settings instances instead of _Settings Record type?;
     export let _Settings: Record<string, Record<string, SettingTypes.Info>>;
+    export let _ComponentSettings: Record<string, Settings>;
 
     /**
      * Loads all the global settings.  
@@ -142,7 +143,7 @@ namespace SettingTypes {
     /**
      * The extra data types.
      */
-    export type ExtraDataTypes = Slider | Dropdown | Button;
+    export type ExtraDataTypes = Text | Slider | Dropdown | Button;
     
     /**
      * The setting info type.
@@ -157,6 +158,14 @@ namespace SettingTypes {
         Type: Type;
         Description: string;
         ExtraData?: ExtraDataTypes;
+    }
+
+    export type Text = {
+        MinLength?: number;
+        MaxLength?: number;
+        Placeholder?: string;
+        List?: string[];
+        Pattern?: string;
     }
     
     /**
@@ -214,7 +223,7 @@ class Settings {
      */
     constructor(componentID: string) {
         this._ComponentID = componentID;
-
+        GlobalSettings._ComponentSettings[componentID] = this;
         this._Settings = {};
 
         return this;
