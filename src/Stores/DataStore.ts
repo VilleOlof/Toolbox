@@ -4,6 +4,11 @@
 let _DataStores: Record<string, DataStore> = {};
 
 /**
+ * Whether or not to use JSON to save the data.
+ */
+const UseJSON: boolean = true;
+
+/**
  * The CallbackFunction type for the _Subcribers record value.
  */
 type CallbackFunction = (value: any) => void;
@@ -53,6 +58,8 @@ class DataStore {
      */
     private _Subscribers: Record<string, CallbackFunction[]> = {};
 
+    private _JSONSavePath: string = "../../Data.json";
+
     /**
      * Notifies all subscribers of a data change.
      * 
@@ -70,6 +77,15 @@ class DataStore {
         if (this._Subscribers[key]) {
             this._Subscribers[key].forEach((callback) => callback(value));
         }
+    }
+
+    private SaveToJSON(jsonString: string): void {
+        const fs = require("fs");
+        fs.writeFile(__dirname + this._JSONSavePath, jsonString, (err) => {
+            if (err) {
+                console.log(err);
+            }
+        });
     }
 
     /**
@@ -120,6 +136,12 @@ class DataStore {
      * ```
      */
     public Load(): void {
+        if (UseJSON) {
+            const settings = require(__dirname + this._JSONSavePath);
+            this._Data = settings[this._ComponentID];
+            return;
+        }
+
         const settings = localStorage.getItem(this._ComponentID);
         if (settings) {
             this._Data = JSON.parse(settings);
@@ -135,6 +157,12 @@ class DataStore {
      * ```
      */
     public Save(): void {
+        if (UseJSON) {
+            const json: string = JSON.stringify({[this.GetComponentID()]: this._Data}, null, 4);
+            this.SaveToJSON(json);
+            return;
+        }
+
         localStorage.setItem(this._ComponentID, JSON.stringify(this._Data));
     }
 

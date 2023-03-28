@@ -9,8 +9,6 @@ namespace GlobalSettings {
      * The global settings object.  
      * This holds all the settings for all the components.
      */
-    // Maybe take settings instances instead of _Settings Record type?;
-    export let _Settings: Record<string, Record<string, SettingTypes.Info>>;
     export let _ComponentSettings: Record<string, Settings>;
 
     /**
@@ -24,13 +22,30 @@ namespace GlobalSettings {
      * ```
      */
     export function LoadGlobalSettings(): void {
-        _Settings = {};
+        _ComponentSettings = {};
 
         for (let componentID in SettingsJSON) {
             let settings = new Settings(componentID);
             settings.Load(SettingsJSON[componentID]);
-            _Settings[componentID] = settings.GetAllComponentSettings();
+            _ComponentSettings[componentID] = settings;
         }
+    }
+
+    /**
+     * Gets the settings for a component by ID in the GlobalSettings.  
+     * Returns a new instance if the component ID is not found.  
+     * This should **ALWAYS** be used to create / get a settings instance at startup.  
+     * 
+     * @param componentID The component ID.
+     * 
+     * @example
+     * 
+     * ```ts
+     * let settings: Settings = GlobalSettings.GetInstance("ComponentID");
+     * ```
+     */
+    export function GetInstance(componentID: string): Settings {
+        return _ComponentSettings[componentID] || new Settings(componentID);
     }
 
     /**
@@ -41,11 +56,11 @@ namespace GlobalSettings {
      * @example
      * 
      * ```ts
-     * let settings: Record<string, SettingTypes.Info> = GlobalSettings.GetComponentSettingsByID("ComponentID");
+     * let settings: Settings = GlobalSettings.GetComponentSettingsByID("ComponentID");
      * ```
      */
-    export function GetComponentSettingsByID(componentID: string): Record<string, SettingTypes.Info> {
-        return GlobalSettings._Settings[componentID];
+    export function GetComponentSettingsByID(componentID: string): Settings {
+        return GlobalSettings._ComponentSettings[componentID];
     }
 
     /**
@@ -83,17 +98,17 @@ namespace GlobalSettings {
      * GlobalSettings.Save(componentID, settings);
      * ```
      */
-    export function Save(componentID: string, _Settings: Record<string, SettingTypes.Info>): void {
-        GlobalSettings._Settings[componentID] = _Settings;
+    export function Save(componentID: string, _Settings: Settings): void {
+        GlobalSettings._ComponentSettings[componentID] = _Settings;
 
-        let settingsJSON: string = JSON.stringify(GlobalSettings._Settings, null, 4);
+        let settingsJSON: string = JSON.stringify(GlobalSettings._ComponentSettings, null, 4);
 
         GlobalSettings.SaveToJSON(settingsJSON);
     }
 
     /**
      * Deletes an entire component's settings.  
-     * Including its instance.
+     * Including its instance.  
      * 
      * @param SettingsInstance The settings instance to delete. 
      * 
@@ -106,20 +121,18 @@ namespace GlobalSettings {
     export function DeleteComponentSettings(SettingsInstance: Settings ): void {
         let componentID = SettingsInstance.GetComponentID();
 
-        delete GlobalSettings._Settings[componentID];
+        delete GlobalSettings._ComponentSettings[componentID];
         SettingsInstance.DeleteAllLocalSettings();
 
-        let _Settings: Record<string, SettingTypes.Info> = GlobalSettings.GetComponentSettingsByID(componentID);
+        GlobalSettings.Save(componentID, SettingsInstance);
 
         SettingsInstance = undefined;
-
-        GlobalSettings.Save(componentID, _Settings);
     }
 }
 
 /**
- * The settings type namespace.
- * Holds all enums and types for the settings.
+ * The settings type namespace.  
+ * Holds all enums and types for the settings.  
  */
 namespace SettingTypes {
 
@@ -160,6 +173,14 @@ namespace SettingTypes {
         ExtraData?: ExtraDataTypes;
     }
 
+    /**
+     * The text extra data type.
+     * 
+     * @param MinLength The minimum length.
+     * @param MaxLength The maximum length.
+     * @param Placeholder The placeholder text.
+     * @param List Makes a data list of the array. 
+     */
     export type Text = {
         MinLength?: number;
         MaxLength?: number;
@@ -210,7 +231,8 @@ namespace SettingTypes {
 class Settings {
 
     /**
-     * The settings constructor.
+     * The settings constructor.  
+     * *Don't use this directly, use [[GlobalSettings.GetInstance]] instead.*  
      * 
      * @constructor
      * @param componentID The ID of the component that the settings are for.
@@ -223,9 +245,10 @@ class Settings {
      */
     constructor(componentID: string) {
         this._ComponentID = componentID;
-        GlobalSettings._ComponentSettings[componentID] = this;
         this._Settings = {};
 
+        GlobalSettings._ComponentSettings[componentID] = this;
+        
         return this;
     }
 
@@ -274,23 +297,17 @@ class Settings {
         
         //a bit jank, copilot generated and had issues with loading old values before. but this works
         if (loadOldValues) {
-            let oldSettings = GlobalSettings.GetComponentSettingsByID(this._ComponentID);
-            if (oldSettings) {
-                let oldSetting = oldSettings[settingName];
-                if (oldSetting) {
-                    defaultValue = oldSetting.Value;
-                }
-            }
+            defaultValue = this.GetSettingValue(settingName, defaultValue);
         }
 
-        this._Settings[settingName] = {
+        this.SetSettingInfo(settingName, {
             Value: defaultValue,
             Type: type,
             Description: settingDescription,
             ExtraData: ExtraData,
-        };
+        });
 
-        GlobalSettings.Save(this._ComponentID, this._Settings);
+        GlobalSettings.Save(this._ComponentID, this);
     }
 
     /**
@@ -305,10 +322,33 @@ class Settings {
      * settings.Set("Increment", 2);
      * ```
      */
-    public Set(settingName: string, value: any) {
+    public Set<T>(settingName: string, value: T): void {
         this._Settings[settingName].Value = value;
 
-        GlobalSettings.Save(this._ComponentID, this._Settings);
+        GlobalSettings.Save(this._ComponentID, this);
+    }
+
+    /**
+     * Gets the setting information for a setting.
+     * 
+     * @param settingName The name of the setting
+     * @param value The information to set the setting to
+     * 
+     * @example
+     * 
+     * ```ts
+     * settings.SetSettingInfo("Increment", {
+     *     Value: 2,
+     *     Type: SettingTypes.Type.Numeric,
+     *     Description: "The value to increment",
+     *     ExtraData: undefined
+     * });
+     * ```
+     */
+    public SetSettingInfo(settingName: string, settingInfo: SettingTypes.Info): void {
+        this._Settings[settingName] = settingInfo;
+
+        GlobalSettings.Save(this._ComponentID, this);
     }
 
     /**
@@ -381,9 +421,9 @@ class Settings {
      * });
      * ```
      */
-    public Load(settingData: any): void {
-        for (let key in settingData) {
-            this._Settings[key] = settingData[key];
+    public Load(settings: any): void {
+        for (let settingName in settings._Settings) {
+            this.SetSettingInfo(settingName, settings._Settings[settingName]);
         }
     }
 
@@ -401,7 +441,7 @@ class Settings {
     public DeleteSetting(settingName: string): void {
         delete this._Settings[settingName];
 
-        GlobalSettings.Save(this._ComponentID, this._Settings);
+        GlobalSettings.Save(this._ComponentID, this);
     }
 
     /**
@@ -416,7 +456,7 @@ class Settings {
     public DeleteAllLocalSettings(): void {
         delete this._Settings
 
-        GlobalSettings.Save(this._ComponentID, this._Settings);
+        GlobalSettings.Save(this._ComponentID, this);
     }
 }
 

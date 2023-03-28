@@ -142,7 +142,7 @@
 
         top: 2.2rem;
 
-        background-color: #222222d5;
+        background-color: darken(#222222d5, 3%);
         border-radius: 0.5rem;
         padding: 0.5rem;
     }

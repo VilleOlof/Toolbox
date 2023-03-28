@@ -1,19 +1,26 @@
 <script lang="ts">
-    import { SettingTypes, GlobalSettings } from "../../Lib/Settings";
+    import { onMount } from "svelte";
+    import { SettingTypes, GlobalSettings, Settings } from "../../Lib/Settings";
 
     export let componentID: string;
     export let settingName: string;
     export let settingInfo: SettingTypes.Info;
 
     function OnInput(event): void {
-        // console.log(settingInfo);
+        //console.log(settingInfo);
 
-        // console.log(componentID, settingName, event.target.value)
-        // const componentSettings = GlobalSettings._ComponentSettings[componentID];
-        // componentSettings.Set(settingName, event.target.value)
+        const settingInstance: Settings = GlobalSettings._ComponentSettings[componentID];
+        settingInstance.Set(settingName, Number.parseInt(event.target.value));
         
-        // console.log(settingInfo);
+        //console.log(settingInfo);
     }
+
+    onMount(() => {
+        // const input: HTMLInputElement = document.getElementById("inputField") as HTMLInputElement;
+        // console.log(input);
+        // input.value = GlobalSettings._ComponentSettings[componentID].GetSettingValue(settingName);
+    });
+
 </script>
 
 <!--
@@ -24,7 +31,7 @@
     pattern={settingInfo.ExtraData?.Pattern || undefined}
 -->
 
-<input type="text" 
+<input type="number" id="inputField"
 
 
     bind:value={settingInfo.Value}

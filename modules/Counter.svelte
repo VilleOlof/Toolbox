@@ -1,8 +1,8 @@
 <script lang="ts">
 	import DataStore from '../src/Stores/DataStore';
-	import { Settings, SettingTypes } from '../src/Lib/Settings';
+	import { Settings, SettingTypes, GlobalSettings } from '../src/Lib/Settings';
 
-	const settings = new Settings('Counter');
+	const settings: Settings = GlobalSettings.GetInstance("Counter");
 	settings.RegisterSetting(
 		'increment',
 		'The value increment', 
