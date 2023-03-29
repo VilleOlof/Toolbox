@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+    import { onMount } from "svelte";
     import { GlobalSettings, SettingTypes, Settings } from "../Lib/Settings";
 
     let InputComponents: Record<string, Function> = {};
