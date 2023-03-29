@@ -7,8 +7,7 @@
     for (const type of Object.keys(SettingTypes.Type).filter((v) => !isNaN(Number(v)))) {
         const name: string = SettingTypes.Type[type];
         InputComponents[name] = async function () {
-            //return (await import(`../../src/Components/SettingInputComponents/${name}.svelte`));
-            return (await import(`./SettingInputComponents/${name}.svelte`));
+            return (await import(/* @vite-ignore*/ `./SettingInputComponents/${name}.svelte`));
         };
     }
 
