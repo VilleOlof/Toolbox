@@ -7,29 +7,33 @@
 
     let extraData: SettingTypes.Text = <SettingTypes.Text>settingInfo.ExtraData;
 
-    function OnInput(event): void {
-        const settingInstance: Settings = GlobalSettings._ComponentSettings[componentID];
-        settingInstance.Set(settingName, event.target.value);
-    }
+    function HandleSettingInput(event: any, componentID: string, settingName: string): void {
+        if (event.target.validity.valid === false) {
+            return;
+        }
 
+        const settingInstance: Settings = GlobalSettings._ComponentSettings[componentID];
+        settingInstance.Set(settingName, event.target.value || "");
+    }
 </script>
 
-<!--
-    maxlength={settingInfo.ExtraData?.MaxLength || Infinity} 
-    minlength={settingInfo.ExtraData?.MinLength || 0}
-    placeholder={settingInfo.ExtraData?.Placeholder || undefined}
-    list={settingInfo.ExtraData?.List || undefined}
-    pattern={settingInfo.ExtraData?.Pattern || undefined}
--->
+{#if extraData.List !== undefined}
+    <datalist id={`${componentID}-${settingName}-list`}>
+        {#each extraData.List as listEntry}
+            <option value={listEntry} />
+        {/each}
+    </datalist>
+{/if}
 
 <input type="text"
-    maxlength={extraData?.MaxLength || Infinity}
-    minlength={extraData?.MinLength || 0}
-    placeholder={extraData?.Placeholder || undefined}
-    pattern={extraData?.Pattern || undefined}
+    maxlength={extraData.MaxLength || Infinity}
+    minlength={extraData.MinLength || 0}
+    placeholder={extraData.Placeholder || undefined}
+    pattern={extraData.Pattern || undefined}
+    list={extraData.List ? `${componentID}-${settingName}-list` : undefined}
 
     bind:value={settingInfo.Value}
-    on:input={OnInput}
+    on:input={() => HandleSettingInput(window.event, componentID, settingName)}
 >
 <span></span>
 
@@ -39,6 +43,7 @@
         position: absolute;
         content: "✖";
         padding-left: 5px;
+        color: #8b0000;
     }
 
 </style>

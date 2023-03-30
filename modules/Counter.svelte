@@ -2,7 +2,9 @@
 	import DataStore from '../src/Stores/DataStore';
 	import { Settings, SettingTypes, GlobalSettings } from '../src/Lib/Settings';
 
-	const settings: Settings = GlobalSettings.GetInstance("Counter");
+	const componentID: string = "Counter";
+
+	const settings: Settings = GlobalSettings.GetInstance(componentID);
 	settings.RegisterSetting(
 		'increment',
 		'The value increment', 
@@ -12,7 +14,8 @@
 			MinLength: 1,
 			MaxLength: 5,
 			Placeholder: 'Enter a number',
-			Pattern: '[0-9]+'
+			Pattern: '[0-9]+',
+			List: ["1", "2", "3", "4", "5"]
 		}
 	);
 	//settings.Set('increment', 2);
@@ -21,7 +24,7 @@
 
 	//###############################
 
-	let Data = new DataStore('Counter');
+	let Data = new DataStore(componentID);
 
 	Data.Subscribe('count', (count) => {
 		console.log('count changed to', count);

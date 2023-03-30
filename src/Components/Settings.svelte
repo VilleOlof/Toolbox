@@ -11,6 +11,7 @@
         };
     }
 
+    //Too many arguments passing around, need to refactor this
     async function GenerateSettingComponents(Settings: Record<string, Settings>): Promise<void> {
         const settingsContainer = document.getElementById('autoGenSettings') as HTMLDivElement;
 
@@ -20,14 +21,28 @@
 
             componentContainer.appendChild(document.createElement('h2')).innerText = componentID;
 
-            for (const [settingName, settingInfo] of Object.entries(settingInstance.GetAllComponentSettings())) {
+            await LoopOverSettings(componentID, settingInstance, componentContainer);
+
+            settingsContainer.appendChild(componentContainer);
+        }
+    }
+
+    async function LoopOverSettings(componentID: string, settingInstance: Settings,componentContainer: HTMLDivElement): Promise<void> {
+        for (const [settingName, settingInfo] of Object.entries(settingInstance.GetAllComponentSettings())) {
                 const settingContainer: HTMLDivElement = document.createElement('div');
                 settingContainer.id = settingName;
                 
                 settingContainer.appendChild(document.createElement('h3')).innerText = settingName;
                 settingContainer.appendChild(document.createElement('p')).innerText = settingInfo.Description;
 
-                const EnumName: string = SettingTypes.Type[settingInfo.Type];
+                AddNewSettingInput(settingInfo, settingContainer, componentID, settingName);
+
+                componentContainer.appendChild(settingContainer);
+        }
+    }
+
+    async function AddNewSettingInput(settingInfo: SettingTypes.Info, settingContainer: HTMLDivElement, componentID: string, settingName: string): Promise<void> {
+        const EnumName: string = SettingTypes.Type[settingInfo.Type];
                 const input = await InputComponents[EnumName]();
                 
                 new input.default({
@@ -36,14 +51,8 @@
                         componentID: componentID,
                         settingName: settingName,
                         settingInfo: settingInfo,
-                    }
-                });
-
-                componentContainer.appendChild(settingContainer);
-            }
-
-            settingsContainer.appendChild(componentContainer);
-        }
+                }
+        });
     }
 
     onMount(async () => {
