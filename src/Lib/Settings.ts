@@ -128,6 +128,15 @@ namespace GlobalSettings {
 
         SettingsInstance = undefined;
     }
+
+    export function HandleSettingInput<T>(event: any, componentID: string, settingName: string, defaultValue: T): void {
+        if (event.target.validity.valid === false) {
+            return;
+        }
+
+        const settingInstance: Settings = GlobalSettings._ComponentSettings[componentID];
+        settingInstance.Set(settingName, event.target.value || defaultValue);
+    }
 }
 
 /**

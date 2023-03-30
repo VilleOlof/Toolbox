@@ -1,20 +1,11 @@
 <script lang="ts">
-    import { SettingTypes, GlobalSettings, Settings } from "../../Lib/Settings";
+    import { SettingTypes, GlobalSettings } from "../../Lib/Settings";
 
     export let componentID: string;
     export let settingName: string;
     export let settingInfo: SettingTypes.Info;
 
     let extraData: SettingTypes.Text = <SettingTypes.Text>settingInfo.ExtraData;
-
-    function HandleSettingInput(event: any, componentID: string, settingName: string): void {
-        if (event.target.validity.valid === false) {
-            return;
-        }
-
-        const settingInstance: Settings = GlobalSettings._ComponentSettings[componentID];
-        settingInstance.Set(settingName, event.target.value || settingInfo.Default);
-    }
 </script>
 
 {#if extraData.List !== undefined}
@@ -33,7 +24,7 @@
     list={extraData.List ? `${componentID}-${settingName}-list` : undefined}
 
     bind:value={settingInfo.Value}
-    on:input={() => HandleSettingInput(window.event, componentID, settingName)}
+    on:input={() => GlobalSettings.HandleSettingInput(window.event, componentID, settingName, settingInfo.Default)}
 >
 <span></span>
 

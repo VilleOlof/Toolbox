@@ -75,12 +75,4 @@
         margin: 1rem;
     }
 
-    #autoGenSettings {
-
-        //componentContainers
-        & > * {
-
-        }
-    }
-
 </style>
