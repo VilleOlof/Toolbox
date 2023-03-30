@@ -7,7 +7,13 @@
 
     let extraData: SettingTypes.Numeric = <SettingTypes.Numeric>settingInfo.ExtraData;
 
-    const HandleInput = () => GlobalSettings.HandleSettingInput(window.event, componentID, settingName, settingInfo.Default, SettingTypes.InputTypes.Number);
+    const HandleInput = () => GlobalSettings.HandleSettingInput(<SettingTypes.SettingInput>{
+        Event: window.event,
+        ComponentID: componentID,
+        SettingName: settingName,
+        DefaultValue: settingInfo.Default,
+        Type: SettingTypes.InputTypes.Number
+    });
 </script>
 
 {#if extraData.List !== undefined}

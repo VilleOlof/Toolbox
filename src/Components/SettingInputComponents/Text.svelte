@@ -6,6 +6,14 @@
     export let settingInfo: SettingTypes.Info;
 
     let extraData: SettingTypes.Text = <SettingTypes.Text>settingInfo.ExtraData;
+
+    const HandleInput = () => GlobalSettings.HandleSettingInput(<SettingTypes.SettingInput>{
+        Event: window.event,
+        ComponentID: componentID,
+        SettingName: settingName,
+        DefaultValue: settingInfo.Default,
+        Type: SettingTypes.InputTypes.String
+    });
 </script>
 
 {#if extraData.List !== undefined}
@@ -24,7 +32,7 @@
     list={extraData.List ? `${componentID}-${settingName}-list` : undefined}
 
     bind:value={settingInfo.Value}
-    on:input={() => GlobalSettings.HandleSettingInput(window.event, componentID, settingName, settingInfo.Default, SettingTypes.InputTypes.String)}
+    on:input={HandleInput}
 >
 <span></span>
 

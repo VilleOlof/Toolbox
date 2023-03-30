@@ -45,7 +45,7 @@ namespace GlobalSettings {
      * ```
      */
     export function GetInstance(componentID: string): Settings {
-        return _ComponentSettings[componentID] || new Settings(componentID);
+        return _ComponentSettings[componentID] ?? new Settings(componentID);
     }
 
     /**
@@ -129,21 +129,26 @@ namespace GlobalSettings {
         SettingsInstance = undefined;
     }
 
-    export function HandleSettingInput(event: any, componentID: string, settingName: string, defaultValue: any, _type: SettingTypes.InputTypes): void {
-        if (event.target.validity.valid === false) {
-            return;
-        }
-        
-        let value: any = event.target.value;
+    export async function HandleSettingInput(input: SettingTypes.SettingInput): Promise<void> {
+        if (!ValidateSettingInput(input.Event)) return;
 
-        if (_type == SettingTypes.InputTypes.Number) {
-            value = parseFloat(event.target.value);
-        } else if (_type == SettingTypes.InputTypes.Boolean) {
-            value = event.target.checked; //??
+        let value: any = input.CustomValue ?? input.Event.target.value;
+
+        if (input.Type == SettingTypes.InputTypes.Number) {
+            value = parseFloat(value);
+        } else if (input.Type == SettingTypes.InputTypes.Boolean) {
+            value = value.checked; //??
+        }
+        else if (input.Type == SettingTypes.InputTypes.String) {
+            value = value.toString();
         }
 
-        const settingInstance: Settings = GlobalSettings._ComponentSettings[componentID];
-        settingInstance.Set(settingName, value || defaultValue);
+        const settingInstance: Settings = GlobalSettings._ComponentSettings[input.ComponentID];
+        settingInstance.Set(input.SettingName, value ?? input.DefaultValue, input.Save ?? false);
+    }
+
+    export function ValidateSettingInput(event: any): boolean {
+        return event.target.validity.valid;
     }
 }
 
@@ -173,12 +178,29 @@ namespace SettingTypes {
     /**
      * The extra data types.
      */
-    export type ExtraDataTypes = Text | Slider | Dropdown | Button;
+    export type ExtraDataTypes = 
+      Text 
+    | Numeric 
+    | File 
+    | Slider 
+    | Dropdown 
+    | Button;
 
     export enum InputTypes {
         String = "string",
         Number = "number",
         Boolean = "boolean",
+        Other = undefined,
+    }
+
+    export type SettingInput = {
+        Event: any;
+        CustomValue?: any;
+        ComponentID: string;
+        SettingName: string;
+        DefaultValue: any;
+        Type: InputTypes;
+        Save?: boolean;
     }
     
     /**
@@ -220,6 +242,10 @@ namespace SettingTypes {
         Step?: number;
         Placeholder?: string;
         List?: number[];
+    }
+
+    export type File = {
+        Accept?: string;
     }
     
     /**
@@ -349,6 +375,7 @@ class Settings {
      * 
      * @param settingName The name of the setting
      * @param value The value to set the setting to
+     * @param Save Whether to save the settings file (Optional)
      * 
      * @example
      * 
@@ -356,10 +383,10 @@ class Settings {
      * settings.Set("Increment", 2);
      * ```
      */
-    public Set<T>(settingName: string, value: T): void {
+    public Set<T>(settingName: string, value: T, Save: boolean = true): void {
         this._Settings[settingName].Value = value;
 
-        GlobalSettings.Save(this._ComponentID, this);
+        if (Save) GlobalSettings.Save(this._ComponentID, this);
     }
 
     /**
@@ -413,7 +440,7 @@ class Settings {
      * ```
      */
     public GetSettingValue<T>(settingName: string, defaultValue?: T): T {
-        return this._Settings[settingName]?.Value || defaultValue;
+        return this._Settings[settingName]?.Value ?? defaultValue;
     }
 
     /**
