@@ -7,7 +7,13 @@
 		'increment',
 		'The value increment', 
 		1,
-		SettingTypes.Type.Text
+		SettingTypes.Type.Text,
+		{
+			MinLength: 1,
+			MaxLength: 5,
+			Placeholder: 'Enter a number',
+			Pattern: '[0-9]+'
+		}
 	);
 	//settings.Set('increment', 2);
 

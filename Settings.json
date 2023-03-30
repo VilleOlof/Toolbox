@@ -3,9 +3,15 @@
         "_ComponentID": "Counter",
         "_Settings": {
             "increment": {
-                "Value": 2,
+                "Value": "",
                 "Type": 0,
-                "Description": "The value increment"
+                "Description": "The value increment",
+                "ExtraData": {
+                    "MinLength": 1,
+                    "MaxLength": 5,
+                    "Placeholder": "Enter a number",
+                    "Pattern": "[0-9]+"
+                }
             }
         }
     }

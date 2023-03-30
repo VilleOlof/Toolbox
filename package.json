@@ -6,6 +6,7 @@
   "main": "./Electron/main.js",
   "scripts": {
     "start": "electron .",
+    "vite:build": "vite build",
     "vite": "vite build --watch",
     "npm-watch": "npm-watch",
     "build": "node ./PrepareModules.js && vite build",

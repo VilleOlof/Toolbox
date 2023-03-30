@@ -170,7 +170,7 @@ namespace SettingTypes {
         Value: any;
         Type: Type;
         Description: string;
-        ExtraData?: ExtraDataTypes;
+        ExtraData?: ExtraDataTypes | undefined;
     }
 
     /**
@@ -197,9 +197,9 @@ namespace SettingTypes {
      * @param Step The step value of the slider.
      */
     export type Slider = {
-        Min: number;
-        Max: number;
-        Step: number;
+        Min?: number;
+        Max?: number;
+        Step?: number;
     }
     
     /**
@@ -208,7 +208,7 @@ namespace SettingTypes {
      * @param Options The options of the dropdown.
      */
     export type Dropdown = {
-        Options: string[];
+        Options?: string[];
     }
 
     /**
@@ -218,8 +218,8 @@ namespace SettingTypes {
      * @param Function The function of the button.
      */
     export type Button = {
-        Label: string;
-        Function: Function;
+        Label?: string;
+        Function?: Function;
     }
 }
 
