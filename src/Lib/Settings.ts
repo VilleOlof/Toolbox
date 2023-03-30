@@ -133,6 +133,7 @@ namespace GlobalSettings {
         if (!ValidateSettingInput(input.Event)) return;
 
         let value: any = input.CustomValue ?? input.Event.target.value;
+        console.log(input.Type, value);
 
         if (input.Type == SettingTypes.InputTypes.Number) {
             value = parseFloat(value);
@@ -144,7 +145,7 @@ namespace GlobalSettings {
         }
 
         const settingInstance: Settings = GlobalSettings._ComponentSettings[input.ComponentID];
-        settingInstance.Set(input.SettingName, value ?? input.DefaultValue, input.Save ?? false);
+        settingInstance.Set(input.SettingName, value ?? input.DefaultValue, input.Save ?? true);
     }
 
     export function ValidateSettingInput(event: any): boolean {

@@ -1,6 +1,6 @@
 @use './Variables' as Vars;
 
-input {
+input, select {
     $InputBackground: darken(Vars.$BackgroundColor, 5%);
 
     width: 20em;
