@@ -24,7 +24,7 @@
     list={extraData.List ? `${componentID}-${settingName}-list` : undefined}
 
     bind:value={settingInfo.Value}
-    on:input={() => GlobalSettings.HandleSettingInput(window.event, componentID, settingName, settingInfo.Default)}
+    on:input={() => GlobalSettings.HandleSettingInput(window.event, componentID, settingName, settingInfo.Default, SettingTypes.InputTypes.String)}
 >
 <span></span>
 

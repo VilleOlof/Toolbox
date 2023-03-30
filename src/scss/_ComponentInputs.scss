@@ -3,6 +3,8 @@
 input {
     $InputBackground: darken(Vars.$BackgroundColor, 5%);
 
+    width: 10em;
+
     background-color: $InputBackground;
     color: white;
     border: 1px solid darken($InputBackground, 3%);

@@ -9,18 +9,17 @@
 		'increment',
 		'The value increment', 
 		1,
-		SettingTypes.Type.Text,
-		{
-			MinLength: 1,
-			MaxLength: 5,
-			Placeholder: 'Enter a number',
-			Pattern: '[0-9]+',
-			List: ["1", "2", "3", "4", "5"]
-		}
+		SettingTypes.Type.Numeric,
+		<SettingTypes.Numeric>{
+			Min: 1,
+			Max: 10,
+			Step: 1,
+			Placeholder: 'Increment'
+		}, false
 	);
 	//settings.Set('increment', 2);
 
-	let incrementValue = settings.GetSettingInfo('increment').Value;
+	let incrementValue: number = settings.GetSettingValue('increment');
 
 	//###############################
 

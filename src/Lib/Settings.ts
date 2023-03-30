@@ -129,13 +129,21 @@ namespace GlobalSettings {
         SettingsInstance = undefined;
     }
 
-    export function HandleSettingInput<T>(event: any, componentID: string, settingName: string, defaultValue: T): void {
+    export function HandleSettingInput(event: any, componentID: string, settingName: string, defaultValue: any, _type: SettingTypes.InputTypes): void {
         if (event.target.validity.valid === false) {
             return;
         }
+        
+        let value: any = event.target.value;
+
+        if (_type == SettingTypes.InputTypes.Number) {
+            value = parseFloat(event.target.value);
+        } else if (_type == SettingTypes.InputTypes.Boolean) {
+            value = event.target.checked; //??
+        }
 
         const settingInstance: Settings = GlobalSettings._ComponentSettings[componentID];
-        settingInstance.Set(settingName, event.target.value || defaultValue);
+        settingInstance.Set(settingName, value || defaultValue);
     }
 }
 
@@ -166,6 +174,12 @@ namespace SettingTypes {
      * The extra data types.
      */
     export type ExtraDataTypes = Text | Slider | Dropdown | Button;
+
+    export enum InputTypes {
+        String = "string",
+        Number = "number",
+        Boolean = "boolean",
+    }
     
     /**
      * The setting info type.
@@ -198,6 +212,14 @@ namespace SettingTypes {
         Placeholder?: string;
         List?: string[];
         Pattern?: string;
+    }
+
+    export type Numeric = {
+        Min?: number;
+        Max?: number;
+        Step?: number;
+        Placeholder?: string;
+        List?: number[];
     }
     
     /**

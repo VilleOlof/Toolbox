@@ -43,15 +43,15 @@
 
     async function AddNewSettingInput(settingInfo: SettingTypes.Info, settingContainer: HTMLDivElement, componentID: string, settingName: string): Promise<void> {
         const EnumName: string = SettingTypes.Type[settingInfo.Type];
-                const input = await InputComponents[EnumName]();
-                
-                new input.default({
-                    target: settingContainer,
-                    props: {
-                        componentID: componentID,
-                        settingName: settingName,
-                        settingInfo: settingInfo,
-                }
+        const input = await InputComponents[EnumName]();
+        
+        new input.default({
+            target: settingContainer,
+            props: {
+                componentID: componentID,
+                settingName: settingName,
+                settingInfo: settingInfo,
+            }
         });
     }
 
