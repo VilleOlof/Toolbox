@@ -25,10 +25,10 @@
 {/if}
 
 <input type="text"
-    maxlength={extraData.MaxLength || Infinity}
-    minlength={extraData.MinLength || 0}
-    placeholder={extraData.Placeholder || undefined}
-    pattern={extraData.Pattern || undefined}
+    maxlength={extraData.MaxLength ?? Infinity}
+    minlength={extraData.MinLength ?? 0}
+    placeholder={extraData.Placeholder ?? undefined}
+    pattern={extraData.Pattern ?? undefined}
     list={extraData.List ? `${componentID}-${settingName}-list` : undefined}
 
     bind:value={settingInfo.Value}

@@ -19,7 +19,7 @@
 </script>
 
 <input type="file"
-    accept={extraData.Accept || undefined}
+    accept={extraData.Accept ?? undefined}
 
     bind:value={settingInfo.Value}
     on:input={HandleInput}

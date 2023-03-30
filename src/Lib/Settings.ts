@@ -254,11 +254,13 @@ namespace SettingTypes {
      * @param Min The minimum value of the slider.
      * @param Max The maximum value of the slider.
      * @param Step The step value of the slider.
+     * @param List The list of values the slider can be.
      */
     export type Slider = {
         Min?: number;
         Max?: number;
         Step?: number;
+        List?: number[];
     }
     
     /**
