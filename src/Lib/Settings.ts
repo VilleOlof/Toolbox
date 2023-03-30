@@ -162,12 +162,14 @@ namespace SettingTypes {
      * The setting info type.
      * 
      * @param Value The value of the setting.
+     * @param Default The default value of the setting.
      * @param Type The type of the setting.
      * @param Description The description of the setting.
      * @param ExtraData Extra data for the setting.
      */
     export type Info = {
         Value: any;
+        Default: any;
         Type: Type;
         Description: string;
         ExtraData?: ExtraDataTypes | undefined;
@@ -302,6 +304,7 @@ class Settings {
 
         this.SetSettingInfo(settingName, {
             Value: defaultValue,
+            Default: defaultValue,
             Type: type,
             Description: settingDescription,
             ExtraData: ExtraData,

@@ -1,0 +1,27 @@
+@use './Variables' as Vars;
+
+input {
+    $InputBackground: darken(Vars.$BackgroundColor, 5%);
+
+    background-color: $InputBackground;
+    color: white;
+    border: 1px solid darken($InputBackground, 3%);
+
+    padding: 0.4em;
+
+    &:focus {
+        outline: none;
+        border-color: Vars.$BackgroundColor;
+    }
+
+    &::-webkit-calendar-picker-indicator {
+        background-color: rgb(0, 0, 0, 0.1);
+    }
+
+    &:invalid + span::after {
+        position: absolute;
+        content: "✖";
+        padding-left: 5px;
+        color: #8b0000;
+    }
+}

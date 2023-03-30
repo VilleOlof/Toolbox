@@ -13,7 +13,7 @@
         }
 
         const settingInstance: Settings = GlobalSettings._ComponentSettings[componentID];
-        settingInstance.Set(settingName, event.target.value || "");
+        settingInstance.Set(settingName, event.target.value || settingInfo.Default);
     }
 </script>
 
@@ -38,12 +38,5 @@
 <span></span>
 
 <style lang="scss">
-
-    input:invalid + span::after {
-        position: absolute;
-        content: "✖";
-        padding-left: 5px;
-        color: #8b0000;
-    }
-
+    @use '../../scss/ComponentInputs';
 </style>
