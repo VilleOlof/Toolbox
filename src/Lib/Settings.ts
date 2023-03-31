@@ -306,6 +306,8 @@ class Settings {
      * ```
      */
     constructor(componentID: string) {
+        if (GlobalSettings._ComponentSettings[componentID]) throw new Error("Settings already exist for this component.");
+
         this._ComponentID = componentID;
         this._Settings = {};
 
