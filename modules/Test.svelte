@@ -5,13 +5,20 @@
 
     const settings: Settings = GlobalSettings.GetInstance(componentID);
 
-    settings.RegisterSetting('dropdowny', 'dropping down',
-        'option1',
-        SettingTypes.Type.Dropdown,
-        <SettingTypes.Dropdown>{
-            Options: ['default', 'option1', 'option2', 'option3'],
-            Multiple: false
-        }
+    function a(componentID: string, settingName: string, settingInfo: SettingTypes.Info): void {
+        console.log(`button clicked! - ${componentID} - ${settingName}`);
+    }
+
+    let button: SettingTypes.Button = <SettingTypes.Button>{
+        Label: 'Click me!',
+        Callback: a
+    };
+    console.log(button);
+
+    settings.RegisterSetting('buttooon!!', 'clicky click!',
+        null,
+        SettingTypes.Type.Button,
+        button
     );
 
 </script>

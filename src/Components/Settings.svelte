@@ -61,6 +61,16 @@
 
 </script>
 
+<!--
+    Input component that doesnt correctly have a default value from previous settings
+
+    - File (this is okay though, it shouldnt have a default value)
+    - Dropdown
+    - Date
+    - Color
+    - Checkbox
+-->
+
 <div id="settingsContainer">
 
     <h1>Settings</h1>

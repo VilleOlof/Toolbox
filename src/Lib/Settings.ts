@@ -137,12 +137,11 @@ namespace GlobalSettings {
 
         if (input.Type == SettingTypes.InputTypes.Number) {
             value = parseFloat(value);
-        } else if (input.Type == SettingTypes.InputTypes.Boolean) {
-            value = value.checked; //??
         }
         else if (input.Type == SettingTypes.InputTypes.String) {
             value = value.toString();
         }
+        console.log(input.Type, value);
 
         const settingInstance: Settings = GlobalSettings._ComponentSettings[input.ComponentID];
         settingInstance.Set(input.SettingName, value ?? input.DefaultValue, input.Save ?? true);
@@ -174,6 +173,7 @@ namespace SettingTypes {
         Date = 6, // Date
         File = 7, // String
         Button = 8, // Function
+        Radio = 9, // String ( Array of options(string), returns boolean )
     }
 
     /**
@@ -183,6 +183,7 @@ namespace SettingTypes {
       Text 
     | Numeric 
     | File 
+    | Date
     | Slider 
     | Dropdown 
     | Button;
@@ -248,6 +249,12 @@ namespace SettingTypes {
     export type File = {
         Accept?: string;
     }
+
+    export type Date = {
+        Min?: string;
+        Max?: string;
+        Step?: number;
+    }
     
     /**
      * The slider extra data type.
@@ -273,6 +280,8 @@ namespace SettingTypes {
         Options?: string[];
     }
 
+    export type ButtonFunction = (componentID?: string, settingName?: string, settingInfo?: SettingTypes.Info) => void;
+
     /**
      * The button extra data type.
      * 
@@ -281,7 +290,7 @@ namespace SettingTypes {
      */
     export type Button = {
         Label?: string;
-        Function?: Function;
+        Callback?: any;
     }
 }
 
