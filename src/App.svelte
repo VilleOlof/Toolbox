@@ -1,5 +1,4 @@
 <script lang="ts">
-    import ModuleHandler from "./Components/ModuleHandler.svelte";
     import ModuleView from "./Components/ModuleView.svelte";
     import Navbar from "./Components/Navbar.svelte";
 
@@ -19,9 +18,6 @@
 {:else}
     <ModuleView />
 {/if}
-
-<!-- <Counter/> -->
-<!--<ModuleHandler/>-->
 
 <style lang="scss">
 </style>
