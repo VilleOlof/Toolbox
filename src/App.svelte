@@ -1,17 +1,20 @@
 <script lang="ts">
-    import Counter from "../modules/Counter.svelte";
     import ModuleHandler from "./Components/ModuleHandler.svelte";
     import ModuleView from "./Components/ModuleView.svelte";
     import Navbar from "./Components/Navbar.svelte";
 
     import Settings from "./Components/Settings.svelte";
+    import { GlobalSettings } from "./Lib/Settings";
 
-    export let settings: boolean = true;
+    let ShowSettings: boolean = false;
+    GlobalSettings.SettingsData.Subscribe("ShowSettingsMenu", (value: boolean) => {
+        ShowSettings = value;
+    });
 </script>
 
 <Navbar />
-    
-{#if settings}
+
+{#if ShowSettings}
     <Settings />
 {:else}
     <ModuleView />

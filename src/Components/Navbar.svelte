@@ -1,11 +1,10 @@
 <script lang="ts">
     import RefreshNotification from "./RefreshNotification.svelte";
+    import { GlobalSettings } from "../Lib/Settings";
 
     const GithubEvent = () => {
-        console.log('GithubEvent');
         require('electron').shell.openExternal('https://github.com/VilleOlof/Toolbox');
     }
-
 </script>
 
 <div id=navbarContainer>
@@ -28,7 +27,7 @@
             <img id="arrowDownIcon" class=reverseColor src="../src/assets/arrowDown.svg" alt="Dropdown">
         </div>
     
-        <img id="settingsIcon" class=reverseColor src="../src/assets/settings_icon.svg" alt="Settings">
+        <img on:click={GlobalSettings.ChangeShowSettingsMenu} on:keydown={GlobalSettings.ChangeShowSettingsMenu} id="settingsIcon" class=reverseColor src="../src/assets/settings_icon.svg" alt="Settings">
     </div>
 
 </div>

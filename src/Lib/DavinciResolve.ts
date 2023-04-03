@@ -1,6 +1,6 @@
 import { AppSettings } from "./AppSettings";
 
-const PluginID = AppSettings.GetSetting("PluginID", "com.example.plugin");
+const PluginID = AppSettings.GetSetting("PluginID", "");
 const WorkflowIntegration = require('../src/Lib/WorkflowIntegration.node'); //Runs from the /dist directory
 
 /**
@@ -245,12 +245,9 @@ export class ResolveFunctions {
             ResolveFunctions.ForceUpdateCurrentProject();
             ResolveFunctions.ForceUpdateCurrentTimeline();
 
-            this._DataLoop = ResolveFunctions.UpdateDataLoop(AppSettings.GetNestedSetting<number>(1, "ResolveFunctions", "UpdateLoop_DelaySeconds"));
+            let DelaySeconds: number = AppSettings.GetNestedSetting(1, "ResolveFunctions", "UpdateLoop_DelaySeconds");
+            this._DataLoop = ResolveFunctions.UpdateDataLoop(DelaySeconds);
         }
-
-        this.SubscribeToChange<ResolveEnums.Pages>(ResolveFunctions.SubscribeTypes.Pages, (page: ResolveEnums.Pages) => {
-            console.log(`Page changed to ${page}`);
-        });
 
         return ResolveFunctions._IsInitialized;
     }

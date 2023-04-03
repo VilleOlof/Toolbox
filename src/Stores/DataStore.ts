@@ -40,6 +40,8 @@ class DataStore {
 
         _DataStores[componentID] = this;
 
+        this.Save();
+
         return this;
     }
 
@@ -107,6 +109,7 @@ class DataStore {
      * ```
      */
     public Set(key: string, value: any = undefined, notify: boolean = true, save: boolean = true): void {
+        if (this._Data === undefined) this._Data = {};
         this._Data[key] = value;
         if (notify) this.Notify(key, value);
         if (this.SaveUponChange || save) this.Save();
@@ -124,7 +127,7 @@ class DataStore {
      * ```
      */
     public Get<T>(key: string, defaultValue?: T): T {
-        return this._Data[key] || defaultValue;
+        return this._Data?.[key] ?? defaultValue;
     };
 
     /**
@@ -135,9 +138,10 @@ class DataStore {
      * this.Load();
      * ```
      */
-    public Load(): void {
+    public Load(getAll?: boolean): void | Record<string, any> {
         if (UseJSON) {
             const settings = require(__dirname + this._JSONSavePath);
+            if (getAll) return settings;
             this._Data = settings[this._ComponentID];
             return;
         }
@@ -158,7 +162,10 @@ class DataStore {
      */
     public Save(): void {
         if (UseJSON) {
-            const json: string = JSON.stringify({[this.GetComponentID()]: this._Data}, null, 4);
+            const settings = this.Load(true);
+            settings[this._ComponentID] = this._Data;
+
+            const json: string = JSON.stringify(settings, null, 4);
             this.SaveToJSON(json);
             return;
         }

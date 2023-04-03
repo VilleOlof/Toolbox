@@ -1,3 +1,4 @@
+import DataStore from "../Stores/DataStore";
 import SettingsJSON from "../../Settings.json";
 
 /**
@@ -10,6 +11,15 @@ namespace GlobalSettings {
      * This holds all the settings for all the components.
      */
     export let _ComponentSettings: Record<string, Settings>;
+
+    /**
+     * The global settings data store.
+     * Saves minimum data. This data is not related to the actual settings.
+     * This is used to save the settings menu state, etc.
+     * 
+     * Should only be used by core plugin components.
+     */
+    export let SettingsData = new DataStore("GlobalSettings");
 
     /**
      * Loads all the global settings.  
@@ -29,6 +39,13 @@ namespace GlobalSettings {
             settings.Load(SettingsJSON[componentID]);
             _ComponentSettings[componentID] = settings;
         }
+
+        SettingsData.Set("ShowSettingsMenu", false);
+    }
+
+    export function ChangeShowSettingsMenu(): void {
+        let showSettingsMenu: boolean = SettingsData.Get<boolean>("ShowSettingsMenu", false);
+        SettingsData.Set("ShowSettingsMenu", (!showSettingsMenu));
     }
 
     /**
