@@ -13,6 +13,14 @@ In terms of formatting, Data & Setting handling, and more.
 
 ## Module View
 
+// this doesnt really work since when the program
+// is compiled, the path always points to index.html
+// when doing it in a svelte dynamically loaded component.
+// maybe use a function that returns the module name
+// with the name also being the argument but add an extra number
+// incase the module name is the same as another module.
+// would allow for easy copy and paste of the modules
+
 Module Component ID is the file name of the module.  
 
 Draggable Module.  

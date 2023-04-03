@@ -1,6 +1,9 @@
 <script lang="ts">
 	import DataStore from '../src/Stores/DataStore';
 	import { Settings, SettingTypes, GlobalSettings } from '../src/Lib/Settings';
+	import { ModuleHandler } from '../src/Lib/ModuleHandler';
+
+	ModuleHandler.RegisterModule('Counter', ModuleHandler.ComponentSize.Large);
 
 	const componentID: string = "Counter";
 

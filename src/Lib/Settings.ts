@@ -39,8 +39,6 @@ namespace GlobalSettings {
             settings.Load(SettingsJSON[componentID]);
             _ComponentSettings[componentID] = settings;
         }
-
-        SettingsData.Set("ShowSettingsMenu", false);
     }
 
     export function ChangeShowSettingsMenu(): void {

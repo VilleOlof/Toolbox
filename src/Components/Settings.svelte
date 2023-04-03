@@ -83,6 +83,8 @@
 
     #settingsContainer {
         margin: 1rem;
+
+        transform: translateY(3rem);
     }
 
 </style>

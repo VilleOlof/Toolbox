@@ -15,6 +15,7 @@ function createWindow () {
             nodeIntegration: true,
             enableRemoteModule: true
         },
+        //frame: false,
     })
 
     // Hide the menu bar (enable below code to hide menu bar)

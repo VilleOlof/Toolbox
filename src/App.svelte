@@ -6,7 +6,7 @@
     import Settings from "./Components/Settings.svelte";
     import { GlobalSettings } from "./Lib/Settings";
 
-    let ShowSettings: boolean = false;
+    let ShowSettings: boolean = GlobalSettings.SettingsData.Get("ShowSettingsMenu", false);
     GlobalSettings.SettingsData.Subscribe("ShowSettingsMenu", (value: boolean) => {
         ShowSettings = value;
     });
@@ -21,7 +21,7 @@
 {/if}
 
 <!-- <Counter/> -->
-<ModuleHandler/>
+<!--<ModuleHandler/>-->
 
 <style lang="scss">
 </style>
