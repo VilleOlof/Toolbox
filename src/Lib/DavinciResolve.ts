@@ -1,4 +1,6 @@
-const PluginID = 'com.villeolof.toolbox';
+import { AppSettings } from "./AppSettings";
+
+const PluginID = AppSettings.GetSetting("PluginID", "com.example.plugin");
 const WorkflowIntegration = require('../src/Lib/WorkflowIntegration.node'); //Runs from the /dist directory
 
 /**
@@ -33,7 +35,7 @@ export function GetPluginID(): string {
  * Quits Resolve
  * And cleans up the Plugin
  */
-export function Quit(): void {
+export function QuitResolve(): void {
     WorkflowIntegration.CleanUp();
     Resolve.Quit();
 }
@@ -243,7 +245,7 @@ export class ResolveFunctions {
             ResolveFunctions.ForceUpdateCurrentProject();
             ResolveFunctions.ForceUpdateCurrentTimeline();
 
-            this._DataLoop = ResolveFunctions.UpdateDataLoop();
+            this._DataLoop = ResolveFunctions.UpdateDataLoop(AppSettings.GetNestedSetting<number>(1, "ResolveFunctions", "UpdateLoop_DelaySeconds"));
         }
 
         this.SubscribeToChange<ResolveEnums.Pages>(ResolveFunctions.SubscribeTypes.Pages, (page: ResolveEnums.Pages) => {
