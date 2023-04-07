@@ -79,6 +79,10 @@ export namespace ModuleHandler {
             target: ColumnDiv,
             props: {}
         });
+
+        if (!Object.keys(RegisteredModules).includes(moduleName)) {
+            document.body.removeChild(document.body.lastChild);
+        }
     }
 
     export function AddColumn(componentSize: ComponentSize): void {
