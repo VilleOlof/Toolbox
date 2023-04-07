@@ -39,6 +39,20 @@ export namespace ModuleHandler {
             name: moduleName,
             size: componentSize
         };
+
+        //move the module to the correct column
+        let moduleDiv = document.getElementById(moduleName);
+        if (moduleDiv) {
+            let column = GetFirstColumn(componentSize);
+            if (column) {
+                column.appendChild(moduleDiv);
+            }
+            else {
+                AddColumn(componentSize);
+                column = GetFirstColumn(componentSize);
+                column.appendChild(moduleDiv);
+            }
+        }
     }
 
     function GetModuleImports(): {[key: string]: Function} {
@@ -54,12 +68,13 @@ export namespace ModuleHandler {
         return moduleImports;
     }
 
-    export async function AddModuleInColumn(moduleName: string, ColumnDiv: HTMLDivElement): Promise<void> {
+    export async function AddModuleInColumn(moduleName: string, ColumnDiv: HTMLElement): Promise<void> {
         let moduleImport = ModuleImports[moduleName];
         if (moduleImport === undefined) return;
-        //if (!Object.keys(RegisteredModules).includes(moduleName)) return;
+        if (Object.keys(RegisteredModules).includes(moduleName)) return;
 
         let module = await moduleImport();
+
         new module({
             target: ColumnDiv,
             props: {}

@@ -3,69 +3,143 @@
     import { ModuleHandler } from "../Lib/ModuleHandler";
 
     onMount(() => {
-        ModuleHandler.Init(document.getElementById("columns") as HTMLDivElement);
+        ModuleHandler.Init(document.getElementById("columnContainer") as HTMLDivElement);
     });
 
 </script>
 
 <main>
-    <div id="columns"></div>
+    <div id="columnContainer"></div>
 </main>
 
 <style lang="scss">
     @use '../scss/Flex';
+
+    main {
+        transform: translateY(3rem);
+    }
 
     //All of these are global styles because they are
     //dynamically added through typescript
     //and not this component directly.
 
     //column container > actual column > module
-    :global(#columns > div > *) {
-        max-width: 400px;
-        max-height: 400px;
+    :global(#columnContainer > * > *) {
+        min-width: 100%;
+        min-height: 100%;
+
+        margin: 0.5em 0 0.5em 0;
     }
 
-    :global(.column) {
-        height: calc(100vh - 4rem);
+    :global(#columnContainer) {
+        @include Flex.Container(flex-start, flex-start, row);
 
-        margin: 0.5rem;
-        padding: 0.5rem;
-
-        @include Flex.Container(flex-start, center, column);
-    }
-
-    :global(.is-small) {
-        //width: calc(100% / 3 / 4);
-        min-width: calc(100% / 3 / 4);
-
-        background-color: rgb(96, 255, 96);
-    }
-
-    :global(.is-large) {
-        min-width: calc(100% / 3);
-
-        background-color: rgb(255, 120, 120);
-    }
-
-    main {
-        @include Flex.Container(center, center, row);
-
-        width: 100%;
-        height: 100%;
-
-        //move the column down by 3 rem
-        //so that it is below the navbar
-        transform: translateY(3rem);
+        gap: 1.5em;
+        margin: 1em;
 
         overflow: auto;
     }
 
-    #columns {
-        @include Flex.Container(center, center, row);
+    :global(.column) {
+        @include Flex.Container(flex-start, flex-start, column);
 
-        width: 100%;
         height: 100%;
+        background-color: #111;
+
+        padding: 1em;
+        margin: 1em;
+        gap: 1em;
+
+        //Module?
+        & > * {
+            width: 100%;
+            min-height: 10vh;
+
+            margin: 1em;
+
+            aspect-ratio: 16 / 9;
+
+            background-color: #333;
+
+            &:hover {
+                background-color: #444;
+
+                transform: scale(0.95);
+            }
+
+            filter: drop-shadow(0 0 0.25em #000);
+
+            transition: 0.2s;
+        }
+        
     }
+
+    :global(.is-large) {
+        min-width: 20%
+    }
+
+    :global(.is-small) {
+        min-width: 5%
+    }
+
+    //Scrollbar stuff
+    ::-webkit-scrollbar {
+        width: 1em;
+    }
+
+    ::-webkit-scrollbar-track {
+        background-color: #555555;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: #8a8a8a;
+    }
+
+    ::-webkit-scrollbar-corner {
+        background-color: #6d6d6d;
+    }
+
+    // :global(.column) {
+    //     height: calc(100vh - 4rem);
+
+    //     margin: 0.5rem;
+    //     padding: 0.5rem;
+
+    //     @include Flex.Container(flex-start, center, column);
+    // }
+
+    // :global(.is-small) {
+    //     //width: calc(100% / 3 / 4);
+    //     min-width: calc(100% / 3 / 4);
+
+    //     background-color: rgb(96, 255, 96);
+    // }
+
+    // :global(.is-large) {
+    //     min-width: calc(100% / 3);
+
+    //     background-color: rgb(255, 120, 120);
+    // }
+
+    // main {
+    //     @include Flex.Container(center, center, row);
+
+    //     width: 100%;
+    //     height: 100%;
+
+    //     //move the column down by 3 rem
+    //     //so that it is below the navbar
+    //     transform: translateY(3rem);
+
+    //     overflow: auto;
+    // }
+
+    // #columns {
+    //     @include Flex.Container(center, center, row);
+
+    //     width: 100%;
+    //     height: 100%;
+    // }
 
     // #addColumn {
     //     $addColumnBackground: rgba(207, 207, 207, 0.281);

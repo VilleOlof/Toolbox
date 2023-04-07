@@ -2,10 +2,13 @@
 	import DataStore from '../src/Stores/DataStore';
 	import { Settings, SettingTypes, GlobalSettings } from '../src/Lib/Settings';
 	import { ModuleHandler } from '../src/Lib/ModuleHandler';
-
-	ModuleHandler.RegisterModule('Counter', ModuleHandler.ComponentSize.Large);
+	import { onMount } from 'svelte';
 
 	const componentID: string = "Counter";
+
+    onMount(() => {
+        ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Large);
+    });
 
 	const settings: Settings = GlobalSettings.GetInstance(componentID);
 	settings.RegisterSetting(
@@ -40,6 +43,8 @@
 	}
 </script>
   
-<button on:click={increment}>
-	count is {count}
-</button>
+<main id={componentID}>
+	<button on:click={increment}>
+		count is {count}
+	</button>
+</main>

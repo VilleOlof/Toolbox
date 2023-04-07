@@ -1,7 +1,13 @@
 <script lang="ts">
     import { SettingTypes, GlobalSettings, Settings } from '../src/Lib/Settings';
+    import { ModuleHandler } from '../src/Lib/ModuleHandler';
+    import { onMount } from 'svelte';
 
     const componentID: string = "Test";
+
+    onMount(() => {
+        ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Small);
+    });
 
     const settings: Settings = GlobalSettings.GetInstance(componentID);
 
@@ -22,3 +28,18 @@
     );
 
 </script>
+
+<main id={componentID}>
+    <p>This is a test module</p>
+</main>
+
+<style lang="scss">
+
+    main {
+        background-color: #fff;
+        color: #000;
+
+        text-align: center;
+    }
+
+</style>

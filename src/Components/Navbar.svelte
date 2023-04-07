@@ -2,7 +2,7 @@
     import RefreshNotification from "./RefreshNotification.svelte";
     import { GlobalSettings } from "../Lib/Settings";
     import { ModuleHandler } from "../Lib/ModuleHandler";
-  import ModuleView from "./ModuleView.svelte";
+    import ModuleView from "./ModuleView.svelte";
 
     const GithubEvent = () => {
         require('electron').shell.openExternal('https://github.com/VilleOlof/Toolbox');
@@ -32,7 +32,7 @@
     <div id=rightSide>
         <RefreshNotification />
 
-        <div id="columnContainer">
+        <div id="nav_columnContainer">
             <p>Add Column</p>
             <img 
                 on:mouseenter={() => {ToggleColumnDropdown(true)}}
@@ -68,8 +68,8 @@
             >
                 <div id="moduleEntries">
                     {#each Object.keys(ModuleHandler.ModuleImports) as ModuleName}
-                        <span on:click={() => {ModuleHandler.AddModuleInColumn(ModuleName, ModuleHandler.GetFirstColumn(ModuleHandler.ComponentSize.Large))}} 
-                            on:keydown={() => {ModuleHandler.AddModuleInColumn(ModuleName, ModuleHandler.GetFirstColumn(ModuleHandler.ComponentSize.Large))}}>
+                        <span on:click={() => {ModuleHandler.AddModuleInColumn(ModuleName, document.body)}} 
+                            on:keydown={() => {ModuleHandler.AddModuleInColumn(ModuleName, document.body)}}>
                             + {ModuleName}
                         </span>
                     {/each}
@@ -133,7 +133,7 @@
         margin-right: 1rem;
     }
 
-    #columnContainer {
+    #nav_columnContainer {
         @extend #moduleContainer;
     }
 
