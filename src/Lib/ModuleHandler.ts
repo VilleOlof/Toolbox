@@ -48,8 +48,7 @@ export namespace ModuleHandler {
                 column.appendChild(moduleDiv);
             }
             else {
-                AddColumn(componentSize);
-                column = GetFirstColumn(componentSize);
+                column = AddColumn(componentSize);
                 column.appendChild(moduleDiv);
             }
         }
@@ -85,11 +84,13 @@ export namespace ModuleHandler {
         }
     }
 
-    export function AddColumn(componentSize: ComponentSize): void {
+    export function AddColumn(componentSize: ComponentSize): HTMLDivElement {
         let ColumnDiv = document.createElement("div");
         ColumnDiv.classList.add("column");
         ColumnDiv.classList.add("is-" + ComponentSize[componentSize].toLowerCase()); // "is-small" | "is-large"
         ColumnContainer.appendChild(ColumnDiv);
+
+        return ColumnDiv;
     }
 
     export function GetFirstColumn(size: ComponentSize): HTMLDivElement {

@@ -40,6 +40,34 @@ And then you can run the plugin inside Davinci Resolve:
 *Since Davinci Resolve looks for a folder with a manifest.xml file inside of it.  
 It is currently recommended to just have the entire project folder inside the plugin folder.*  
 
+## Custom Modules
+
+To create your own custom made modules.  
+You can copy the template module in ./modules and rename the file to the name of your module.  
+This template module has most of the common in-house imports and code required for a module.  
+
+Every module consists of a componentID which the plugin uses to identify the module.  
+The component HTML should be wrapped in a main tag with the componentID as the id.  
+
+```HTML
+<main id={componentID}>
+    <!-- Here goes your HTML-->
+</main>
+```
+
+And the module should register itself with the module size (Large or Small) and the componentID.  
+This should happen in the `onMount` function.  
+
+```js
+import { ModuleHandler } from '../src/Lib/ModuleHandler';
+onMount(() => {
+    ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Large);
+});
+```
+
+These two parts are the only required parts of a module.  
+But as mentioned above, you can just copy the template module and rename it.  
+
 ## Docs  
 
 There is no read-made docs, they have to be generated from source.  
