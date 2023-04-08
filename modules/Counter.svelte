@@ -1,5 +1,5 @@
 <script lang="ts">
-	import DataStore from '../src/Stores/DataStore';
+	import { DataStore } from '../src/Stores/DataStore';
 	import { Settings, SettingTypes, GlobalSettings } from '../src/Lib/Settings';
 	import { ModuleHandler } from '../src/Lib/ModuleHandler';
 	import { onMount } from 'svelte';

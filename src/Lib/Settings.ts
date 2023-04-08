@@ -1,4 +1,4 @@
-import DataStore from "../Stores/DataStore";
+import { DataStore } from "../Stores/DataStore";
 import SettingsJSON from "../../Settings.json";
 
 /**

@@ -12,7 +12,7 @@
     import { onDestroy } from "svelte";
     import { Resolve } from "../src/Lib/DavinciResolve";
     import { ResolveEnums } from "../src/Lib/ResolveEnums";
-    import DataStore from "../src/Stores/DataStore";
+    import { DataStore } from "../src/Stores/DataStore";
 
     // Local variables to store the amount of items in the timeline and their respective video type
     let timelineItems: number = 0;
@@ -31,7 +31,7 @@
     }
 
     // Subscribe to the DataStore
-    Data.Subscribe('timelineItems', (items) => {
+    Data.Subscribe('timelineItems', (items: number) => {
         timelineItems = items;
     });
 

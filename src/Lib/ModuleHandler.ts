@@ -1,12 +1,17 @@
 import modules from '../../module_list.json'
 import moduleIgnores from '../../module_ignore.json'
 
+import { DataStore } from '../Stores/DataStore';
+
 export namespace ModuleHandler {
 
     export let ColumnContainer: HTMLDivElement = undefined;
 
     export let RegisteredModules: {[key: string]: ModuleData} = {};
     export let ModuleImports: {[key: string]: Function} = GetModuleImports();
+
+    let _DataStore: DataStore;
+    let _FirstLoad: boolean = true;
 
     export enum ComponentSize {
         Small = "Small",
@@ -19,6 +24,20 @@ export namespace ModuleHandler {
     }
 
     export function Init(ColumnContainerDiv: HTMLDivElement): HTMLDivElement {
+        if (!_DataStore) _DataStore = new DataStore("ModuleHandler");
+
+        if (_FirstLoad) {
+            let savedContainer = LoadContent();
+            if (savedContainer) {
+                ColumnContainerDiv.innerHTML = savedContainer;
+
+                ColumnContainer = ColumnContainerDiv;
+
+                return ColumnContainerDiv;
+            }
+            _FirstLoad = false;
+        }
+
         if (!ColumnContainer) {
             ColumnContainer = ColumnContainerDiv;
         }
@@ -31,6 +50,29 @@ export namespace ModuleHandler {
         }
 
         return ColumnContainer;
+    }
+
+    //TODO
+    //Saves the entire ColumnContainer HTML including modules HTML
+    //Wont save empty columns
+
+    //Doesnt feel like the best way. Since we could just save the module names/IDs and their sizes
+    //and then load them in the correct columns
+    function SaveContainer(): void {
+        _DataStore.Set("ColumnContainer", ColumnContainer.innerHTML);
+        _DataStore.Set("RegisteredModules", RegisteredModules);
+    }
+
+    function LoadContent(): string | undefined {
+        let savedModules = _DataStore.Get<{[key: string]: ModuleData}>("RegisteredModules");
+        if (savedModules) RegisteredModules = savedModules;
+
+        let savedContainer = _DataStore.Get<string>("ColumnContainer");
+        if (savedContainer) {
+            return savedContainer;
+        }
+
+        return undefined;
     }
 
     export function RegisterModule(moduleName: string, componentSize: ComponentSize): void {
@@ -52,6 +94,8 @@ export namespace ModuleHandler {
                 column.appendChild(moduleDiv);
             }
         }
+
+        SaveContainer();
     }
 
     function GetModuleImports(): {[key: string]: Function} {

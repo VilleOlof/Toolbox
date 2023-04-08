@@ -2,7 +2,7 @@
     import { Resolve } from "../src/Lib/DavinciResolve";
     import { ResolveEnums } from "../src/Lib/ResolveEnums";
 
-    import DataStore from "../src/Stores/DataStore";
+    import { DataStore } from "../src/Stores/DataStore";
     import { Settings, SettingTypes } from '../src/Lib/Settings';
     import { ModuleHandler } from '../src/Lib/ModuleHandler';
 

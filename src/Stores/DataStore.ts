@@ -17,7 +17,7 @@ type CallbackFunction = (value: any) => void;
  * A simple data store that can be used to store and retrieve various data for a component.
  * Saved in local storage.
  */
-class DataStore {
+export class DataStore {
 
     /**
      * Creates a new data store for a component.
@@ -293,5 +293,3 @@ class DataStore {
         }
     }
 }
-
-export default DataStore;
