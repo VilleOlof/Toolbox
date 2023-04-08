@@ -68,6 +68,10 @@ onMount(() => {
 These two parts are the only required parts of a module.  
 But as mentioned above, you can just copy the template module and rename it.  
 
+Note: Going to the settings page acts like a soft-refresh.  
+Any temporary data that is stored in the module will be lost.  
+It will destroy the component and re-create it.  
+
 ## Docs  
 
 There is no read-made docs, they have to be generated from source.  

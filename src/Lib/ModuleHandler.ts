@@ -23,19 +23,24 @@ export namespace ModuleHandler {
         size: ComponentSize
     }
 
+    export type ColumnData = {
+        size: ComponentSize,
+        modules: string[]
+    }
+
     export function Init(ColumnContainerDiv: HTMLDivElement): HTMLDivElement {
         if (!_DataStore) _DataStore = new DataStore("ModuleHandler");
 
         if (_FirstLoad) {
-            let savedContainer = LoadContent();
-            if (savedContainer) {
-                ColumnContainerDiv.innerHTML = savedContainer;
 
+            if (!ColumnContainer) {
                 ColumnContainer = ColumnContainerDiv;
-
-                return ColumnContainerDiv;
             }
+            
+            NewLoad();
             _FirstLoad = false;
+            
+            return ColumnContainerDiv;
         }
 
         if (!ColumnContainer) {
@@ -52,27 +57,55 @@ export namespace ModuleHandler {
         return ColumnContainer;
     }
 
-    //TODO
-    //Saves the entire ColumnContainer HTML including modules HTML
-    //Wont save empty columns
-
-    //Doesnt feel like the best way. Since we could just save the module names/IDs and their sizes
-    //and then load them in the correct columns
-    function SaveContainer(): void {
-        _DataStore.Set("ColumnContainer", ColumnContainer.innerHTML);
+    function NewSave(): void {
         _DataStore.Set("RegisteredModules", RegisteredModules);
+
+        let columns: ColumnData[] = [];
+
+        let columnDivs = ColumnContainer.querySelectorAll(".column");
+        columnDivs.forEach(columnDiv => {
+            let size = columnDiv.classList.contains("is-large") ? ComponentSize.Large : ComponentSize.Small;
+            let modules: string[] = [];
+
+            let moduleDivs = columnDiv.childNodes as NodeListOf<HTMLDivElement>;
+            moduleDivs.forEach(moduleDiv => {
+                modules.push(moduleDiv.id);
+            });
+
+            columns.push({
+                size: size,
+                modules: modules
+            });
+        });
+
+        _DataStore.Set("Columns", columns);
     }
 
-    function LoadContent(): string | undefined {
-        let savedModules = _DataStore.Get<{[key: string]: ModuleData}>("RegisteredModules");
-        if (savedModules) RegisteredModules = savedModules;
+    function NewLoad(): string | undefined {
+        let savedColumns = _DataStore.Get<ColumnData[]>("Columns");
+        if (!savedColumns) return undefined;
 
-        let savedContainer = _DataStore.Get<string>("ColumnContainer");
-        if (savedContainer) {
-            return savedContainer;
-        }
+        savedColumns.forEach(column => {
+            let columnDiv = AddColumn(column.size);
 
-        return undefined;
+            column.modules.forEach(async moduleName => {
+
+                let moduleImport = ModuleImports[moduleName];
+                let module = await moduleImport();
+
+                new module({
+                    target: columnDiv,
+                    props: {}
+                });
+
+                RegisteredModules[moduleName] = {
+                    name: moduleName,
+                    size: column.size
+                };
+            });
+        });
+
+        return ColumnContainer.innerHTML;
     }
 
     export function RegisterModule(moduleName: string, componentSize: ComponentSize): void {
@@ -95,7 +128,7 @@ export namespace ModuleHandler {
             }
         }
 
-        SaveContainer();
+        if (!_FirstLoad) NewSave();
     }
 
     function GetModuleImports(): {[key: string]: Function} {
