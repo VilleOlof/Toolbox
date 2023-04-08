@@ -48,3 +48,11 @@
 		count is {count}
 	</button>
 </main>
+
+<style lang="scss">
+	@use "../src/scss/Flex";
+
+	main {
+		@include Flex.Container(center, center, column);
+	}
+</style>

@@ -72,6 +72,10 @@
             transition: 0.2s;
         }
         
+        &:empty {
+            background-color: rgba(17, 17, 17, 0.5);
+        }
+        
     }
 
     :global(.is-large) {
