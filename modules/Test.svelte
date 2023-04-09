@@ -40,6 +40,7 @@
         color: #000;
 
         text-align: center;
+        overflow-wrap: break-word;
     }
 
 </style>

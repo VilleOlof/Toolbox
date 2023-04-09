@@ -26,7 +26,9 @@
     //column container > actual column > module
     :global(#columnContainer > * > *) {
         min-width: 100%;
-        min-height: 100%;
+        max-width: 100%;
+        
+        max-height: 100%;
 
         margin: 0.5em 0 0.5em 0;
     }
@@ -71,7 +73,7 @@
 
             transition: 0.2s;
         }
-        
+
         &:empty {
             background-color: rgba(17, 17, 17, 0.5);
         }
@@ -79,11 +81,13 @@
     }
 
     :global(.is-large) {
-        min-width: 20%
+        max-width: 20%;
+        min-width: 20%;
     }
 
     :global(.is-small) {
-        min-width: 5%
+        max-width: 5%;
+        min-width: 5%;
     }
 
     //Scrollbar stuff

@@ -37,9 +37,9 @@ export namespace ModuleHandler {
                 ColumnContainer = ColumnContainerDiv;
             }
             
-            NewLoad();
+            LoadLayout();
+
             _FirstLoad = false;
-            
             return ColumnContainerDiv;
         }
 
@@ -57,7 +57,7 @@ export namespace ModuleHandler {
         return ColumnContainer;
     }
 
-    function NewSave(): void {
+    function SaveLayout(): void {
         _DataStore.Set("RegisteredModules", RegisteredModules);
 
         let columns: ColumnData[] = [];
@@ -81,7 +81,7 @@ export namespace ModuleHandler {
         _DataStore.Set("Columns", columns);
     }
 
-    function NewLoad(): string | undefined {
+    function LoadLayout(): string | undefined {
         let savedColumns = _DataStore.Get<ColumnData[]>("Columns");
         if (!savedColumns) return undefined;
 
@@ -128,7 +128,7 @@ export namespace ModuleHandler {
             }
         }
 
-        if (!_FirstLoad) NewSave();
+        if (!_FirstLoad) SaveLayout();
     }
 
     function GetModuleImports(): {[key: string]: Function} {
@@ -147,6 +147,20 @@ export namespace ModuleHandler {
     export async function AddModuleInColumn(moduleName: string, ColumnDiv: HTMLElement): Promise<void> {
         let moduleImport = ModuleImports[moduleName];
         if (moduleImport === undefined) return;
+
+        //TODO: fix this
+        // if (Object.keys(RegisteredModules).includes(moduleName)) {
+        //     //check if the module has already been registered and how many times
+        //     let count = 0;
+        //     for (let key in RegisteredModules) {
+        //         const onlyName = RegisteredModules[key].name.split("_")[0];
+        //         console.log(onlyName, moduleName);
+        //         if (onlyName === moduleName) count++;
+        //     }
+        //     if (count > 0) moduleName += "_" + count;
+        //     console.log("Module already registered, adding suffix: " + moduleName);
+        // }
+
         if (Object.keys(RegisteredModules).includes(moduleName)) return;
 
         let module = await moduleImport();

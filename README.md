@@ -71,6 +71,7 @@ But as mentioned above, you can just copy the template module and rename it.
 Note: Going to the settings page acts like a soft-refresh.  
 Any temporary data that is stored in the module will be lost.  
 It will destroy the component and re-create it.  
+So you only need to load the settings data once at the start of the module life cycle.  
 
 ## Docs  
 
