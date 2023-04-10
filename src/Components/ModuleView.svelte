@@ -24,7 +24,7 @@
     //and not this component directly.
 
     //column container > actual column > module
-    :global(#columnContainer > * > *) {
+    :global(#columnContainer > :not(.cornerDrag) > :not(.cornerDrag)) {
         min-width: 100%;
         max-width: 100%;
         
@@ -37,7 +37,9 @@
         @include Flex.Container(flex-start, flex-start, row);
 
         gap: 1.5em;
-        margin: 1em;
+        margin: 0.5em;
+
+        //height: 500px;
 
         overflow: auto;
     }
@@ -48,7 +50,7 @@
         height: 100%;
         background-color: #111;
 
-        padding: 1em;
+        padding: 0.5em;
         margin: 1em;
         gap: 1em;
 
@@ -57,7 +59,7 @@
             width: 100%;
             min-height: 10vh;
 
-            margin: 1em;
+            margin: 0.5em;
 
             aspect-ratio: 16 / 9;
 
@@ -96,15 +98,15 @@
     }
 
     ::-webkit-scrollbar-track {
-        background-color: #555555;
+        background-color: #55555525;
     }
 
     ::-webkit-scrollbar-thumb {
-        background-color: #8a8a8a;
+        background-color: #8a8a8a25;
     }
 
     ::-webkit-scrollbar-corner {
-        background-color: #6d6d6d;
+        background-color: #6d6d6d25;
     }
 
     // :global(.column) {

@@ -83,7 +83,7 @@ export class DataStore {
 
     private SaveToJSON(jsonString: string): void {
         const fs = require("fs");
-        fs.writeFile(__dirname + this._JSONSavePath, jsonString, (err) => {
+        fs.writeFileSync(__dirname + this._JSONSavePath, jsonString, (err) => {
             if (err) {
                 console.log(err);
             }

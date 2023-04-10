@@ -16,7 +16,7 @@
 
         fs.readdirSync(modulesDirectory).forEach((file: string) => {
             const Name: string = path.basename(file, '.svelte');
-            if (moduleIgnores.includes(Name)) return;
+            if (Name.endsWith(".disabled")) return;
             modules.push(Name);
         });
 
@@ -24,15 +24,7 @@
     }
 
     function GetCurrentModules(): string[] {
-        const modules: string[] = require(moduleListPath);
-        let outModules: string[] = [];
-
-        modules.forEach((module: string) => {
-            if (moduleIgnores.includes(module)) return;
-            outModules.push(module);
-        });
-
-        return outModules;
+        return require(moduleListPath);
     }
 
     function CheckForNewModules(): void {
