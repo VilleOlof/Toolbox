@@ -189,7 +189,7 @@ export namespace ModuleHandler {
         ColumnContainer.appendChild(ColumnDiv);
 
         DragHandler.UpdateAll();
-        DragHandler.ForceAllDragCorners();
+        DragHandler.ForceAllDragCorners('block');
         SaveLayout();
 
         return ColumnDiv;

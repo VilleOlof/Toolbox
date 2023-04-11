@@ -34,8 +34,7 @@
     // }
 
     :global(.module) {
-        width: 100%;
-        min-height: 5rem;
+        min-width: 100%;
 
         position: relative;
 
@@ -83,10 +82,12 @@
     }
 
     :global(.is-large) {
+        max-width: 20rem;
         min-width: 20rem;
     }
 
     :global(.is-small) {
+        max-width: 5rem;
         min-width: 5rem;
     }
 

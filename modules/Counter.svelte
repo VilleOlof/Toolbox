@@ -55,4 +55,8 @@
 	main {
 		@include Flex.Container(center, center, column);
 	}
+
+	button {
+		margin: 0.5rem;
+	}
 </style>

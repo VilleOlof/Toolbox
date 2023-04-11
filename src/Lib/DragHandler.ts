@@ -43,6 +43,7 @@ export namespace DragHandler {
         addEventListener('mouseup', (e) => {StopDrag(e)});
 
         UpdateAll();
+        ForceAllDragCorners('none');
     }
 
     export function UpdateAll(): void {
@@ -263,10 +264,10 @@ export namespace DragHandler {
         if (toggleTrash) ToggleTrash();
     }
 
-    export function ForceAllDragCorners(): void {
+    export function ForceAllDragCorners(display: 'block' | 'none'): void {
         const dragCorners = document.querySelectorAll('.cornerDrag') as NodeListOf<HTMLElement>;
         dragCorners.forEach((corner) => {
-            corner.style.display = 'block';
+            corner.style.display = display;
         });
     }
 
