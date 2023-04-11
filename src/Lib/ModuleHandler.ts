@@ -2,6 +2,7 @@ import modules from '../../module_list.json'
 import moduleIgnores from '../../module_ignore.json'
 
 import { DataStore } from '../Stores/DataStore';
+import { DragHandler } from './DragHandler';
 
 export namespace ModuleHandler {
 
@@ -38,6 +39,7 @@ export namespace ModuleHandler {
             }
             
             LoadLayout();
+            DragHandler.Init();
 
             _FirstLoad = false;
             return ColumnContainerDiv;
@@ -91,6 +93,7 @@ export namespace ModuleHandler {
             column.modules.forEach(async moduleName => {
 
                 let moduleImport = ModuleImports[moduleName];
+                if (moduleImport === undefined) return;
                 let module = await moduleImport();
 
                 new module({
@@ -117,6 +120,7 @@ export namespace ModuleHandler {
 
         //move the module to the correct column
         let moduleDiv = document.getElementById(moduleName);
+        moduleDiv.classList.add("module");
         if (moduleDiv) {
             let column = GetFirstColumn(componentSize);
             if (column) {
@@ -128,7 +132,10 @@ export namespace ModuleHandler {
             }
         }
 
-        if (!_FirstLoad) SaveLayout();
+        if (!_FirstLoad) {
+            SaveLayout();
+            DragHandler.UpdateAll();
+        }
     }
 
     function GetModuleImports(): {[key: string]: Function} {

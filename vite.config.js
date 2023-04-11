@@ -7,6 +7,7 @@ import dynamicImport from 'vite-plugin-dynamic-import'
 export default defineConfig({
   build: {
     outDir: 'dist',
+    minify: false
   },
 
   base: './',

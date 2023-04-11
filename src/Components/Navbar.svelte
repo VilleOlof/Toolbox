@@ -3,6 +3,7 @@
     import { GlobalSettings } from "../Lib/Settings";
     import { ModuleHandler } from "../Lib/ModuleHandler";
     import ModuleView from "./ModuleView.svelte";
+    import { DragHandler } from "../Lib/DragHandler";
 
     const GithubEvent = () => {
         require('electron').shell.openExternal('https://github.com/VilleOlof/Toolbox');
@@ -30,7 +31,15 @@
     </div>
 
     <div id=rightSide>
+
+        <p id="trashArea">Trash</p>
+
         <RefreshNotification />
+
+        <p id="editModeButton"
+        on:click={() => {DragHandler.ToggleDragCorners(true)}}
+        on:keydown={() => {DragHandler.ToggleDragCorners(true)}}
+        >Edit Mode</p>
 
         <div id="nav_columnContainer">
             <p>Add Column</p>
@@ -108,6 +117,7 @@
         margin-right: auto;
 
         h1 {
+            margin: 0;
             margin-left: 1rem;
         }
 
@@ -188,6 +198,43 @@
 
     #moduleEntries {
         @extend #ColumnSizeEntries;
+    }
+
+    #editModeButton {
+        margin-right: 1rem;
+
+        user-select: none;
+
+        &:hover {
+            cursor: pointer;
+
+            color: #afafaf;
+        }
+
+        &:active {
+            transform: scale(1.1);
+        }
+
+        transition: 0.2s;
+    }
+
+    #trashArea {
+        user-select: none;
+        padding: 0.4em;
+
+        margin-right: 0.5rem;
+
+        display: none;
+
+        background-color: #ff000052;
+        
+        &:hover {
+            background-color: #ff0000;
+        }
+
+        border-radius: 0.5em;
+
+        transition: background-color 0.2s;
     }
 
     .reverseColor {

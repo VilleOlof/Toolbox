@@ -24,57 +24,85 @@
     //and not this component directly.
 
     //column container > actual column > module
-    :global(#columnContainer > :not(.cornerDrag) > :not(.cornerDrag)) {
-        min-width: 100%;
-        max-width: 100%;
+    // :global(#columnContainer > :not(.cornerDrag) > :not(.cornerDrag)) {
+    //     min-width: 100%;
+    //     max-width: 100%;
         
-        max-height: 100%;
+    //     max-height: 100%;
 
-        margin: 0.5em 0 0.5em 0;
+    //     margin: 0.5em 0 0.5em 0;
+    // }
+
+    :global(.module) {
+        width: 100%;
+        min-height: 5rem;
+
+        position: relative;
+
+        background-color: #28282E;
+
+        filter: drop-shadow(0 0 0.25em #000);
+
+        transition: transform 0.2s, background-color 1s;
+
+        z-index: 1;
+
+        border-radius: 0.25rem;
     }
+
 
     :global(#columnContainer) {
         @include Flex.Container(flex-start, flex-start, row);
 
-        gap: 1.5em;
-        margin: 0.5em;
-
-        //height: 500px;
-
-        overflow: auto;
+        gap: 0.5rem;
+        margin: 0.5rem;
     }
 
     :global(.column) {
         @include Flex.Container(flex-start, flex-start, column);
 
-        height: 100%;
-        background-color: #111;
+        position: relative;
 
-        padding: 0.5em;
-        margin: 1em;
-        gap: 1em;
+        padding: 0.5rem;
+        gap: 0.5rem;
+        margin: 0 0.5rem 0 0.5rem;
+
+        border-radius: 0.5rem;
+	    filter: drop-shadow(0 0 0.25em #000);
+
+        height: 100%;
+
+        background-color: #212126;
+
+
+        // height: 100%;
+        // background-color: #111;
+
+        // padding: 0.5em;
+        // margin: 1em;
+        // gap: 1em;
 
         //Module?
-        & > * {
-            width: 100%;
-            min-height: 10vh;
+        // & > * {
+        //     width: 100%;
+        //     min-height: 10vh;
 
-            margin: 0.5em;
+        //     margin: 0.5em;
 
-            aspect-ratio: 16 / 9;
+        //     aspect-ratio: 16 / 9;
 
-            background-color: #333;
+        //     background-color: #333;
 
-            &:hover {
-                background-color: #444;
+        //     &:hover {
+        //         background-color: #444;
 
-                transform: scale(0.95);
-            }
+        //         transform: scale(0.95);
+        //     }
 
-            filter: drop-shadow(0 0 0.25em #000);
+        //     filter: drop-shadow(0 0 0.25em #000);
 
-            transition: 0.2s;
-        }
+        //     transition: 0.2s;
+        // }
 
         &:empty {
             background-color: rgba(17, 17, 17, 0.5);
@@ -83,13 +111,29 @@
     }
 
     :global(.is-large) {
-        max-width: 20%;
-        min-width: 20%;
+        min-width: 20rem;
     }
 
     :global(.is-small) {
-        max-width: 5%;
-        min-width: 5%;
+        min-width: 5rem;
+    }
+
+    :global(.cornerDrag) {
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        display: none;
+
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 1rem 1rem 0 0;
+        border-color: #6d6d6d75 transparent transparent transparent;
+
+        &:hover {
+            border-color: #8a8a8a75 transparent transparent transparent;
+        }
     }
 
     //Scrollbar stuff
