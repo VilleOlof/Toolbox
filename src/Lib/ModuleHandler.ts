@@ -59,7 +59,7 @@ export namespace ModuleHandler {
         return ColumnContainer;
     }
 
-    function SaveLayout(): void {
+    export function SaveLayout(): void {
         _DataStore.Set("RegisteredModules", RegisteredModules);
 
         let columns: ColumnData[] = [];
@@ -187,6 +187,10 @@ export namespace ModuleHandler {
         ColumnDiv.classList.add("column");
         ColumnDiv.classList.add("is-" + ComponentSize[componentSize].toLowerCase()); // "is-small" | "is-large"
         ColumnContainer.appendChild(ColumnDiv);
+
+        DragHandler.UpdateAll();
+        DragHandler.ForceAllDragCorners();
+        SaveLayout();
 
         return ColumnDiv;
     }

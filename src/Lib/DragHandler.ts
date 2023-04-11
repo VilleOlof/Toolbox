@@ -1,3 +1,5 @@
+import { ModuleHandler } from "./ModuleHandler";
+
 export namespace DragHandler {
 
     const MouseEventType = {
@@ -261,6 +263,13 @@ export namespace DragHandler {
         if (toggleTrash) ToggleTrash();
     }
 
+    export function ForceAllDragCorners(): void {
+        const dragCorners = document.querySelectorAll('.cornerDrag') as NodeListOf<HTMLElement>;
+        dragCorners.forEach((corner) => {
+            corner.style.display = 'block';
+        });
+    }
+
     export function ToggleTrash(): void {
         const trash = document.querySelector('#trashArea') as HTMLElement;
 
@@ -277,13 +286,20 @@ export namespace DragHandler {
             ActiveDragType = null;
             
             if (ActiveModule?.element) {
+                delete ModuleHandler.RegisteredModules[ActiveModule.element.id];
+                
                 ActiveModule.element.remove();
                 ActiveModule.element = null;
             }
             else if (ActiveColumn?.element) {
+                delete ModuleHandler.RegisteredModules[ActiveColumn.element.id];
+
                 ActiveColumn.element.remove();
                 ActiveColumn.element = null;
             }
+
+            ModuleHandler.SaveLayout();
+
             return true;
         }
         return false;

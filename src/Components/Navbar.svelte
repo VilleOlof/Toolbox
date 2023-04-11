@@ -2,7 +2,6 @@
     import RefreshNotification from "./RefreshNotification.svelte";
     import { GlobalSettings } from "../Lib/Settings";
     import { ModuleHandler } from "../Lib/ModuleHandler";
-    import ModuleView from "./ModuleView.svelte";
     import { DragHandler } from "../Lib/DragHandler";
 
     const GithubEvent = () => {
@@ -102,7 +101,7 @@
         position: absolute;
         top: 0;
 
-        background-color: darken(vars.$BackgroundColor, 5%);
+        background-color: #131313;
         height: 3rem;
         width: 100%;
 
@@ -230,11 +229,12 @@
         
         &:hover {
             background-color: #ff0000;
+            transform: scale(0.9);
         }
 
         border-radius: 0.5em;
 
-        transition: background-color 0.2s;
+        transition: background-color 0.2s, transform 0.2s;
     }
 
     .reverseColor {

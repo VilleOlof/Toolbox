@@ -56,6 +56,7 @@
 
         gap: 0.5rem;
         margin: 0.5rem;
+        margin-top: 1rem;
     }
 
     :global(.column) {
@@ -72,40 +73,11 @@
 
         height: 100%;
 
-        background-color: #212126;
-
-
-        // height: 100%;
-        // background-color: #111;
-
-        // padding: 0.5em;
-        // margin: 1em;
-        // gap: 1em;
-
-        //Module?
-        // & > * {
-        //     width: 100%;
-        //     min-height: 10vh;
-
-        //     margin: 0.5em;
-
-        //     aspect-ratio: 16 / 9;
-
-        //     background-color: #333;
-
-        //     &:hover {
-        //         background-color: #444;
-
-        //         transform: scale(0.95);
-        //     }
-
-        //     filter: drop-shadow(0 0 0.25em #000);
-
-        //     transition: 0.2s;
-        // }
+        $bgColor: #212126;
+        background-color: $bgColor;
 
         &:empty {
-            background-color: rgba(17, 17, 17, 0.5);
+            background-color: rgba($bgColor, 0.75);
         }
         
     }
