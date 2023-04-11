@@ -123,8 +123,6 @@ export namespace ModuleHandler {
             size: componentSize
         };
 
-        UpdateNavEntries();
-
         let moduleDiv = document.getElementById(moduleName);
         moduleDiv.classList.add("module");
 
@@ -145,6 +143,7 @@ export namespace ModuleHandler {
             SaveLayout();
             DragHandler.UpdateAll();
         }
+        UpdateNavEntries();
     }
 
     function GetModuleImports(): {[key: string]: Function} {

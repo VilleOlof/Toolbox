@@ -15,6 +15,7 @@ function createWindow () {
             nodeIntegration: true,
             enableRemoteModule: true
         },
+        autoHideMenuBar: true,
         //frame: false,
     })
 

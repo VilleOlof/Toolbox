@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { onMount } from "svelte";
     import { SettingTypes, GlobalSettings } from "../../Lib/Settings";
 
     export let componentID: string;
@@ -13,6 +14,11 @@
         SettingName: settingName,
         DefaultValue: settingInfo.Default,
         Type: SettingTypes.InputTypes.String
+    });
+
+    onMount(() => {
+        const select = document.querySelector("select");
+        select.value = settingInfo.Value;
     });
 </script>
 

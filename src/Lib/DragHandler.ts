@@ -50,6 +50,9 @@ export namespace DragHandler {
         AddCornerDrags();
         AddCornerDragListeners();
         UpdateColumnsAndModulesEvent();
+
+        if (ShowDragCorners) ForceAllDragCorners('block');
+        else ForceAllDragCorners('none');
     }
 
     function AddCornerDrags(): void {

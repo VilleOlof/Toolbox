@@ -59,6 +59,21 @@
         await GenerateSettingComponents(GlobalSettings._ComponentSettings);
     });
 
+    const openDevTools = () => {
+        /* @ts-ignore */
+        const devTools = require('electron').remote.getCurrentWindow().webContents;
+        devTools.openDevTools();
+    }
+
+    /* @ts-ignore */
+    const win = require('electron').remote.getCurrentWindow();
+    /* @ts-ignore */
+    const Zoom = (zoom: number, append: boolean = true) => {
+        if (append)
+            win.webContents.setZoomFactor(win.webContents.getZoomFactor() + zoom);
+        else if (!append) win.webContents.setZoomFactor(zoom);
+    }
+
 </script>
 
 <!--
@@ -71,20 +86,78 @@
     - Checkbox
 -->
 
-<div id="settingsContainer">
+<main>
+    <div id="otherContent">
+        <button class=btnStyle on:click={openDevTools}>Open Devtools</button>
 
-    <h1>Settings</h1>
-
-    <div id="autoGenSettings"></div>
-
-</div>
+        <div id="zoomButtons">
+            <button class="btnStyle" on:click={() => {Zoom(0.1)}}>Zoom In</button>
+            <button class="btnStyle" on:click={() => {Zoom(-0.1)}}>Zoom Out</button>
+            <button class="btnStyle" on:click={() => Zoom(1, false)}>Reset Zoom</button>
+        </div>
+    </div>
+    
+    <div id="settingsContainer">
+    
+        <h1>Module Settings</h1>
+    
+        <div id="autoGenSettings"></div>
+    
+    </div>
+</main>
 
 <style lang="scss">
+    @use '../scss/Flex';
+
+    main {transform: translateY(3rem);}
 
     #settingsContainer {
         margin: 1rem;
+    }
 
-        transform: translateY(3rem);
+    #otherContent {
+        margin: 1rem;
+
+        @include Flex.Container(flex-start, center, row)
+    }
+    
+    #zoomButtons {
+        margin: 0;
+
+        background-color: #212126;
+        border-radius: 0.25rem;
+        padding: 0.25rem;
+
+        filter: drop-shadow(0 0 0.25em #00000046);
+
+        & > .btnStyle {
+            margin-right: 0.1rem;
+            margin-left: 0.1rem;
+        }
+    }
+
+    .btnStyle {
+        background-color: #212126;
+        color: #fff;
+
+        border-color: darken(#212126, 5%);
+        border-radius: 0.25rem;
+
+        padding: 0.5rem;
+        margin: 0.5rem;
+
+        cursor: pointer;
+        outline: none;
+
+        &:hover {
+            background-color: #28282E;
+        }
+
+        &:active {
+            background-color: #212126;
+        }
+
+        filter: drop-shadow(0 0 0.2em #00000046);
     }
 
 </style>

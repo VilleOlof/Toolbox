@@ -27,7 +27,6 @@
         position: relative;
 
         background-color: #28282E;
-
         filter: drop-shadow(0 0 0.25em #000);
 
         transition: transform 0.2s, background-color 1s;

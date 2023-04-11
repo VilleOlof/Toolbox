@@ -27,6 +27,14 @@
         button
     );
 
+    settings.RegisterSetting('dropdowntest', 'used for dropping',
+        'test',
+        SettingTypes.Type.Dropdown,
+        <SettingTypes.Dropdown>{
+            Options: ['test', 'test2', 'test3']
+        }
+    );
+
 </script>
 
 <main id={componentID}>

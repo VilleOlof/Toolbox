@@ -148,7 +148,6 @@ namespace GlobalSettings {
         if (!ValidateSettingInput(input.Event)) return;
 
         let value: any = input.CustomValue ?? input.Event.target.value;
-        console.log(input.Type, value);
 
         if (input.Type == SettingTypes.InputTypes.Number) {
             value = parseFloat(value);
@@ -156,7 +155,6 @@ namespace GlobalSettings {
         else if (input.Type == SettingTypes.InputTypes.String) {
             value = value.toString();
         }
-        console.log(input.Type, value);
 
         const settingInstance: Settings = GlobalSettings._ComponentSettings[input.ComponentID];
         settingInstance.Set(input.SettingName, value ?? input.DefaultValue, input.Save ?? true);
@@ -189,6 +187,7 @@ namespace SettingTypes {
         File = 7, // String
         Button = 8, // Function
         Radio = 9, // String ( Array of options(string), returns boolean )
+        Keybind = 10, // String
     }
 
     /**
