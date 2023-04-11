@@ -4,7 +4,7 @@ const AdmZip = require("adm-zip");
 const { clearInterval } = require('timers');
 
 // Change this to the URL of the repo zip file when its public
-const RepoZipURL = 'https://github.com/VilleOlof/DavinciOpenFileAtPlayhead/archive/refs/heads/main.zip';
+const RepoZipURL = 'https://github.com/VilleOlof/Toolbox/archive/refs/heads/main.zip';
 
 function Install(path) {
     //Update path to new workflow folder
