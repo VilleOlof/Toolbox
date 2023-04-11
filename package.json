@@ -6,6 +6,7 @@
   "main": "./Electron/main.js",
   "scripts": {
     "start": "electron .",
+    "buildInstaller": "pkg --out-path ./InstallerBuilds Installer.js",
     "vite:build": "vite build",
     "vite": "vite build --watch",
     "build": "node ./PrepareModules.js && vite build",
@@ -32,6 +33,7 @@
     "node": ">=16.0.0"
   },
   "dependencies": {
+    "adm-zip": "^0.5.10",
     "custom-electron-titlebar": "^4.2.0-beta.0"
   }
 }
