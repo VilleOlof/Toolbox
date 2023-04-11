@@ -301,13 +301,18 @@ export namespace DragHandler {
                 ActiveModule.element = null;
             }
             else if (ActiveColumn?.element) {
-                delete ModuleHandler.RegisteredModules[ActiveColumn.element.id];
+                const modules = ActiveColumn.element.querySelectorAll('.module') as NodeListOf<HTMLElement>;
+
+                modules.forEach((module) => {
+                    delete ModuleHandler.RegisteredModules[module.id];
+                });
 
                 ActiveColumn.element.remove();
                 ActiveColumn.element = null;
             }
 
             ModuleHandler.SaveLayout();
+            ModuleHandler.UpdateNavEntries();
 
             return true;
         }

@@ -9,12 +9,14 @@
     }
 
     const ToggleColumnDropdown = (Show: boolean) => {
+        if (GlobalSettings.GetSettingToggleStatus()) return;
         let dropdown = document.querySelector("#columnDropdown") as HTMLDivElement;
 
         dropdown.style.display = Show ? "block" : "none";
     }
 
     const ToggleModuleDropdown = (Show: boolean) => {
+        if (GlobalSettings.GetSettingToggleStatus()) return;
         let dropdown = document.querySelector("#moduleDropdown") as HTMLDivElement;
 
         dropdown.style.display = Show ? "block" : "none";

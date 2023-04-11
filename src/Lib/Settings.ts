@@ -163,6 +163,10 @@ namespace GlobalSettings {
     export function ValidateSettingInput(event: any): boolean {
         return event.target.validity.valid;
     }
+
+    export function GetSettingToggleStatus(): boolean {
+        return SettingsData.Get<boolean>("ShowSettingsMenu", false);
+    }
 }
 
 /**

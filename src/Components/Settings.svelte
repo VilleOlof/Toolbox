@@ -122,6 +122,8 @@
     :global(.componentContainer) {
         background-color: #212126;
 
+        min-width: 30rem;
+
         padding: 0.5rem;
 
         margin: 0.5rem;
