@@ -119,6 +119,15 @@
         h1 {
             margin: 0;
             margin-left: 1rem;
+
+            @media screen and (max-width: 800px) {
+                font-size: 1.25em;
+            }
+            @media screen and (max-width: 715px) {
+                font-size: 0.75em;
+            }
+
+            transition: font-size 0.2s;
         }
 
         img {

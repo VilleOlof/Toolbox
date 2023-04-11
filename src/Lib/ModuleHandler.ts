@@ -63,8 +63,6 @@ export namespace ModuleHandler {
     export function SaveLayout(): void {
         _DataStore.Set("RegisteredModules", RegisteredModules);
 
-        console.log("Saving layout");
-
         let columns: ColumnData[] = [];
 
         let columnDivs = ColumnContainer.querySelectorAll(".column");
@@ -96,16 +94,13 @@ export namespace ModuleHandler {
 
         for (let column of savedColumns) {
             let columnDiv = AddColumn(column.size, column.ID);
-            console.log(JSON.stringify(columnDiv.classList));
 
             for (let moduleName of column.modules) {
-                console.log(moduleName);
 
                 let moduleImport = ModuleImports[moduleName];
                 if (moduleImport === undefined) return;
                 let module = await moduleImport();
 
-                console.log(columnDiv.id);
                 new module({
                     target: columnDiv,
                     props: {}
