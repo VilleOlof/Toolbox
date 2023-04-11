@@ -48,6 +48,7 @@ This template module has most of the common in-house imports and code required f
 
 Every module consists of a componentID which the plugin uses to identify the module.  
 The component HTML should be wrapped in a main tag with the componentID as the id.  
+**Note: componentID must be the same as the filename (excluding extension)**
 
 ```HTML
 <main id={componentID}>
