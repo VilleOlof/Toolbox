@@ -76,9 +76,11 @@ export namespace DragHandler {
 
         if (ActiveDragType === MouseEventType.Module) {
             StopDragModule(event);
+            ModuleHandler.SaveLayout();
         }
         else if (ActiveDragType === MouseEventType.Column) {
             StopDragColumn(event);
+            ModuleHandler.SaveLayout();
         }
     }
 
@@ -197,6 +199,8 @@ export namespace DragHandler {
             ActiveModule.element = document.querySelector('.module-active') as HTMLElement;
             ActiveModule.element.style.userSelect = 'none';
         }
+
+        ModuleHandler.SaveLayout();
     }
 
     function CornerDragMove(event: MouseEvent, Type: MouseEventType, YOffset: number, XOffset: number): void {

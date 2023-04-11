@@ -77,7 +77,8 @@
                 <div id="moduleEntries">
                     {#each Object.keys(ModuleHandler.ModuleImports) as ModuleName}
                         <span on:click={() => {ModuleHandler.AddModuleInColumn(ModuleName, document.body)}} 
-                            on:keydown={() => {ModuleHandler.AddModuleInColumn(ModuleName, document.body)}}>
+                            on:keydown={() => {ModuleHandler.AddModuleInColumn(ModuleName, document.body)}}
+                            >
                             + {ModuleName}
                         </span>
                     {/each}
@@ -166,7 +167,7 @@
 
         top: 2.2rem;
 
-        background-color: darken(#222222d5, 3%);
+        background-color: darken(#222222d5, 8%);
         border-radius: 0.5rem;
         padding: 0.5rem;
     }
@@ -177,7 +178,7 @@
         & > span {
             user-select: none;
 
-            &:hover {
+            &:not(.is-active):hover {
                 cursor: pointer;
 
                 color: #afafaf;
@@ -235,6 +236,10 @@
         border-radius: 0.5em;
 
         transition: background-color 0.2s, transform 0.2s;
+    }
+
+    :global(#moduleEntries > .is-active) {
+        color: #5f5f5f;
     }
 
     .reverseColor {

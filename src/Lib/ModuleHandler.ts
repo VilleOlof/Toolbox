@@ -26,10 +26,11 @@ export namespace ModuleHandler {
 
     export type ColumnData = {
         size: ComponentSize,
-        modules: string[]
+        modules: string[],
+        ID: string
     }
 
-    export function Init(ColumnContainerDiv: HTMLDivElement): HTMLDivElement {
+    export async function Init(ColumnContainerDiv: HTMLDivElement): Promise<HTMLDivElement> {
         if (!_DataStore) _DataStore = new DataStore("ModuleHandler");
 
         if (_FirstLoad) {
@@ -38,7 +39,7 @@ export namespace ModuleHandler {
                 ColumnContainer = ColumnContainerDiv;
             }
             
-            LoadLayout();
+            await LoadLayout();
             DragHandler.Init();
 
             _FirstLoad = false;
@@ -62,6 +63,8 @@ export namespace ModuleHandler {
     export function SaveLayout(): void {
         _DataStore.Set("RegisteredModules", RegisteredModules);
 
+        console.log("Saving layout");
+
         let columns: ColumnData[] = [];
 
         let columnDivs = ColumnContainer.querySelectorAll(".column");
@@ -71,31 +74,38 @@ export namespace ModuleHandler {
 
             let moduleDivs = columnDiv.childNodes as NodeListOf<HTMLDivElement>;
             moduleDivs.forEach(moduleDiv => {
+                if (!moduleDiv.classList.contains("module")) return;
                 modules.push(moduleDiv.id);
             });
 
             columns.push({
                 size: size,
-                modules: modules
+                modules: modules,
+                ID: columnDiv.id
             });
         });
 
         _DataStore.Set("Columns", columns);
+
+        UpdateNavEntries();
     }
 
-    function LoadLayout(): string | undefined {
+    async function LoadLayout(): Promise<string> | undefined {
         let savedColumns = _DataStore.Get<ColumnData[]>("Columns");
         if (!savedColumns) return undefined;
 
-        savedColumns.forEach(column => {
-            let columnDiv = AddColumn(column.size);
+        for (let column of savedColumns) {
+            let columnDiv = AddColumn(column.size, column.ID);
+            console.log(JSON.stringify(columnDiv.classList));
 
-            column.modules.forEach(async moduleName => {
+            for (let moduleName of column.modules) {
+                console.log(moduleName);
 
                 let moduleImport = ModuleImports[moduleName];
                 if (moduleImport === undefined) return;
                 let module = await moduleImport();
 
+                console.log(columnDiv.id);
                 new module({
                     target: columnDiv,
                     props: {}
@@ -105,8 +115,8 @@ export namespace ModuleHandler {
                     name: moduleName,
                     size: column.size
                 };
-            });
-        });
+            }
+        }
 
         return ColumnContainer.innerHTML;
     }
@@ -118,21 +128,25 @@ export namespace ModuleHandler {
             size: componentSize
         };
 
-        //move the module to the correct column
+        UpdateNavEntries();
+
         let moduleDiv = document.getElementById(moduleName);
         moduleDiv.classList.add("module");
-        if (moduleDiv) {
-            let column = GetFirstColumn(componentSize);
-            if (column) {
-                column.appendChild(moduleDiv);
-            }
-            else {
-                column = AddColumn(componentSize);
-                column.appendChild(moduleDiv);
-            }
-        }
 
         if (!_FirstLoad) {
+
+            //move the module to the correct column
+            if (moduleDiv) {
+                let column = GetFirstColumn(componentSize);
+                if (column) {
+                    column.appendChild(moduleDiv);
+                }
+                else {
+                    column = AddColumn(componentSize);
+                    column.appendChild(moduleDiv);
+                }
+            }
+
             SaveLayout();
             DragHandler.UpdateAll();
         }
@@ -182,15 +196,18 @@ export namespace ModuleHandler {
         }
     }
 
-    export function AddColumn(componentSize: ComponentSize): HTMLDivElement {
+    export function AddColumn(componentSize: ComponentSize, IDOverwrite?: string): HTMLDivElement {
         let ColumnDiv = document.createElement("div");
         ColumnDiv.classList.add("column");
         ColumnDiv.classList.add("is-" + ComponentSize[componentSize].toLowerCase()); // "is-small" | "is-large"
+        ColumnDiv.id = IDOverwrite ?? require('crypto').randomBytes(16).toString('hex');
         ColumnContainer.appendChild(ColumnDiv);
 
-        DragHandler.UpdateAll();
-        DragHandler.ForceAllDragCorners('block');
-        SaveLayout();
+        if (!_FirstLoad) {
+            DragHandler.UpdateAll();
+            DragHandler.ForceAllDragCorners('block');
+            SaveLayout();
+        }
 
         return ColumnDiv;
     }
@@ -204,5 +221,18 @@ export namespace ModuleHandler {
             }
         }
         return undefined;
+    }
+
+    export function UpdateNavEntries(): void {
+        const moduleEntries = document.querySelector("#moduleEntries").childNodes as NodeListOf<HTMLLIElement>;
+        moduleEntries.forEach(entry => {
+            const moduleName = entry.textContent.replace("+ ", "").trim();
+            if (Object.keys(RegisteredModules).includes(moduleName)) {
+                entry.classList.add("is-active");
+            }
+            else {
+                entry.classList.remove("is-active");
+            }
+        });
     }
 }

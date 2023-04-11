@@ -8,3 +8,20 @@ body {
     padding: 0;
     margin: 0;
 }
+
+//Scrollbar stuff
+::-webkit-scrollbar {
+    width: 1em;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #55555525;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #8a8a8a25;
+}
+
+::-webkit-scrollbar-corner {
+    background-color: #6d6d6d25;
+}
