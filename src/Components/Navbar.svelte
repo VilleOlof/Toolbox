@@ -3,9 +3,22 @@
     import { GlobalSettings } from "../Lib/Settings";
     import { ModuleHandler } from "../Lib/ModuleHandler";
     import { DragHandler } from "../Lib/DragHandler";
+    import { PluginCleanUp } from "../Lib/DavinciResolve";
+    import { AppSettings } from "../Lib/AppSettings";
 
     const GithubEvent = () => {
         require('electron').shell.openExternal('https://github.com/VilleOlof/Toolbox');
+    }
+
+    const Close = () => {
+        AppSettings.SetSetting('WindowSize', {
+            width: window.innerWidth,
+            height: window.innerHeight
+        })
+
+        PluginCleanUp();
+        /* @ts-ignore */
+        require('electron').remote.getCurrentWindow().close();
     }
 
     const ToggleColumnDropdown = (Show: boolean) => {
@@ -24,10 +37,10 @@
 
 </script>
 
-<div id="navbarBackground"></div>
-
 <div id=navbarContainer>
     <div id=leftSide>
+        <img class=reverseColor on:click={Close} on:keydown={Close} src="../src/assets/close.svg" alt="Exit">
+
         <h1>Davinki Toolbox</h1>
 
         <img class=reverseColor on:click={GithubEvent} on:keydown={GithubEvent} src="../src/assets/github.svg" alt="Github">
@@ -114,6 +127,14 @@
         box-shadow: 0 1rem 1rem rgba(19, 19, 19, 0.384);
 
         z-index: 3;
+
+        -webkit-app-region: drag;
+        user-select: none;
+    }
+
+    *:not(#navbarContainer) {
+        -webkit-app-region: no-drag;
+        z-index: 5;
     }
 
     #leftSide {
@@ -149,6 +170,7 @@
         @include Flex.Container(flex-end, center, row);
 
         margin-left: auto;
+        margin-right: 1rem;
     }
 
     #moduleContainer {

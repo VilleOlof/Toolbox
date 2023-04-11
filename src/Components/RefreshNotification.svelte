@@ -1,5 +1,6 @@
 <script lang="ts">
     import moduleIgnores from '../../module_ignore.json'
+    import { AppSettings } from '../Lib/AppSettings';
 
     const NPM_Command: string = 'npm run build';
     const moduleListPath: string = '../module_list.json';
@@ -38,8 +39,15 @@
     }
 
     function RelaunchApp(): void {
+
         // @ts-ignore // it thinks that 'remote' is not a property of 'electron'
         const app = require('electron').remote.app;
+
+        AppSettings.SetSetting('WindowSize', {
+            width: window.innerWidth,
+            height: window.innerHeight
+        })
+
         app.relaunch();
         app.exit();
     }

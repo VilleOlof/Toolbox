@@ -58,6 +58,25 @@ export class AppSettings {
         }
         return <T>value;
     }
+
+    /**
+     * Set a setting
+     * 
+     * @param key The key of the setting
+     * @param value The value of the setting
+     */
+    public static SetSetting(key: string, value: any): void {
+        AppSettingsJSON[key] = value;
+        this.Save();
+    }
+
+    private static Save(): void {
+        const jsonString = JSON.stringify(AppSettingsJSON, null, 4);
+
+        const fs = require("fs");
+
+        fs.writeFileSync(__dirname + "/../AppSettings.json", jsonString, "utf8");
+    }
 }
 
 

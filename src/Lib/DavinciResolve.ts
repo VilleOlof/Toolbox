@@ -41,6 +41,13 @@ export function QuitResolve(): void {
 }
 
 /**
+ * Cleans up the Plugin
+ */
+export function PluginCleanUp(): void {
+    WorkflowIntegration.CleanUp();
+}
+
+/**
  * A collection of useful functions for interacting with the Resolve API  
  * This is the preferred way to interact with the Resolve API if you can.  
  * 

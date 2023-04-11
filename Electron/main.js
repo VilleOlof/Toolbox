@@ -2,12 +2,17 @@
 const {app, BrowserWindow, nativeImage} = require('electron')
 const path = require('path')
 const os = require('os')
+const fs = require('fs')
+
+const AppSettings = require('../AppSettings.json')
+AppSettings.WindowSize = AppSettings.WindowSize || {width: 900, height: 825}
+fs.writeFileSync(path.join(__dirname, '../AppSettings.json'), JSON.stringify(AppSettings, null, 4))
 
 function createWindow () {
     // Create the browser window.
     const mainWindow = new BrowserWindow({
-        width: 900,
-        height: 825,
+        width: AppSettings.WindowSize.width,
+        height: AppSettings.WindowSize.height,
         useContentSize: true,
         webPreferences: {
             preload: path.join(__dirname, './preload.js'),
@@ -16,7 +21,7 @@ function createWindow () {
             enableRemoteModule: true
         },
         autoHideMenuBar: true,
-        //frame: false,
+        frame: false,
     })
 
     // Hide the menu bar (enable below code to hide menu bar)
@@ -30,7 +35,7 @@ function createWindow () {
     mainWindow.loadFile('../dist/index.html')
 
     // Open the DevTools (enable below code to show DevTools)
-    mainWindow.webContents.openDevTools()
+    if(AppSettings.AlwaysOpenDevTools) mainWindow.webContents.openDevTools()
 }
 
 // This method will be called when Electron has finished

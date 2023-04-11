@@ -67,6 +67,12 @@
         devTools.openDevTools();
     }
 
+    const toggleAlwaysOnTop = () => {
+        /* @ts-ignore */
+        const win = require('electron').remote.getCurrentWindow();
+        win.setAlwaysOnTop(!win.isAlwaysOnTop());
+    }
+
     /* @ts-ignore */
     const win = require('electron').remote.getCurrentWindow();
     /* @ts-ignore */
@@ -97,6 +103,8 @@
             <button class="btnStyle" on:click={() => {Zoom(-0.1)}}>Zoom Out</button>
             <button class="btnStyle" on:click={() => Zoom(1, false)}>Reset Zoom</button>
         </div>
+
+        <button class="btnStyle" on:click={toggleAlwaysOnTop}>Always On Top</button>
     </div>
     
     <div id="settingsContainer">
