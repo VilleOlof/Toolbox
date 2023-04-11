@@ -8,26 +8,29 @@
 
     let extraData: SettingTypes.Dropdown = <SettingTypes.Dropdown>settingInfo.ExtraData;
 
-    const HandleInput = async () => GlobalSettings.HandleSettingInput(<SettingTypes.SettingInput>{
-        Event: window.event,
-        ComponentID: componentID,
-        SettingName: settingName,
-        DefaultValue: settingInfo.Default,
-        Type: SettingTypes.InputTypes.String
-    });
+    const HandleInput = async () => {
+        settingInfo.Value = (<HTMLSelectElement>document.querySelector("select")).value;
+
+        GlobalSettings.HandleSettingInput(<SettingTypes.SettingInput>{
+            Event: window.event,
+            ComponentID: componentID,
+            SettingName: settingName,
+            DefaultValue: settingInfo.Default,
+            Type: SettingTypes.InputTypes.String
+        });
+    }
 
     onMount(() => {
-        const select = document.querySelector("select");
-        select.value = settingInfo.Value;
     });
-</script>
 
+</script>
+<!-- bind:value={settingInfo.Value} -->
 <select
-    bind:value={settingInfo.Value}
+    
     on:change={HandleInput}
 >
 {#if settingInfo.Value}
-    <option value={settingInfo.Value} selected>{settingInfo.Value}</option>
+    <option value={settingInfo.Value}>{settingInfo.Value}</option>
 {/if}
 
 {#each extraData.Options as option}

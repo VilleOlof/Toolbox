@@ -272,6 +272,7 @@ export namespace DragHandler {
     }
 
     export function ForceAllDragCorners(display: 'block' | 'none'): void {
+        if (!ShowDragCorners) return;
         const dragCorners = document.querySelectorAll('.cornerDrag') as NodeListOf<HTMLElement>;
         dragCorners.forEach((corner) => {
             corner.style.display = display;

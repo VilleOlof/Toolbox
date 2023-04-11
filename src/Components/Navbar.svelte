@@ -22,6 +22,8 @@
 
 </script>
 
+<div id="navbarBackground"></div>
+
 <div id=navbarContainer>
     <div id=leftSide>
         <h1>Davinki Toolbox</h1>
@@ -99,12 +101,13 @@
     #navbarContainer {
         @include Flex.Container(center, center, row);
 
-        position: absolute;
+        position: fixed;
         top: 0;
+        left: 0;
 
         background-color: #131313;
         height: 3rem;
-        width: 100%;
+        width: 100vw;
 
         box-shadow: 0 1rem 1rem rgba(19, 19, 19, 0.384);
 

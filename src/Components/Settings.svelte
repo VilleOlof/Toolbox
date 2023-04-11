@@ -18,6 +18,7 @@
         for (const [componentID, settingInstance] of Object.entries(Settings)) {
             const componentContainer: HTMLDivElement = document.createElement('div');
             componentContainer.id = componentID;
+            componentContainer.classList.add('componentContainer');
 
             componentContainer.appendChild(document.createElement('h2')).innerText = componentID;
 
@@ -31,6 +32,7 @@
         for (const [settingName, settingInfo] of Object.entries(settingInstance.GetAllComponentSettings())) {
                 const settingContainer: HTMLDivElement = document.createElement('div');
                 settingContainer.id = settingName;
+                settingContainer.classList.add('settingContainer');
                 
                 settingContainer.appendChild(document.createElement('h3')).innerText = settingName;
                 settingContainer.appendChild(document.createElement('p')).innerText = settingInfo.Description;
@@ -112,13 +114,42 @@
     main {transform: translateY(3rem);}
 
     #settingsContainer {
+        @include Flex.Container(flex-start, center, column);
+
         margin: 1rem;
+    }
+
+    :global(.componentContainer) {
+        background-color: #212126;
+
+        padding: 0.5rem;
+
+        margin: 0.5rem;
+
+        border-radius: 0.5rem;
+	    filter: drop-shadow(0 0 0.25em #0000005e);
+
+        :global(h2) {
+            margin-left: 0.5rem;
+        }
+    }
+
+    :global(.settingContainer) {
+        background-color: #28282E;
+
+        padding: 0.35rem;
+        margin: 0.4rem;
+
+        border-radius: 0.25rem;
+	    filter: drop-shadow(0 0 0.25em #0000005e);
     }
 
     #otherContent {
         margin: 1rem;
 
-        @include Flex.Container(flex-start, center, row)
+        @include Flex.Container(center, center, row);
+
+        filter: drop-shadow(0 0 0.25em #00000046);
     }
     
     #zoomButtons {

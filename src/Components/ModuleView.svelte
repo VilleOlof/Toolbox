@@ -39,10 +39,12 @@
 
     :global(#columnContainer) {
         @include Flex.Container(flex-start, flex-start, row);
+        display: inline-flex;
 
         gap: 0.5rem;
         margin: 0.5rem;
         margin-top: 1rem;
+        margin-right: 0.45rem;
     }
 
     :global(.column) {
@@ -64,8 +66,7 @@
 
         &:empty {
             background-color: rgba($bgColor, 0.75);
-        }
-        
+        } 
     }
 
     :global(.is-large) {
