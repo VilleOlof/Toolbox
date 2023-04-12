@@ -35,5 +35,20 @@
 <span></span>
 
 <style lang="scss">
-    @use '../../scss/ComponentInputs';
+    @use '../../scss/ComponentInputs' as CI;
+
+    input {
+        @include CI.SettingStyle;
+        @include CI.SettingFocus;
+
+        width: 1rem;
+        height: 1rem;
+    }
+
+    label {
+        display: inline-flex;
+        align-items: center;
+
+        margin: 0 0.5rem;
+    }
 </style>

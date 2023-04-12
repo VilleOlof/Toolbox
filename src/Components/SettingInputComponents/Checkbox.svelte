@@ -30,5 +30,13 @@
 <span></span>
 
 <style lang="scss">
-    @use '../../scss/ComponentInputs';
+    @use '../../scss/ComponentInputs' as CI;
+
+    input {
+        @include CI.SettingStyle;
+        @include CI.SettingFocus;
+
+        width: 1.5rem;
+        height: 1.5rem;
+    }
 </style>

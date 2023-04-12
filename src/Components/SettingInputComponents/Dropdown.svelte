@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { onMount } from "svelte";
     import { SettingTypes, GlobalSettings } from "../../Lib/Settings";
 
     export let componentID: string;
@@ -8,10 +7,7 @@
 
     let extraData: SettingTypes.Dropdown = <SettingTypes.Dropdown>settingInfo.ExtraData;
 
-    let firstLoad: boolean = true;
-
     const HandleInput = async () => {
-        if (firstLoad) return;
         settingInfo.Value = (<HTMLSelectElement>document.querySelector("select")).value;
 
         GlobalSettings.HandleSettingInput(<SettingTypes.SettingInput>{
@@ -23,13 +19,6 @@
         });
     }
 
-    onMount(() => {
-        const select = document.querySelector("select");
-        select.value = settingInfo.Value;
-
-        firstLoad = false;
-    });
-    
     const settings = GlobalSettings.GetComponentSettingsByID(componentID);
     settings.AddResetCallback(settingName, () => {
         const select = document.querySelector("select");
@@ -38,9 +27,8 @@
     });
     
 </script>
-<!-- bind:value={settingInfo.Value} -->
+
 <select
-    
     on:change={HandleInput}
 >
 {#if settingInfo.Value}
@@ -56,5 +44,10 @@
 
 <!--Add specific css rule for dropdown-->
 <style lang="scss">
-    @use '../../scss/ComponentInputs';
+    @use '../../scss/ComponentInputs' as CI;
+
+    select {
+        @include CI.SettingStyle;
+        @include CI.SettingFocus;
+    }
 </style>

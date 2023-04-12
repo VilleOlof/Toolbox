@@ -21,7 +21,7 @@
 			Max: 10,
 			Step: 1,
 			Placeholder: 'Increment'
-		}, false
+		}, true
 	);
 	//settings.Set('increment', 2);
 

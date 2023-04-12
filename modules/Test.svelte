@@ -63,6 +63,22 @@
         }
     );
 
+    settings.RegisterSetting('file', 'woo',
+        null,
+        SettingTypes.Type.File,
+        null
+    );
+
+    settings.RegisterSetting('slider', 'weeee',
+        50,
+        SettingTypes.Type.Slider,
+        <SettingTypes.Slider>{
+            min: 0,
+            max: 100,
+            step: 1
+        }
+    );
+
 </script>
 
 <main id={componentID}>

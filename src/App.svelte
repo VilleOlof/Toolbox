@@ -13,9 +13,15 @@
         ShowSettings = value;
 
         if (ShowSettings) {
+            if (!moduleViewComponent) return;
+
+            console.log("destroying moduleView, Opening settings");
             moduleViewComponent.$destroy();
         }
         else {
+            if (!settingComponent) return;
+
+            console.log("destroying settings, Opening moduleView");
             settingComponent.$destroy();
         }
     });

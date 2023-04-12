@@ -33,5 +33,12 @@
 <span></span>
 
 <style lang="scss">
-    @use '../../scss/ComponentInputs';
+    @use '../../scss/ComponentInputs' as CI;
+
+    input {
+        @include CI.SettingStyle;
+        @include CI.SettingFocus;
+
+        @include CI.SettingCalendarIndicator;
+    }
 </style>

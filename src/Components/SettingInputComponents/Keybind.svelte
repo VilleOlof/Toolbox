@@ -7,14 +7,14 @@
     export let settingName: string;
     export let settingInfo: SettingTypes.Info;
 
-    let extraData: SettingTypes.Keybind = <SettingTypes.Keybind>settingInfo.ExtraData;
+    //let extraData: SettingTypes.Keybind = <SettingTypes.Keybind>settingInfo.ExtraData;
 
     const HandleInput = (detail: any) => {
         const keyStrokeText = document.querySelector(`#${componentID}-keyStrokes`) as HTMLInputElement;
+        if (!keyStrokeText) return;
         if (!keyStrokeText.matches(':focus')) return;
 
         let key = detail;
-        console.log(key);
 
         keyStrokeText.value = "";
 
@@ -36,6 +36,10 @@
     const settings = GlobalSettings.GetComponentSettingsByID(componentID);
     settings.AddResetCallback(settingName, () => {
         settingInfo.Value = settingInfo.Value;
+
+        const keyStrokeText = document.querySelector(`#${componentID}-keyStrokes`) as HTMLInputElement;
+        if (!keyStrokeText) return;
+        keyStrokeText.value = settingInfo.Value;
     });
     
 </script>
@@ -46,5 +50,10 @@
 <span></span>
 
 <style lang="scss">
-    @use '../../scss/ComponentInputs';
+    @use '../../scss/ComponentInputs' as CI;
+
+    input {
+        @include CI.SettingStyle;
+        @include CI.SettingFocus;
+    }
 </style>

@@ -19,7 +19,7 @@
 </script>
 
 <input type="file"
-    accept={extraData.Accept ?? undefined}
+    accept={extraData?.Accept ?? undefined}
 
     bind:value={settingInfo.Value}
     on:input={HandleInput}
@@ -27,5 +27,16 @@
 <span></span>
 
 <style lang="scss">
-    @use '../../scss/ComponentInputs';
+    @use '../../scss/ComponentInputs' as CI;
+
+    input {
+        @include CI.SettingStyle;
+        @include CI.SettingFocus;
+
+        &:hover {
+            background-color: darken(#212126, 5%);
+        }
+
+        transition: background-color 0.2s;
+    }
 </style>

@@ -68,8 +68,26 @@
                 const settingContainer: HTMLDivElement = document.createElement('div');
                 settingContainer.id = settingName;
                 settingContainer.classList.add('settingContainer');
+
+                const SpecificSettingHeader: HTMLDivElement = document.createElement('div');
+                SpecificSettingHeader.classList.add('specificSettingHeader');
                 
-                settingContainer.appendChild(document.createElement('h3')).innerText = settingName;
+                SpecificSettingHeader.appendChild(document.createElement('h3')).innerText = settingName;
+
+                const resetSpecificSetting = document.createElement('button');
+                resetSpecificSetting.innerText = 'Reset';
+                resetSpecificSetting.classList.add('btnStyle');
+
+                resetSpecificSetting.onclick = () => {
+                    const settingInstance = GlobalSettings._ComponentSettings[componentID]
+                    if (!settingInstance) return;
+                    settingInstance.ResetSetting(settingName);
+                }
+
+                SpecificSettingHeader.appendChild(resetSpecificSetting);
+
+                settingContainer.appendChild(SpecificSettingHeader);
+
                 settingContainer.appendChild(document.createElement('p')).innerText = settingInfo.Description;
 
                 AddNewSettingInput(settingInfo, settingContainer, componentID, settingName);
@@ -96,25 +114,22 @@
         await GenerateSettingComponents(GlobalSettings._ComponentSettings);
     });
 
+    /* @ts-ignore */
+    const currentWindow = require('electron').remote.getCurrentWindow();
+
     const openDevTools = () => {
-        /* @ts-ignore */
-        const devTools = require('electron').remote.getCurrentWindow().webContents;
+        const devTools = currentWindow.webContents;
         devTools.openDevTools();
     }
 
     const toggleAlwaysOnTop = () => {
-        /* @ts-ignore */
-        const win = require('electron').remote.getCurrentWindow();
-        win.setAlwaysOnTop(!win.isAlwaysOnTop());
+        currentWindow.setAlwaysOnTop(!currentWindow.isAlwaysOnTop());
     }
 
-    /* @ts-ignore */
-    const win = require('electron').remote.getCurrentWindow();
-    /* @ts-ignore */
     const Zoom = (zoom: number, append: boolean = true) => {
         if (append)
-            win.webContents.setZoomFactor(win.webContents.getZoomFactor() + zoom);
-        else if (!append) win.webContents.setZoomFactor(zoom);
+            currentWindow.webContents.setZoomFactor(currentWindow.webContents.getZoomFactor() + zoom);
+        else if (!append) currentWindow.webContents.setZoomFactor(zoom);
     }
 
 </script>
@@ -179,10 +194,25 @@
 	    filter: drop-shadow(0 0 0.25em #0000005e);
     }
 
+    :global(.settingContainer > h3) {
+        margin: 0;
+        margin: 1rem 0.5rem;    
+    }
+    :global(.settingContainer > p) {
+        margin: 0;
+        margin: 1rem 0.5rem;    
+    }
+
     :global(.settingHeader) {
         @include Flex.Container(space-between, center, row);
 
         margin: 0.5rem;
+    }
+
+    :global(.specificSettingHeader) {
+        @include Flex.Container(space-between, center, row);
+
+        margin: 0 0.5rem;
     }
 
     #otherContent {

@@ -290,6 +290,10 @@ export namespace DragHandler {
         const trashElement = document.querySelector('#trashArea') as HTMLElement;
         const trashBounds: DOMRect = trashElement.getBoundingClientRect();
 
+        // If the drag corners are not shown, return false
+        // Aka (Edit Mode)
+        if (!ShowDragCorners) return false;
+
         // If the mouse is outside the trash area
         if (e.clientX >= trashBounds.left && e.clientX <= trashBounds.right && e.clientY >= trashBounds.top && e.clientY <= trashBounds.bottom) {
             ActiveDragType = null;

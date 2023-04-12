@@ -43,5 +43,40 @@
 <span></span>
 
 <style lang="scss">
-    @use '../../scss/ComponentInputs';
+    @use '../../scss/ComponentInputs' as CI;
+
+    input {
+        -webkit-appearance: none;
+        appearance: none;
+        outline: none;
+
+        @include CI.SettingStyle;
+        @include CI.SettingFocus;
+
+        height: 1rem;
+        padding: 0;
+
+        background-color: darken(#212126, 5%);
+        
+        opacity: 0.7;
+        transition: opacity 0.2s;
+
+        &:hover {
+            opacity: 1;
+        }
+
+        &::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+
+            width: 1.5rem;
+            height: 1.5rem;
+
+            background: #7a7a7a;
+
+            cursor: pointer;
+
+            border-radius: 50%;
+        }
+    }
 </style>

@@ -576,6 +576,18 @@ class Settings {
     }
 
     /**
+     * Resets a setting to its default value.
+     * Will also call the reset callback if it exists.
+     * 
+     * @param settingName The name of the setting
+     */
+    public ResetSetting(settingName: string): void {
+        this.Set(settingName, this._Settings[settingName].Default);
+
+        if (this._ResetCallbacks[settingName]) this._ResetCallbacks[settingName]();
+    }
+
+    /**
      * Deletes all the settings for the component.
      * 
      * @example
