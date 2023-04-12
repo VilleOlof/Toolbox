@@ -177,7 +177,6 @@ export class DataStore {
     public static SaveAll(): void {
         let allData: { [key: string]: any } = {};
 
-        console.log(_DataStores);
         for (const key in _DataStores) {
             const dataStore = _DataStores[key];
             allData[key] = dataStore._Data;

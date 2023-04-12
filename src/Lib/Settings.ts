@@ -1,5 +1,4 @@
 import { DataStore } from "../Stores/DataStore";
-import SettingsJSON from "../../Settings.json";
 
 /**
  * The global settings namespace.
@@ -33,6 +32,11 @@ namespace GlobalSettings {
      */
     export function LoadGlobalSettings(): void {
         _ComponentSettings = {};
+
+        let SettingsPath: string = __dirname + "/../Settings.json";
+        const fs = require("fs");
+
+        let SettingsJSON: Record<string, Settings> = JSON.parse(fs.readFileSync(SettingsPath, "utf8"));
 
         for (let componentID in SettingsJSON) {
             let settings = new Settings(componentID);

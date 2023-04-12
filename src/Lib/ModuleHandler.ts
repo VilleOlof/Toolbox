@@ -42,7 +42,7 @@ export namespace ModuleHandler {
             DragHandler.Init();
 
             _FirstLoad = false;
-            return ColumnContainerDiv;
+            return ColumnContainer;
         }
 
         await LoadLayout();
