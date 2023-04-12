@@ -119,10 +119,6 @@ export namespace ModuleHandler {
 
     export function RegisterModule(moduleName: string, componentSize: ComponentSize): void {
         console.log("Registering module: " + moduleName);
-        RegisteredModules[moduleName] = {
-            name: moduleName,
-            size: componentSize
-        };
 
         let moduleDiv = document.getElementById(moduleName);
         moduleDiv.classList.add("module");
@@ -134,14 +130,22 @@ export namespace ModuleHandler {
                     column = AddColumn(componentSize);
                     column.appendChild(moduleDiv);
                 }
-                else {
+                else if (!Object.keys(RegisteredModules).includes(moduleName)) {
                     column.appendChild(moduleDiv);
                 }
             }
+        }
 
+        RegisteredModules[moduleName] = {
+            name: moduleName,
+            size: componentSize
+        };
+
+        if (!_FirstLoad) {
             SaveLayout();
             DragHandler.UpdateAll();
         }
+
         UpdateNavEntries();
     }
 
