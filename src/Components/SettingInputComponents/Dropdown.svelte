@@ -8,7 +8,10 @@
 
     let extraData: SettingTypes.Dropdown = <SettingTypes.Dropdown>settingInfo.ExtraData;
 
+    let firstLoad: boolean = true;
+
     const HandleInput = async () => {
+        if (firstLoad) return;
         settingInfo.Value = (<HTMLSelectElement>document.querySelector("select")).value;
 
         GlobalSettings.HandleSettingInput(<SettingTypes.SettingInput>{
@@ -21,6 +24,10 @@
     }
 
     onMount(() => {
+        const select = document.querySelector("select");
+        select.value = settingInfo.Value;
+
+        firstLoad = false;
     });
 
 </script>

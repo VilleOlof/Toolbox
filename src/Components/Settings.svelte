@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { GlobalSettings, SettingTypes, Settings } from "../Lib/Settings";
+  import { DataStore } from "../Stores/DataStore";
 
     let InputComponents: Record<string, Function> = {};
 
@@ -20,12 +21,46 @@
             componentContainer.id = componentID;
             componentContainer.classList.add('componentContainer');
 
-            componentContainer.appendChild(document.createElement('h2')).innerText = componentID;
+            AddSettingHeader(componentContainer, componentID);
 
             await LoopOverSettings(componentID, settingInstance, componentContainer);
 
             settingsContainer.appendChild(componentContainer);
         }
+    }
+
+    function AddSettingHeader(componentContainer: HTMLDivElement, componentID: string): void {
+        const settingHeader: HTMLDivElement = document.createElement('div');
+        settingHeader.classList.add('settingHeader');
+
+        settingHeader.appendChild(document.createElement('h2')).innerText = componentID;
+
+        const settingHeaderButtons: HTMLDivElement = document.createElement('div');
+        settingHeaderButtons.classList.add('settingHeaderButtons');
+
+        const resetModuleData: HTMLButtonElement = document.createElement('button');
+        resetModuleData.innerText = 'Reset Data';
+        resetModuleData.classList.add('btnStyle');
+
+        resetModuleData.onclick = () => {
+            DataStore.DeleteDataStore(componentID);
+        }
+
+        settingHeaderButtons.appendChild(resetModuleData);
+
+        const resetSettings: HTMLButtonElement = document.createElement('button');
+        resetSettings.innerText = 'Reset Settings';
+        resetSettings.classList.add('btnStyle');
+
+        resetSettings.onclick = () => {
+            GlobalSettings.ResetAllComponentSettings(componentID);
+        }
+
+        settingHeaderButtons.appendChild(resetSettings);
+
+        settingHeader.appendChild(settingHeaderButtons);
+
+        componentContainer.appendChild(settingHeader);
     }
 
     async function LoopOverSettings(componentID: string, settingInstance: Settings,componentContainer: HTMLDivElement): Promise<void> {
@@ -154,6 +189,12 @@
 	    filter: drop-shadow(0 0 0.25em #0000005e);
     }
 
+    :global(.settingHeader) {
+        @include Flex.Container(space-between, center, row);
+
+        margin: 0.5rem;
+    }
+
     #otherContent {
         margin: 1rem;
 
@@ -177,7 +218,7 @@
         }
     }
 
-    .btnStyle {
+    :global(.btnStyle) {
         background-color: #212126;
         color: #fff;
 

@@ -60,7 +60,7 @@ export class DataStore {
      */
     private _Subscribers: Record<string, CallbackFunction[]> = {};
 
-    private _JSONSavePath: string = "../../Data.json";
+    private static _JSONSavePath: string = "../../Data.json";
 
     /**
      * Notifies all subscribers of a data change.
@@ -81,7 +81,7 @@ export class DataStore {
         }
     }
 
-    private SaveToJSON(jsonString: string): void {
+    private static SaveToJSON(jsonString: string): void {
         const fs = require("fs");
         fs.writeFileSync(__dirname + this._JSONSavePath, jsonString, (err) => {
             if (err) {
@@ -140,7 +140,8 @@ export class DataStore {
      */
     public Load(getAll?: boolean): void | Record<string, any> {
         if (UseJSON) {
-            const settings = require(__dirname + this._JSONSavePath);
+            const fs = require("fs");
+            const settings = JSON.parse(fs.readFileSync(__dirname + DataStore._JSONSavePath));
             if (getAll) return settings;
             this._Data = settings[this._ComponentID];
             return;
@@ -166,11 +167,25 @@ export class DataStore {
             settings[this._ComponentID] = this._Data;
 
             const json: string = JSON.stringify(settings, null, 4);
-            this.SaveToJSON(json);
+            DataStore.SaveToJSON(json);
             return;
         }
 
         localStorage.setItem(this._ComponentID, JSON.stringify(this._Data));
+    }
+
+    public static SaveAll(): void {
+        let allData: { [key: string]: any } = {};
+
+        console.log(_DataStores);
+        for (const key in _DataStores) {
+            const dataStore = _DataStores[key];
+            allData[key] = dataStore._Data;
+        }
+
+        const json: string = JSON.stringify(allData, null, 4);
+
+        this.SaveToJSON(json);
     }
 
     /**
@@ -291,5 +306,6 @@ export class DataStore {
         else if (input instanceof DataStore) {
             delete _DataStores[input.GetComponentID()];
         }
+        DataStore.SaveAll();
     }
 }

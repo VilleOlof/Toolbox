@@ -5,18 +5,28 @@
     import Settings from "./Components/Settings.svelte";
     import { GlobalSettings } from "./Lib/Settings";
 
+    let settingComponent;
+    let moduleViewComponent;
+
     let ShowSettings: boolean = GlobalSettings.SettingsData.Get("ShowSettingsMenu", false);
     GlobalSettings.SettingsData.Subscribe("ShowSettingsMenu", (value: boolean) => {
         ShowSettings = value;
+
+        if (ShowSettings) {
+            moduleViewComponent.$destroy();
+        }
+        else {
+            settingComponent.$destroy();
+        }
     });
 </script>
 
 <Navbar />
 
 {#if ShowSettings}
-    <Settings />
+    <Settings bind:this={settingComponent}/>
 {:else}
-    <ModuleView />
+    <ModuleView bind:this={moduleViewComponent} />
 {/if}
 
 <style lang="scss">

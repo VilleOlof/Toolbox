@@ -3,13 +3,14 @@
     import { AppSettings } from '../Lib/AppSettings';
 
     const NPM_Command: string = 'npm run build';
-    const moduleListPath: string = '../module_list.json';
+    const moduleListPath: string = '/../module_list.json';
     
     let ShowNotification: boolean = false;
     let NoNotification: boolean = false;
 
+    const fs = require('fs');
+
     function GetModulesInDirectory(): string[] {
-        const fs = require('fs');
         const path = require('path');
         
         const modulesDirectory: string = path.join(__dirname, '../modules');
@@ -25,7 +26,7 @@
     }
 
     function GetCurrentModules(): string[] {
-        return require(moduleListPath);
+        return JSON.parse(fs.readFileSync(__dirname + moduleListPath));
     }
 
     function CheckForNewModules(): void {

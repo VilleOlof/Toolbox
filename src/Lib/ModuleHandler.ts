@@ -10,6 +10,7 @@ export namespace ModuleHandler {
 
     export let RegisteredModules: {[key: string]: ModuleData} = {};
     export let ModuleImports: {[key: string]: Function} = GetModuleImports();
+    let ModuleInstances = [];
 
     let _DataStore: DataStore;
     let _FirstLoad: boolean = true;
@@ -33,12 +34,10 @@ export namespace ModuleHandler {
     export async function Init(ColumnContainerDiv: HTMLDivElement): Promise<HTMLDivElement> {
         if (!_DataStore) _DataStore = new DataStore("ModuleHandler");
 
+        ColumnContainer = ColumnContainerDiv;
+
         if (_FirstLoad) {
 
-            if (!ColumnContainer) {
-                ColumnContainer = ColumnContainerDiv;
-            }
-            
             await LoadLayout();
             DragHandler.Init();
 
@@ -46,18 +45,16 @@ export namespace ModuleHandler {
             return ColumnContainerDiv;
         }
 
-        if (!ColumnContainer) {
-            ColumnContainer = ColumnContainerDiv;
-        }
-        else {
-            //copy the old children from ColumnContainer to ColumnContainerDiv
-            while (ColumnContainer.firstChild) {
-                ColumnContainerDiv.appendChild(ColumnContainer.firstChild);
-            }
-            ColumnContainer = ColumnContainerDiv;
-        }
+        await LoadLayout();
 
         return ColumnContainer;
+    }
+
+    export function DestroyInstances(): void {
+        SaveLayout();
+        ModuleInstances.forEach(instance => {
+            instance.$destroy();
+        });
     }
 
     export function SaveLayout(): void {
@@ -101,10 +98,11 @@ export namespace ModuleHandler {
                 if (moduleImport === undefined) return;
                 let module = await moduleImport();
 
-                new module({
+                const newModule = new module({
                     target: columnDiv,
                     props: {}
                 });
+                ModuleInstances.push(newModule);
 
                 RegisteredModules[moduleName] = {
                     name: moduleName,
@@ -127,19 +125,6 @@ export namespace ModuleHandler {
         moduleDiv.classList.add("module");
 
         if (!_FirstLoad) {
-
-            //move the module to the correct column
-            if (moduleDiv) {
-                let column = GetFirstColumn(componentSize);
-                if (column) {
-                    column.appendChild(moduleDiv);
-                }
-                else {
-                    column = AddColumn(componentSize);
-                    column.appendChild(moduleDiv);
-                }
-            }
-
             SaveLayout();
             DragHandler.UpdateAll();
         }
@@ -180,10 +165,11 @@ export namespace ModuleHandler {
 
         let module = await moduleImport();
 
-        new module({
+        const newModule = new module({
             target: ColumnDiv,
             props: {}
         });
+        ModuleInstances.push(newModule);
 
         if (!Object.keys(RegisteredModules).includes(moduleName)) {
             document.body.removeChild(document.body.lastChild);

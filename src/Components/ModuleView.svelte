@@ -1,9 +1,14 @@
 <script lang="ts">
-    import { onMount } from "svelte";
+    import { onDestroy, onMount } from "svelte";
     import { ModuleHandler } from "../Lib/ModuleHandler";
 
     onMount(async () => {
         await ModuleHandler.Init(document.getElementById("columnContainer") as HTMLDivElement);
+    });
+
+    onDestroy(() => {
+        ModuleHandler.SaveLayout();
+        ModuleHandler.DestroyInstances();
     });
 
 </script>

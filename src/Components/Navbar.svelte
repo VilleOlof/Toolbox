@@ -35,13 +35,22 @@
         dropdown.style.display = Show ? "block" : "none";
     }
 
+    const ToggleEditBG = () => {
+        let editBG = document.querySelector("#editModeBG") as HTMLDivElement;
+        const editDisplay = editBG.style.display;
+
+        editBG.style.display = editDisplay == "block" ? "none" : "block";
+    }
+
 </script>
+
+<div id="editModeBG"></div>
 
 <div id=navbarContainer>
     <div id=leftSide>
         <img class=reverseColor on:click={Close} on:keydown={Close} src="../src/assets/close.svg" alt="Exit">
 
-        <h1>Davinki Toolbox</h1>
+        <h1 id="title">Davinki Toolbox</h1>
 
         <img class=reverseColor on:click={GithubEvent} on:keydown={GithubEvent} src="../src/assets/github.svg" alt="Github">
     </div>
@@ -53,8 +62,14 @@
         <RefreshNotification />
 
         <p id="editModeButton"
-        on:click={() => {DragHandler.ToggleDragCorners(true)}}
-        on:keydown={() => {DragHandler.ToggleDragCorners(true)}}
+        on:click={() => {
+            DragHandler.ToggleDragCorners(true);
+            ToggleEditBG();
+        }}
+        on:keydown={() => {
+            DragHandler.ToggleDragCorners(true);
+            ToggleEditBG();
+            }}
         >Edit Mode</p>
 
         <div id="nav_columnContainer">
@@ -132,9 +147,31 @@
         user-select: none;
     }
 
+    #editModeBG {
+        display: none;
+
+        position: fixed;
+        top: 0;
+        left: 0;
+
+        height: 100vh;
+        width: 100vw;
+
+        background-color: rgba(0, 0, 0, 0.5);
+
+        z-index: 0;
+
+        background: repeating-linear-gradient(
+        45deg,
+        #00000015,
+        #00000015 4rem,
+        #949e0015 4rem,
+        #949e0015 8rem
+        );
+    }
+
     *:not(#navbarContainer) {
         -webkit-app-region: no-drag;
-        z-index: 5;
     }
 
     #leftSide {

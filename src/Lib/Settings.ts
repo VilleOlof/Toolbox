@@ -39,6 +39,8 @@ namespace GlobalSettings {
             settings.Load(SettingsJSON[componentID]);
             _ComponentSettings[componentID] = settings;
         }
+
+        SettingsData.Set("ShowSettingsMenu", false);
     }
 
     export function ChangeShowSettingsMenu(): void {
@@ -142,6 +144,19 @@ namespace GlobalSettings {
         GlobalSettings.Save(componentID, SettingsInstance);
 
         SettingsInstance = undefined;
+    }
+
+    export function ResetAllComponentSettings(componentID: string): void {
+        let settings = GlobalSettings.GetComponentSettingsByID(componentID);
+        let allSettings = settings.GetAllComponentSettings();
+
+        for (const name in allSettings) {
+            const setting = allSettings[name];
+
+            settings.Set(name, setting.Default, false);
+        }
+
+        GlobalSettings.Save(componentID, settings);
     }
 
     export async function HandleSettingInput(input: SettingTypes.SettingInput): Promise<void> {
