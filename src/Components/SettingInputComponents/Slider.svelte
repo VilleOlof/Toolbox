@@ -15,6 +15,12 @@
         Type: SettingTypes.InputTypes.Number,
         Save: false
     });
+
+    const settings = GlobalSettings.GetComponentSettingsByID(componentID);
+    settings.AddResetCallback(settingName, () => {
+        settingInfo.Value = settingInfo.Value;
+    });
+    
 </script>
 
 {#if extraData.List !== undefined}

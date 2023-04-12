@@ -5,7 +5,8 @@
     export let settingName: string;
     export let settingInfo: SettingTypes.Info;
 
-    //let extraData: SettingTypes.Date = <SettingTypes.Date>settingInfo.ExtraData;
+    let extraData: SettingTypes.Radio = <SettingTypes.Radio>settingInfo.ExtraData;
+
     const HandleInput = () => {
         GlobalSettings.HandleSettingInput(<SettingTypes.SettingInput>{
             Event: window.event,
@@ -23,12 +24,13 @@
     });
     
 </script>
-
-<input type="color" bind:value={settingInfo.Value} on:change={HandleInput}>
-
-<!-- <div id=color>
-    <ColorInput bind:color onInput={HandleInput}  showAlphaSlider={true} --input-width="260px" />
-</div> -->
+ 
+{#each extraData.Options as option}
+	<label>
+		<input type=radio id={`${componentID}-radio`} bind:group={settingInfo.Value} on:change={HandleInput} name={extraData.name} value={option}>
+		{option}
+	</label>
+{/each}
 
 <span></span>
 

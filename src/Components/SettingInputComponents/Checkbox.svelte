@@ -15,6 +15,12 @@
         DefaultValue: settingInfo.Default,
         Type: SettingTypes.InputTypes.Other
     });
+    
+    const settings = GlobalSettings.GetComponentSettingsByID(componentID);
+    settings.AddResetCallback(settingName, () => {
+        settingInfo.Value = settingInfo.Value;
+    });
+    
 </script>
 
 <input type="checkbox"

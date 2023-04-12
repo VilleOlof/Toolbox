@@ -108,6 +108,9 @@ export namespace ModuleHandler {
                     name: moduleName,
                     size: column.size
                 };
+
+                const moduleDiv = document.getElementById(moduleName);
+                columnDiv.appendChild(moduleDiv);
             }
         }
 
@@ -125,6 +128,17 @@ export namespace ModuleHandler {
         moduleDiv.classList.add("module");
 
         if (!_FirstLoad) {
+            if (moduleDiv) {
+                let column = GetFirstColumn(componentSize);
+                if (!column) {
+                    column = AddColumn(componentSize);
+                    column.appendChild(moduleDiv);
+                }
+                else {
+                    column.appendChild(moduleDiv);
+                }
+            }
+
             SaveLayout();
             DragHandler.UpdateAll();
         }

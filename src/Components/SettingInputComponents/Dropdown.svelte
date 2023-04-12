@@ -29,7 +29,14 @@
 
         firstLoad = false;
     });
-
+    
+    const settings = GlobalSettings.GetComponentSettingsByID(componentID);
+    settings.AddResetCallback(settingName, () => {
+        const select = document.querySelector("select");
+        select.value = settingInfo.Value;
+        settingInfo.Value = settingInfo.Value;
+    });
+    
 </script>
 <!-- bind:value={settingInfo.Value} -->
 <select

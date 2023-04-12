@@ -1,19 +1,23 @@
 @use './Variables' as Vars;
 
 input, select {
-    $InputBackground: darken(Vars.$BackgroundColor, 5%);
+    $InputBackground: #212126;
 
     width: 20em;
 
     background-color: $InputBackground;
-    color: white;
-    border: 1px solid darken($InputBackground, 3%);
+    color: #e7e7e7;
+
+    border-color: darken($InputBackground, 5%);
+    border-radius: 0.25rem;
 
     padding: 0.4em;
 
+    filter: drop-shadow(0 0 0.2em #00000046);
+
     &:focus {
         outline: none;
-        border-color: Vars.$BackgroundColor;
+        border-color: $InputBackground;
     }
 
     &::-webkit-calendar-picker-indicator {

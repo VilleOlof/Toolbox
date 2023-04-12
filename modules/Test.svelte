@@ -11,16 +11,12 @@
 
     const settings: Settings = GlobalSettings.GetInstance(componentID);
 
-    function a(componentID: string, settingName: string, settingInfo: SettingTypes.Info): void {
-        console.log(`button clicked! - ${componentID} - ${settingName}`);
-    }
-
     let button: SettingTypes.Button = <SettingTypes.Button>{
         Label: 'Click me!',
-        Callback: a
+        Callback: (componentID: string, settingName: string, settingInfo: SettingTypes.Info) => {
+            console.log(`button clicked! - ${componentID} - ${settingName}`);
+        }
     };
-    console.log(button);
-
     settings.RegisterSetting('buttooon!!', 'clicky click!',
         null,
         SettingTypes.Type.Button,
@@ -32,6 +28,38 @@
         SettingTypes.Type.Dropdown,
         <SettingTypes.Dropdown>{
             Options: ['test', 'test2', 'test3']
+        }
+    );
+
+    settings.RegisterSetting('colorp', 'color picker',
+        '#000000',
+        SettingTypes.Type.Color,
+        null
+    );
+
+    settings.RegisterSetting('dateee', 'wooo', "2023-04-13",
+        SettingTypes.Type.Date,
+        null
+    );
+
+    settings.RegisterSetting('boooolaeenee', 'true or false', true,
+        SettingTypes.Type.Checkbox,
+        null
+    );
+
+    settings.RegisterSetting('radio', 'hallå hallå',
+        'test',
+        SettingTypes.Type.Radio,
+        <SettingTypes.Radio>{
+            Options: ['test', 'test2', 'test3']
+        }
+    );
+
+    settings.RegisterSetting('keyy', 'keybind!',
+        'q',
+        SettingTypes.Type.Keybind,
+        <SettingTypes.Keybind>{
+            placeholder: 'attack key'
         }
     );
 

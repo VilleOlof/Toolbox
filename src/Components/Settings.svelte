@@ -119,16 +119,6 @@
 
 </script>
 
-<!--
-    Input component that doesnt correctly have a default value from previous settings
-
-    - File (this is okay though, it shouldnt have a default value)
-    - Dropdown
-    - Date
-    - Color
-    - Checkbox
--->
-
 <main>
     <div id="otherContent">
         <button class=btnStyle on:click={openDevTools}>Open Devtools</button>

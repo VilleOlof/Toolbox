@@ -15,7 +15,7 @@
         DefaultValue: settingInfo.Default,
         Type: SettingTypes.InputTypes.Other,
         Save: false
-    });
+    }); 
 </script>
 
 <input type="file"

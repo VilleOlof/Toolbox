@@ -158,13 +158,14 @@ namespace GlobalSettings {
             const setting = allSettings[name];
 
             settings.Set(name, setting.Default, false);
+            settings.CallResetCallback(name);
         }
 
         GlobalSettings.Save(componentID, settings);
     }
 
     export async function HandleSettingInput(input: SettingTypes.SettingInput): Promise<void> {
-        if (!ValidateSettingInput(input.Event)) return;
+        if (input.Validate && !ValidateSettingInput(input.Event)) return;
 
         let value: any = input.CustomValue ?? input.Event.target.value;
 
@@ -223,7 +224,9 @@ namespace SettingTypes {
     | Date
     | Slider 
     | Dropdown 
-    | Button;
+    | Button
+    | Radio
+    | Keybind;
 
     export enum InputTypes {
         String = "string",
@@ -240,6 +243,7 @@ namespace SettingTypes {
         DefaultValue: any;
         Type: InputTypes;
         Save?: boolean;
+        Validate?: boolean;
     }
     
     /**
@@ -291,6 +295,15 @@ namespace SettingTypes {
         Min?: string;
         Max?: string;
         Step?: number;
+    }
+
+    export type Radio = {
+        name?: string;
+        Options?: string[];
+    }
+
+    export type Keybind = {
+        placeholder?: string;
     }
     
     /**
@@ -373,6 +386,11 @@ class Settings {
     private _Settings: Record<string, SettingTypes.Info>;
 
     /**
+     * The reset callbacks for the component.
+     */
+    private _ResetCallbacks: Record<string, Function> = {};
+
+    /**
      * Registers a setting.
      * 
      * @param settingName The name
@@ -406,12 +424,13 @@ class Settings {
     public RegisterSetting(settingName: string, settingDescription: string, defaultValue: any, type: SettingTypes.Type, ExtraData?: SettingTypes.ExtraDataTypes, loadOldValues: boolean = true) {
         
         //a bit jank, copilot generated and had issues with loading old values before. but this works
+        let value = defaultValue
         if (loadOldValues) {
-            defaultValue = this.GetSettingValue(settingName, defaultValue);
+            value = this.GetSettingValue(settingName, defaultValue);
         }
 
         this.SetSettingInfo(settingName, {
-            Value: defaultValue,
+            Value: value,
             Default: defaultValue,
             Type: type,
             Description: settingDescription,
@@ -569,6 +588,35 @@ class Settings {
         delete this._Settings
 
         GlobalSettings.Save(this._ComponentID, this);
+    }
+
+    /**
+     * Calls a callback when a setting is reset.
+     * 
+     * @param settingName The name of the setting
+     * @param callback The callback to call when the setting is reset
+     */
+    public AddResetCallback(settingName: string, callback: Function): void {
+        this._ResetCallbacks[settingName] = callback;
+    }
+
+    /**
+     * Removes a reset callback.
+     * 
+     * @param settingName The name of the setting
+     */
+    public RemoveResetCallback(settingName: string): void {
+        delete this._ResetCallbacks[settingName];
+    }
+
+    /**
+     * Calls a reset callback.
+     * 
+     * @param settingName The name of the setting
+     */
+    public CallResetCallback(settingName: string): void {
+        if (!this._ResetCallbacks[settingName]) return;
+        this._ResetCallbacks[settingName]();
     }
 }
 

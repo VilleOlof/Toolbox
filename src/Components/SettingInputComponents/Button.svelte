@@ -7,10 +7,10 @@
 
     let extraData: SettingTypes.Button = <SettingTypes.Button>settingInfo.ExtraData;
 
-    const HandleInput = () => console.log(extraData);
+    const HandleInput = () => extraData.Callback(componentID, settingName, settingInfo);
 </script>
 
-<button
+<button class="btnStyle"
     on:click={HandleInput}
 >{extraData.Label}</button>
 

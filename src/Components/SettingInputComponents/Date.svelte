@@ -14,12 +14,18 @@
         DefaultValue: settingInfo.Default,
         Type: SettingTypes.InputTypes.String
     });
+    
+    const settings = GlobalSettings.GetComponentSettingsByID(componentID);
+    settings.AddResetCallback(settingName, () => {
+        settingInfo.Value = settingInfo.Value;
+    });
+    
 </script>
 
 <input type="date"
-    max={extraData.Max ?? Infinity}
-    min={extraData.Min ?? 0}
-    step={extraData.Step ?? 1}
+    max={extraData?.Max ?? "9999-12-31"}
+    min={extraData?.Min ?? "0000-01-01"}
+    step={extraData?.Step ?? "1"}
 
     bind:value={settingInfo.Value}
     on:input={HandleInput}

@@ -14,6 +14,12 @@
         DefaultValue: settingInfo.Default,
         Type: SettingTypes.InputTypes.String
     });
+
+    const settings = GlobalSettings.GetComponentSettingsByID(componentID);
+    settings.AddResetCallback(settingName, () => {
+        settingInfo.Value = settingInfo.Value;
+    });
+
 </script>
 
 {#if extraData.List !== undefined}
