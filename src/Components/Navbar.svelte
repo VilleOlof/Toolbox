@@ -42,13 +42,21 @@
         editBG.style.display = editDisplay == "block" ? "none" : "block";
     }
 
+    const ModuleEntryName = (moduleName: string) => {
+        if (moduleName.length > 15) {
+            return moduleName.substring(0, 15) + "...";
+        } else {
+            return moduleName;
+        }
+    }
+
 </script>
 
 <div id="editModeBG"></div>
 
 <div id=navbarContainer>
     <div id=leftSide>
-        <img class=reverseColor on:click={Close} on:keydown={Close} src="../src/assets/close.svg" alt="Exit">
+        <img id=closeButton class=reverseColor on:click={Close} on:keydown={Close} src="../src/assets/close.svg" alt="Exit">
 
         <h1 id="title">Davinki Toolbox</h1>
 
@@ -111,7 +119,7 @@
                         <span on:click={() => {ModuleHandler.AddModuleInColumn(ModuleName, document.body)}} 
                             on:keydown={() => {ModuleHandler.AddModuleInColumn(ModuleName, document.body)}}
                             >
-                            + {ModuleName}
+                            + {ModuleEntryName(ModuleName)}
                         </span>
                     {/each}
                 </div>
@@ -313,6 +321,11 @@
 
     :global(#moduleEntries > .is-active) {
         color: #5f5f5f;
+    }
+
+    #closeButton {
+        width: 2rem !important;
+        height: auto;
     }
 
     .reverseColor {

@@ -95,9 +95,9 @@
     <div id="notificationContainer">
         <p>We've noticed your modules folder changed, would you like to restart the app?</p>
         <div id="buttons">
-            <button on:click={RefreshAppWithNewModules}>Yes</button> 
+            <button class=btnStyle on:click={RefreshAppWithNewModules}>Yes</button> 
 
-            <button on:click={DisableNotification}>No</button>
+            <button class=btnStyle on:click={DisableNotification}>No</button>
         </div>
     </div>
 {/if}
@@ -109,7 +109,7 @@
     #notificationContainer {
         @include Flex.Container(center, center, column);
 
-        position: absolute;
+        position: fixed;
 
         top: 0;
         left: 0;
@@ -122,10 +122,18 @@
         color: white;
 
         z-index: 10;
+
+        font-size: 1.5rem;
+        text-align: center;
     }
     
     #buttons {
         @include Flex.Container();
+
+        button {
+            font-size: 1.5rem;
+            padding: 0.5rem 1rem;
+        }
     }
 
     #refreshIcon {

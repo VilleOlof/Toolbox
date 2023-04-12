@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import { GlobalSettings, SettingTypes, Settings } from "../Lib/Settings";
   import { DataStore } from "../Stores/DataStore";
+  import { AppSettings } from "../Lib/AppSettings";
 
     let InputComponents: Record<string, Function> = {};
 
@@ -132,6 +133,10 @@
         else if (!append) currentWindow.webContents.setZoomFactor(zoom);
     }
 
+    const GithubEvent = () => {
+        require('electron').shell.openExternal('https://github.com/VilleOlof/Toolbox');
+    }
+
 </script>
 
 <main>
@@ -155,6 +160,15 @@
     
     </div>
 </main>
+
+<div id="cornerText">
+    <p>Made By: VilleOlof</p>
+    <p>Version: {AppSettings.GetSetting('Version')}</p>
+    <p id=cornerGithub on:click={GithubEvent} on:keydown={GithubEvent}>
+        Found a bug? Have a suggestion? <br />
+        Create an issue on the Github page!
+    </p>
+</div>
 
 <style lang="scss">
     @use '../scss/Flex';
@@ -260,6 +274,38 @@
         }
 
         filter: drop-shadow(0 0 0.2em #00000046);
+    }
+
+    #cornerText {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+
+        color: #ffffff35;
+
+        margin: 1rem;
+
+        @include Flex.Container(flex-start, flex-start, column);
+
+        p {
+            margin: 0;
+            margin-bottom: 0.5rem;
+        }
+    }
+
+    #cornerGithub {
+        cursor: pointer;
+        user-select: none;
+
+        &:hover {
+            color: #ffffff80;
+        }
+
+        transition: color 0.2s;
+
+        &:active {
+            color: #ffffff90;
+        }
     }
 
 </style>
