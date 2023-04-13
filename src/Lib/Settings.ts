@@ -399,6 +399,7 @@ class Settings {
      * @param type The type of the setting input
      * @param ExtraData Extra data for the setting type (Optional)
      * @param loadOldValues Whether to load old values from the settings file (Optional)
+     * @returns The Setting Value
      * 
      * @example
      * ```ts
@@ -438,6 +439,8 @@ class Settings {
         });
 
         GlobalSettings.Save(this._ComponentID, this);
+
+        return this.GetSettingValue(settingName, defaultValue);
     }
 
     /**

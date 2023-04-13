@@ -3,7 +3,6 @@
     import { GlobalSettings, SettingTypes, Settings } from "../Lib/Settings";
     import { DataStore } from "../Stores/DataStore";
     import { AppSettings } from "../Lib/AppSettings";
-    import RefreshNotification from "./RefreshNotification.svelte";
     import { ModuleHandler } from "../Lib/ModuleHandler";
 
     const path = require('path');
@@ -23,6 +22,11 @@
         const settingsContainer = document.getElementById('autoGenSettings') as HTMLDivElement;
 
         for (const [componentID, settingInstance] of Object.entries(Settings)) {
+            //Check if the component has been registered
+            if (!ModuleHandler.RegisteredModules[componentID]) {
+                continue;
+            }
+
             const componentContainer: HTMLDivElement = document.createElement('div');
             componentContainer.id = componentID;
             componentContainer.classList.add('componentContainer');
@@ -176,8 +180,6 @@
         </div>
 
         <div id="otherContentBottom">
-            <RefreshNotification />
-
             <button class="btnStyle" on:click={ClearColumns}>Clear All Columns</button>
             <button class="btnStyle" on:click={OpenModuleFolder}>Open Modules Folder</button>
         </div>
@@ -241,11 +243,11 @@
 
     :global(.settingContainer > h3) {
         margin: 0;
-        margin: 1rem 0.5rem;    
+        margin: 1rem 0.5rem 0.25rem 0.5rem;    
     }
     :global(.settingContainer > p) {
         margin: 0;
-        margin: 1rem 0.5rem;    
+        margin: 0.25rem 0.5rem 1rem 0.5rem;    
     }
 
     :global(.settingHeader) {

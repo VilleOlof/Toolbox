@@ -1,19 +1,4 @@
 
---- ResolveFunctions måste ha timeline i början (check)
-
---- _JSONSavePath i DataStore är dubbel i win10 men bara går ut 1 gång i win11?
-
---- electron always on top fungerar knas i win11
-
----Clear all columns in settings page
--- move reset to settings
-
-open module folder i settings
-
-
-
-
-
 # Toolbox Specs
 
 ## Resources  

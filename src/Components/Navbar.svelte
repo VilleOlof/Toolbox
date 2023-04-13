@@ -4,6 +4,7 @@
     import { DragHandler } from "../Lib/DragHandler";
     import { PluginCleanUp } from "../Lib/DavinciResolve";
     import { AppSettings } from "../Lib/AppSettings";
+    import RefreshNotification from "./RefreshNotification.svelte";
 
     const GithubEvent = () => {
         require('electron').shell.openExternal('https://github.com/VilleOlof/Toolbox');
@@ -65,6 +66,8 @@
     <div id=rightSide>
 
         <p id="trashArea">Trash</p>
+
+        <RefreshNotification />
 
         <p id="editModeButton"
         on:click={() => {

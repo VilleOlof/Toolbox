@@ -22,20 +22,20 @@
     
 </script>
 
-{#if extraData.List !== undefined}
-    <datalist id={`${componentID}-${settingName}-list`}>
+<datalist id={`${componentID}-${settingName}-list`}>
+    {#if extraData?.List}
         {#each extraData.List as listEntry}
             <option value={listEntry} />
         {/each}
-    </datalist>
-{/if}
+    {/if}
+</datalist>
 
 <input type="number"
-    max={extraData.Max ?? Infinity}
-    min={extraData.Min ?? 0}
-    step={extraData.Step ?? 1}
-    placeholder={extraData.Placeholder ?? undefined}
-    list={extraData.List ? `${componentID}-${settingName}-list` : undefined}
+    max={extraData?.Max ?? Infinity}
+    min={extraData?.Min ?? 0}
+    step={extraData?.Step ?? 1}
+    placeholder={extraData?.Placeholder ?? undefined}
+    list={`${componentID}-${settingName}-list`}
 
     bind:value={settingInfo.Value}
     on:input={HandleInput}

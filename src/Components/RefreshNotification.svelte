@@ -30,6 +30,8 @@
     }
 
     function CheckForNewModules(): void {
+        ShowNotification = true;
+        return;
         const modules: string[] = GetModulesInDirectory();
         const currentModules: string[] = GetCurrentModules();
 
@@ -75,6 +77,7 @@
         refreshHoverText.style.display = state ? 'block' : 'none';
     }
 
+    CheckForNewModules();
     setInterval(() => {
         if (NoNotification) return;
 
