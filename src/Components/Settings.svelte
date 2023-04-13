@@ -1,8 +1,13 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { GlobalSettings, SettingTypes, Settings } from "../Lib/Settings";
-  import { DataStore } from "../Stores/DataStore";
-  import { AppSettings } from "../Lib/AppSettings";
+    import { DataStore } from "../Stores/DataStore";
+    import { AppSettings } from "../Lib/AppSettings";
+    import RefreshNotification from "./RefreshNotification.svelte";
+    import { ModuleHandler } from "../Lib/ModuleHandler";
+
+    const path = require('path');
+    const { spawn } = require('child_process');
 
     let InputComponents: Record<string, Function> = {};
 
@@ -137,19 +142,45 @@
         require('electron').shell.openExternal('https://github.com/VilleOlof/Toolbox');
     }
 
+    const OpenModuleFolder = () => {
+        const modulePath = path.join(__dirname, '..', 'modules');
+        const fileManager = process.platform === 'win32' ? 'explorer' : 'open';
+        spawn(fileManager, [modulePath]);
+    }
+
+    const ClearColumns = () => {
+        delete ModuleHandler.RegisteredModules;
+        ModuleHandler.RegisteredModules = {};
+        ModuleHandler.ColumnContainer.remove();
+
+        ModuleHandler._DataStore.Set('RegisteredModules', []);
+        ModuleHandler._DataStore.Set('Columns', []);
+
+        ModuleHandler.UpdateNavEntries();
+    }
+
 </script>
 
 <main>
     <div id="otherContent">
-        <button class=btnStyle on:click={openDevTools}>Open Devtools</button>
+        <div id=otherContentTop>
+            <button class=btnStyle on:click={openDevTools}>Open Devtools</button>
 
-        <div id="zoomButtons">
-            <button class="btnStyle" on:click={() => {Zoom(0.1)}}>Zoom In</button>
-            <button class="btnStyle" on:click={() => {Zoom(-0.1)}}>Zoom Out</button>
-            <button class="btnStyle" on:click={() => Zoom(1, false)}>Reset Zoom</button>
+            <div id="zoomButtons">
+                <button class="btnStyle" on:click={() => {Zoom(0.1)}}>Zoom In</button>
+                <button class="btnStyle" on:click={() => {Zoom(-0.1)}}>Zoom Out</button>
+                <button class="btnStyle" on:click={() => Zoom(1, false)}>Reset Zoom</button>
+            </div>
+    
+            <button class="btnStyle" on:click={toggleAlwaysOnTop}>Always On Top</button>
         </div>
 
-        <button class="btnStyle" on:click={toggleAlwaysOnTop}>Always On Top</button>
+        <div id="otherContentBottom">
+            <RefreshNotification />
+
+            <button class="btnStyle" on:click={ClearColumns}>Clear All Columns</button>
+            <button class="btnStyle" on:click={OpenModuleFolder}>Open Modules Folder</button>
+        </div>
     </div>
     
     <div id="settingsContainer">
@@ -232,9 +263,21 @@
     #otherContent {
         margin: 1rem;
 
+        @include Flex.Container(center, center, column);
+
+        filter: drop-shadow(0 0 0.25em #00000046);
+    }
+
+    #otherContentTop {
+        margin: 1rem;
+
         @include Flex.Container(center, center, row);
 
         filter: drop-shadow(0 0 0.25em #00000046);
+    }
+
+    #otherContentBottom {
+        @extend #otherContentTop;
     }
     
     #zoomButtons {

@@ -1,5 +1,4 @@
 <script lang="ts">
-    import RefreshNotification from "./RefreshNotification.svelte";
     import { GlobalSettings } from "../Lib/Settings";
     import { ModuleHandler } from "../Lib/ModuleHandler";
     import { DragHandler } from "../Lib/DragHandler";
@@ -66,8 +65,6 @@
     <div id=rightSide>
 
         <p id="trashArea">Trash</p>
-
-        <RefreshNotification />
 
         <p id="editModeButton"
         on:click={() => {

@@ -60,7 +60,7 @@ export class DataStore {
      */
     private _Subscribers: Record<string, CallbackFunction[]> = {};
 
-    private static _JSONSavePath: string = "../../Data.json";
+    private static _JSONSavePath: string = "/../Data.json";
 
     /**
      * Notifies all subscribers of a data change.
@@ -188,7 +188,7 @@ export class DataStore {
     }
 
     /**
-     * Deletes the data for a key and removes it from local storage.
+     * Deletes the data for a key.
      * 
      * @param key The key of the data to delete.
      * @param notify Whether or not to notify subscribers of the change.
@@ -199,12 +199,14 @@ export class DataStore {
      * ```
      */
     public Delete(key: string, notify: boolean = false) {
-        localStorage.removeItem(this._ComponentID);
         delete this._Data[key];
+        console.log("deleting: " + key + " from " + this._ComponentID + "")
 
         if (notify) {
             this.Notify(key, undefined);
         }
+
+        this.Save();
     };
 
     /**

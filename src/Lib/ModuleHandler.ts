@@ -12,7 +12,7 @@ export namespace ModuleHandler {
     export let ModuleImports: {[key: string]: Function} = GetModuleImports();
     let ModuleInstances = [];
 
-    let _DataStore: DataStore;
+    export let _DataStore: DataStore;
     let _FirstLoad: boolean = true;
 
     export enum ComponentSize {

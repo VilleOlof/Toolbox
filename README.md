@@ -1,4 +1,7 @@
-# Toolbox
+
+<img src="./src/assets/Logo.png" width="600" alt="Davinki Toolbox">
+
+----
 
 A Davinci Resolve plugin that provides a modular toolbox for creating custom tools.  
 This plugin runs with Electron, and uses Svelte for the UI and custom modules.  

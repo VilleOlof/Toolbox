@@ -6,19 +6,42 @@ const { clearInterval } = require('timers');
 // Change this to the URL of the repo zip file when its public
 const RepoZipURL = 'https://github.com/VilleOlof/Toolbox/archive/refs/heads/main.zip';
 
+//DEV URL
+//const RepoZipURL = 'https://cdn.discordapp.com/attachments/365772775832420353/1095864411882799155/Toolbox-main.zip'
+
 function Install(path) {
     //Update path to new workflow folder
     path = CreateWorkflowFolder(path);
+
     DownloadRepo(path);
     UnzipRepo(path);
+
     //Update path to new repo folder
-    path = path += '/Toolbox'
-    NPMInstall(path);
-    NPMBuild(path)
+    path = path += '/Toolbox-main'
+    //CreateJSONFiles(path);
+
+    //wait for the path to exist
+    let attempts = 0;
+    let pathInterval = setInterval(() => {
+        if (fs.existsSync(path)) {
+            clearInterval(pathInterval);
+            console.log('Path Exists');
+
+            NPMInstall(path);
+
+        }
+        if (attempts > 10) {
+            clearInterval(pathInterval);
+            console.log('Path Doesnt Exist');
+        }
+        attempts++;
+    }, 500);
+
+
 }
 
 function CreateWorkflowFolder(path) {
-    path = `${path}/fl Integration Plugins`
+    path = `${path}/Workflow Integration Plugins`
     exec(`mkdir -p "${path}"`, (err, stdout, stderr) => {
         if (err) {
             //console.log(`Error: ${err}`);
@@ -52,6 +75,8 @@ function UnzipRepo(Path) {
             const zip = new AdmZip(`${Path}/Toolbox.zip`);
             zip.extractAllTo(Path, true);
 
+            CreateJSONFiles(Path + '/Toolbox-main');
+
             DeleteOldZip(Path);
         }
         if (attempts > 10) {
@@ -74,23 +99,28 @@ function CheckForRepo(path) {
     return false;
 }
 
+function CreateJSONFiles(path) {
+    fs.writeFileSync(`${path}/Data.json`, '{}');
+    fs.writeFileSync(`${path}/Settings.json`, '{}');
+}
+
 function NPMInstall(path) {
-    exec(`npm install`, {
-        cwd: path
-    }, (err, stdout, stderr) => {
+    process.chdir(path);
+    exec(`npm install`, (err, stdout, stderr) => {
         if (err) {
             console.log(`Error: ${err}`);
             return;
         }
         console.log(`stdout: ${stdout}`);
         console.log(`stderr: ${stderr}`);
+
+        NPMBuild(path)
     });
 }
 
 function NPMBuild(path) {
-    exec(`npm run build`, {
-        cwd: path
-    }, (err, stdout, stderr) => {
+    process.chdir(path);
+    exec(`npm run build`, (err, stdout, stderr) => {
         if (err) {
             console.log(`Error: ${err}`);
             return;
@@ -107,6 +137,6 @@ function DeleteOldZip(Path) {
 const args = process.argv.slice(2);
 
 // Default path to DaVinci Resolve
-let DavinciPath = args[0] ?? `${process.env.PROGRAMDATA}/Blackmagic Design/DaVinci Resolve/Support`
+let DavinciPath = args[0] ?? `${process.env.PROGRAMDATA}\\Blackmagic Design\\DaVinci Resolve\\Support`
 
 Install(DavinciPath);

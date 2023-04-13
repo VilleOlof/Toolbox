@@ -174,7 +174,8 @@ export class ResolveFunctions {
      * ```
      */
     private static ForceUpdateCurrentPage(notify: boolean = true): void {
-        let oldPage: ResolveEnums.Pages = ResolveFunctions.CurrentPage;
+        if (!ResolveFunctions.CurrentPage) return;
+        let oldPage: ResolveEnums.Pages = ResolveFunctions?.CurrentPage;
         ResolveFunctions.CurrentPage = this.GetCurrentPage() ?? ResolveFunctions.CurrentPage;
 
         if (oldPage !== ResolveFunctions.CurrentPage && notify) {
@@ -198,7 +199,8 @@ export class ResolveFunctions {
      * ```
      */
     private static ForceUpdateCurrentProject(notify: boolean = true): void {
-        let oldProjectName: string = ResolveFunctions.CurrentProject?.GetName() ?? "";
+        if (!ResolveFunctions.CurrentProject) return;
+        let oldProjectName: string = ResolveFunctions?.CurrentProject?.GetName() ?? "";
         ResolveFunctions.CurrentProject = this.GetCurrentProject() ?? ResolveFunctions.CurrentProject;
 
         if (oldProjectName !== ResolveFunctions.CurrentProject.GetName() && notify) {
@@ -221,7 +223,8 @@ export class ResolveFunctions {
      * ```
      */
     private static ForceUpdateCurrentTimeline(notify: boolean = true): void {
-        let oldTimelineName: string = ResolveFunctions.CurrentTimeline?.GetName() ?? "";
+        if (!ResolveFunctions.CurrentTimeline) return;
+        let oldTimelineName: string = ResolveFunctions?.CurrentTimeline?.GetName() ?? "";
         ResolveFunctions.CurrentTimeline = this.GetCurrentTimeline() ?? ResolveFunctions.CurrentTimeline;
 
         if (oldTimelineName !== ResolveFunctions.CurrentTimeline.GetName() && notify) {

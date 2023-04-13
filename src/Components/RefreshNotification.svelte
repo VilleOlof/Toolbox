@@ -142,6 +142,10 @@
         width: 2rem;
 
         margin-right: 1rem;
+
+        &:hover {
+            transform: scale(1.2) rotate(30deg);
+        }
     }
 
     #refreshHoverText {
