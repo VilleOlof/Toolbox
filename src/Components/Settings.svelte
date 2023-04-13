@@ -205,6 +205,7 @@
 
 <style lang="scss">
     @use '../scss/Flex';
+    @use '../scss/Colors';
 
     main {transform: translateY(3rem);}
 
@@ -215,7 +216,7 @@
     }
 
     :global(.componentContainer) {
-        background-color: #212126;
+        background-color: Colors.$ColumnColor;
 
         min-width: 30rem;
 
@@ -232,7 +233,7 @@
     }
 
     :global(.settingContainer) {
-        background-color: #28282E;
+        background-color: Colors.$ModuleColor;
 
         padding: 0.35rem;
         margin: 0.4rem;
@@ -285,7 +286,7 @@
     #zoomButtons {
         margin: 0;
 
-        background-color: #212126;
+        background-color: Colors.$ColumnColor;
         border-radius: 0.25rem;
         padding: 0.25rem;
 
@@ -298,10 +299,10 @@
     }
 
     :global(.btnStyle) {
-        background-color: #212126;
-        color: #fff;
+        background-color: Colors.$ColumnColor;
+        color: Colors.$TextColor;
 
-        border-color: darken(#212126, 5%);
+        border-color: darken(Colors.$ColumnColor, 5%);
         border-radius: 0.25rem;
 
         padding: 0.5rem;
@@ -311,11 +312,11 @@
         outline: none;
 
         &:hover {
-            background-color: #28282E;
+            background-color: Colors.$ModuleColor;
         }
 
         &:active {
-            background-color: #212126;
+            background-color: Colors.$ColumnColor;
         }
 
         filter: drop-shadow(0 0 0.2em #00000046);

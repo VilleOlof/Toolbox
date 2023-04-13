@@ -30,8 +30,6 @@
     }
 
     function CheckForNewModules(): void {
-        ShowNotification = true;
-        return;
         const modules: string[] = GetModulesInDirectory();
         const currentModules: string[] = GetCurrentModules();
 
@@ -108,6 +106,7 @@
 <style lang="scss">
     @use '../scss/Flex';
     @use '../scss/Animation';
+    @use '../scss/Colors';
     
     #notificationContainer {
         @include Flex.Container(center, center, column);
@@ -174,6 +173,6 @@
     }
 
     .reverseColor {
-        filter: invert(100%);
+        filter: invert(Colors.$IconInvertPercentage);
     }
 </style>

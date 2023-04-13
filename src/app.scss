@@ -1,6 +1,8 @@
+@use './scss/Colors';
+
 :root {
-    background-color: #1A1A1A;
-    color: #e7e7e7;
+    background-color: Colors.$BackgroundColor;
+    color: Colors.$TextColor;
     font-family: 'Roboto', sans-serif;
 }
 

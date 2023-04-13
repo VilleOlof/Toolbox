@@ -44,6 +44,7 @@
 
 <style lang="scss">
     @use '../../scss/ComponentInputs' as CI;
+    @use '../../scss/Colors';
 
     input {
         -webkit-appearance: none;
@@ -56,7 +57,7 @@
         height: 1rem;
         padding: 0;
 
-        background-color: darken(#212126, 5%);
+        background-color: darken(Colors.$ColumnColor, 5%);
         
         opacity: 0.7;
         transition: opacity 0.2s;

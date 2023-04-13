@@ -11,7 +11,7 @@
         ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Large);
     });
 
-    let _Settings = GlobalSettings.GetInstance('Timecode');
+    let _Settings = GlobalSettings.GetInstance(componentID);
 
     let UpdateInterval: number = _Settings.RegisterSetting('Update Interval', 'How often the timecode should update (Seconds)', 0.5, SettingTypes.Type.Numeric, { Step: 0.1, Min: 0.1 });
     let StartOnZero: boolean = _Settings.RegisterSetting('Start On Zero', 'Start the timecode on 00:00:00:00', true, SettingTypes.Type.Checkbox);
@@ -65,7 +65,7 @@
 
 <main id={componentID} style="--text-color: {textColor}; --background-color: {BackgroundColor}">
     {#if ShowTitle}
-        <p>Timecode</p>
+        <p>{componentID}</p>
     {/if}
     <h1>{timecode}</h1>
 </main>

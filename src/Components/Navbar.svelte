@@ -135,6 +135,7 @@
     @use '../scss/Flex';
     @use '../scss/Variables' as vars;
     @use '../scss/Animation';
+    @use '../scss/Colors';
 
     #navbarContainer {
         @include Flex.Container(center, center, row);
@@ -143,7 +144,7 @@
         top: 0;
         left: 0;
 
-        background-color: #131313;
+        background-color: darken(Colors.$BackgroundColor, 3%);
         height: 3rem;
         width: 100vw;
 
@@ -329,7 +330,7 @@
     }
 
     .reverseColor {
-        filter: invert(100%);
+        filter: invert(Colors.$IconInvertPercentage);
     }
 
 </style>

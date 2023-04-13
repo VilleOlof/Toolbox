@@ -28,13 +28,14 @@
 
 <style lang="scss">
     @use '../../scss/ComponentInputs' as CI;
+    @use '../../scss/Colors';
 
     input {
         @include CI.SettingStyle;
         @include CI.SettingFocus;
 
         &:hover {
-            background-color: darken(#212126, 5%);
+            background-color: darken(Colors.$ColumnColor, 5%);
         }
 
         transition: background-color 0.2s;

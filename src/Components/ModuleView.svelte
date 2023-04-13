@@ -19,6 +19,7 @@
 
 <style lang="scss">
     @use '../scss/Flex';
+    @use '../scss/Colors';
 
     main {
         transform: translateY(3rem);
@@ -31,7 +32,7 @@
 
         position: relative;
 
-        background-color: #28282E;
+        background-color: Colors.$ModuleColor;
         filter: drop-shadow(0 0 0.25em #000);
 
         transition: transform 0.2s, background-color 1s;
@@ -66,11 +67,10 @@
 
         height: 100%;
 
-        $bgColor: #212126;
-        background-color: $bgColor;
+        background-color: Colors.$ColumnColor;
 
         &:empty {
-            background-color: rgba($bgColor, 0.75);
+            background-color: rgba(Colors.$ColumnColor, 0.75);
         } 
     }
 

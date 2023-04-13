@@ -1,13 +1,14 @@
 @use './Variables' as Vars;
+@use './Colors';
 $InputBackground: #212126;
 
 @mixin SettingStyle {
     width: 20em;
 
-    background-color: $InputBackground;
-    color: #e7e7e7;
+    background-color: Colors.$ColumnColor;
+    color: Colors.$TextColor;
 
-    border-color: darken($InputBackground, 5%);
+    border-color: darken(Colors.$ColumnColor, 5%);
     border-radius: 0.25rem;
 
     padding: 0.4em;
@@ -18,7 +19,7 @@ $InputBackground: #212126;
 @mixin SettingFocus {
     &:focus {
         outline: none;
-        border-color: $InputBackground;
+        border-color: Colors.$ColumnColor;
     }
 }
 
