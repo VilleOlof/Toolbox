@@ -23,9 +23,9 @@
 
     if (BackgroundColor != null) {
         let color = BackgroundColor.replace("#", "");
-        let r = parseInt(color.substr(0, 2), 16);
-        let g = parseInt(color.substr(2, 2), 16);
-        let b = parseInt(color.substr(4, 2), 16);
+        let r = parseInt(color.substring(0, 2), 16);
+        let g = parseInt(color.substring(3, 2), 16);
+        let b = parseInt(color.substring(5, 2), 16);
 
         let brightness = ((r * 299) + (g * 587) + (b * 114)) / 1000;
 

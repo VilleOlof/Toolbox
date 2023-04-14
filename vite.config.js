@@ -7,7 +7,14 @@ import dynamicImport from 'vite-plugin-dynamic-import'
 export default defineConfig({
   build: {
     outDir: 'dist',
-    minify: false
+    minify: false,
+    rollupOptions: {
+      output: {
+        entryFileNames: `assets/[name].js`,
+        chunkFileNames: `assets/[name].js`,
+        assetFileNames: `assets/[name].[ext]`
+      }
+    }
   },
 
   base: './',

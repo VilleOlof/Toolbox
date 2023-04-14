@@ -1,4 +1,5 @@
 import { AppSettings } from "./AppSettings";
+import { ResolveWorkerHandler } from "./ResolveWorkerHandler";
 
 const PluginID = AppSettings.GetSetting("PluginID", "");
 const WorkflowIntegration = require('../src/Lib/WorkflowIntegration.node'); //Runs from the /dist directory
@@ -18,6 +19,7 @@ export function InitPlugin(): boolean {
     console.log(`Plugin initialized: ${isInitialized}`);
 
     Resolve = WorkflowIntegration.GetResolve();
+    //ResolveWorkerHandler.Init();
 
     return isInitialized;
 }
@@ -298,6 +300,11 @@ export class ResolveFunctions {
                     this.ForceUpdateSubscribeType(ResolveFunctions.SubscribeTypes[SubscribeTypeKey]);
                 }
             });
+
+            if (!Resolve.GetVersionString()) {
+                QuitResolve();
+            }
+
         }, delaySeconds * 1000);
 
         return dataLoop;
