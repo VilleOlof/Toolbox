@@ -200,7 +200,6 @@ export class DataStore {
      */
     public Delete(key: string, notify: boolean = false) {
         delete this._Data[key];
-        console.log("deleting: " + key + " from " + this._ComponentID + "")
 
         if (notify) {
             this.Notify(key, undefined);
