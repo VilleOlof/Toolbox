@@ -98,7 +98,14 @@ export namespace DragHandler {
         const AllColumns = document.querySelectorAll('.column') as NodeListOf<HTMLElement>;
         const ColumnContainer = document.querySelector('#columnContainer') as HTMLElement;
 
-        if (AllColumns.length <= 1) return;
+        if (AllColumns.length <= 1) {
+            ColumnContainer.appendChild(ActiveColumn.element);
+
+            ActiveColumn.element = null;
+            ActiveDragType = null;
+        
+            return;
+        }
 
         const ColumnDistanceMid = (AllColumns[1].getBoundingClientRect().left - AllColumns[0].getBoundingClientRect().right) / 2;
 
@@ -134,7 +141,11 @@ export namespace DragHandler {
         ActiveModule.element.style.pointerEvents = '';
 
         const parentColumn = document.querySelector('.column-active') as HTMLElement;
-        if (!parentColumn) return;
+        if (!parentColumn) {
+            ActiveModule.element = null;
+            ActiveDragType = null;
+            return;
+        }
 
         const ActiveColumnSize = parentColumn.classList.contains('is-small') ? "is-small" : "is-large";
         const ModuleColumnSize = (ActiveModule.element.parentElement as HTMLElement).classList.contains('is-small') ? "is-small" : "is-large";
