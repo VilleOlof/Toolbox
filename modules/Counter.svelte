@@ -1,62 +1,101 @@
 <script lang="ts">
-	import { DataStore } from '../src/Stores/DataStore';
-	import { Settings, SettingTypes, GlobalSettings } from '../src/Lib/Settings';
-	import { ModuleHandler } from '../src/Lib/ModuleHandler';
-	import { onMount } from 'svelte';
+    import { DataStore } from "../src/Stores/DataStore";
+    import { GlobalSettings, SettingTypes } from '../src/Lib/Settings';
+    import { ModuleHandler } from '../src/Lib/ModuleHandler';
 
-	const componentID: string = "Counter";
+    import { onMount } from 'svelte';
+
+    const componentID: string = "Counter";
 
     onMount(() => {
         ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Large);
     });
 
-	const settings: Settings = GlobalSettings.GetInstance(componentID);
-	settings.RegisterSetting(
-		'increment',
-		'The value increment', 
-		1,
-		SettingTypes.Type.Numeric,
-		<SettingTypes.Numeric>{
-			Min: 1,
-			Max: 10,
-			Step: 1,
-			Placeholder: 'Increment'
-		}, true
-	);
-	//settings.Set('increment', 2);
+    let _Settings = GlobalSettings.GetInstance(componentID);
+    let _Datastore = new DataStore(componentID);
 
-	let incrementValue: number = settings.GetSettingValue('increment');
+    let counter_1: number = _Datastore.Get<number>('CounterValue_1', 0);
+    let counter_2: number = _Datastore.Get<number>('CounterValue_2', 0);
+    let positiveIncrement = _Settings.RegisterSetting('Positive Increment', 'The positive increment value', 1, SettingTypes.Type.Numeric, <SettingTypes.Numeric>{ min: 1 });
+    let negativeIncrement = _Settings.RegisterSetting('Negative Increment', 'The negative increment value', -1, SettingTypes.Type.Numeric, <SettingTypes.Numeric>{ max: -1 });
 
-	//###############################
+    $: _Datastore.Set('CounterValue_1', counter_1);
+    $: _Datastore.Set('CounterValue_2', counter_2);
 
-	let Data = new DataStore(componentID);
+    $: Difference = counter_1 - counter_2;
+    $: Sum = counter_1 + counter_2;
 
-	Data.Subscribe('count', (count) => {
-		console.log('count changed to', count);
-	});
-
-	let count: number = Data.Get('count', 0);
-	const increment = () => {
-		incrementValue = settings.GetSettingValue('increment');
-		count += incrementValue;
-		Data.Set('count', count);
-	}
 </script>
-  
+
+
 <main id={componentID}>
-	<button on:click={increment}>
-		count is {count}
-	</button>
+    <div id=counters>
+        <div class="counter">
+            <h1>{counter_1}</h1>
+            <button on:click={() => counter_1 += positiveIncrement}>+{positiveIncrement}</button>
+            <button on:click={() => counter_1 += negativeIncrement}>{negativeIncrement}</button>
+        </div>
+    
+        <div class="counter">
+            <h1>{counter_2}</h1>
+            <button on:click={() => counter_2 += positiveIncrement}>+{positiveIncrement}</button>
+            <button on:click={() => counter_2 += negativeIncrement}>{negativeIncrement}</button>
+        </div>
+    </div>
+
+    <div id=bottom>
+        <p>Difference: {Difference}</p>
+        <p>Sum: {Sum}</p>
+    </div>
 </main>
 
+
 <style lang="scss">
-	@use "../src/scss/Flex";
+    @use '../src/scss/_Colors.scss';
 
-	main {
-		@include Flex.Container(center, center, column);
-	}
+    #counters {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
 
-	button {
-		margin: 0.5rem;
-	}
+        text-align: center;
+    }
+
+    .counter {
+        margin: 0.1rem 0.5rem;
+
+        h1 {
+            font-size: 3rem;
+
+            margin: 0 0.5rem;
+        }
+    }
+
+    #bottom {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        margin: 0.5rem 0 0 0;
+
+        p {
+            font-size: 1.5rem;
+
+            margin: 0.4rem 0;
+        }
+    }
+
+    button {
+        background-color: Colors.$ColumnColor;
+        color: Colors.$TextColor;
+
+        border-radius: 0.25rem;
+        border-color: Colors.$BackgroundColor;
+
+        outline: none;
+
+        font-size: 1rem;
+
+        margin: 0rem 0.25rem;
+    }
 </style>
