@@ -9,39 +9,33 @@ This plugin runs with Electron, and uses Svelte for the UI and custom modules.
 With Svelte as the framework, it provides an easy way to drag and drop modules into the ./modules folder  
 and have them automatically added to the toolbox (after a refresh, which the plugin will auto-detect).  
 
-If any new dependencies are added alongside a new module, they will need to be added to the ./package.json file.  
-And then run `npm install` to install the new dependencies.  
-After that, run `npm run build` to build the project with the new dependencies.  
+With a built in easy to use settings & data storage system.  
+It makes it easy for custom modules to integrate with the plugins settings menu.  
 
-There is an example module in the ./modules folder, which can be used as a template for creating new modules.  
-It is recommended to copy the example module and rename it to the name of the new module.  
+This wouldnt be possible without help from Stamsite,  
+who helped a ton with feature requests, testing, and general feedback.
 
-There is a [Specs](./Specs.md) file that contains the specs for the plugin.  
-And some other information about things.  
+This plugin is still in early development, and my personal biggest project yet.  
+So there might be some bugs and issues.  
+If you find any, please report them in the [Issues](https://github.com/VilleOlof/Toolbox/issues) section.  
 
-## Install
+## Default Modules
+
+- **[Timecode](./modules/Timecode.svelte)**  
+    A simple module that displays the current timecode of the timeline.  
+
+## Installation  
 
 **Requires: Node.js / NPM**  
-Copy the repository to your local machine.  
-And put the folder in the following directory:  
+Go to the [Releases](https://github.com/VilleOlof/Toolbox/releases/)  
+And download the latest installer for your platform.  
 
-`%ProgramData%\Blackmagic Design\DaVinci Resolve\Support\Workflow Integration Plugins\Toolbox`  
-*(Note that neither `\Workflow Integration Plugins\` nor `\Toolbox` exist, so you will need to create them)*  
-
-Run the following command in the root directory of the project:  
-
-```bash  
-npm install  
-npm run build  
-```  
-
-This will install all the dependencies and build the project.  
-
-And then you can run the plugin inside Davinci Resolve:  
+Run the installer and if everything went well.  
+You should just be able to run the plugin inside Davinci Resolve:  
 `DaVinci Resolve > Workspace > Workflow Integrations > Toolbox`  
 
-*Since Davinci Resolve looks for a folder with a manifest.xml file inside of it.  
-It is currently recommended to just have the entire project folder inside the plugin folder.*  
+*MacOS & Linux installers havent been tested yet, so they might not work.*  
+If you for some reason can't use the installer, you can also install the [plugin manually](#manual-installation).  
 
 ## Custom Modules
 
@@ -72,6 +66,10 @@ onMount(() => {
 These two parts are the only required parts of a module.  
 But as mentioned above, you can just copy the template module and rename it.  
 
+If any new dependencies are added alongside a new module, they will need to be added to the ./package.json file.  
+And then run `npm install` to install the new dependencies.  
+After that, run `npm run build` to build the project with the new dependencies.  
+
 Note: Going to the settings page acts like a soft-refresh.  
 Any temporary data that is stored in the module will be lost.  
 It will destroy the component and re-create it.  
@@ -94,3 +92,33 @@ With the following command:
 ```bash
 npm run docs:serve
 ```
+
+## Custom Theme
+
+If you want to change the theme or colors used in the plugin.  
+You can edit the Sass color variables in [_Colors](./src/scss/_Colors.scss) file.  
+And then rebuild the project with `npm run build`.
+
+## Manual Installation
+
+**Requires: Node.js / NPM**  
+Copy the repository to your local machine.  
+And put the folder in the following directory:  
+
+`%ProgramData%\Blackmagic Design\DaVinci Resolve\Support\Workflow Integration Plugins\Toolbox`  
+*(Note that neither `\Workflow Integration Plugins\` nor `\Toolbox` exist, so you will need to create them)*  
+
+Run the following command in the root directory of the project:  
+
+```bash  
+npm install  
+npm run build  
+```  
+
+This will install all the dependencies and build the project.  
+
+And then you can run the plugin inside Davinci Resolve:  
+`DaVinci Resolve > Workspace > Workflow Integrations > Toolbox`  
+
+*Since Davinci Resolve looks for a folder with a manifest.xml file inside of it.  
+It is currently recommended to just have the entire project folder inside the plugin folder.*  
