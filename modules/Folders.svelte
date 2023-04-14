@@ -20,11 +20,22 @@
         Hash: string;
     }
 
+    const PopupSideChoiceToRem = (side: string) => {
+        switch (side) {
+            case "Left":
+                return "-10rem";
+            case "Right":
+                return "0";
+        }
+    }
+
     let _Datastore = new DataStore(componentID);
     let Folders = _Datastore.Get<Folder[]>("Folders", []);
 
     let _Settings = GlobalSettings.GetInstance(componentID);
     let PromptFolderUponAdd = _Settings.RegisterSetting("Quick Select","Prompts you to select a folder directly when creating a new folder slot", true, SettingTypes.Type.Checkbox);
+
+    let PopupSide = _Settings.RegisterSetting("Popup Side", "Side of the folder icon the popup appears on", "Right", SettingTypes.Type.Dropdown, <SettingTypes.Dropdown>{ Options: ["Left", "Right"]});
 
     let AddFolder = () => {
         let hash: string = require('crypto').randomBytes(16).toString('hex');
@@ -131,7 +142,7 @@
             </svg>
         </div>
 
-        <div class="folderPath" id={folder.Hash}>
+        <div class="folderPath" id={folder.Hash} style="--popupside: {PopupSideChoiceToRem(PopupSide)}">
             <input type="text" id={`folderInput-${folder.Hash}`} bind:value={folder.Path} placeholder="Use the 'Set Path' Button">
             <div class=folderPathBottom>
                 <button on:click={SetFolder}>Set New</button>
@@ -219,7 +230,7 @@
         position: absolute;
 
         top: 2.75rem;
-        left: 0;
+        left: var(--popupside);
 
         background-color: darken(#222222, 5%);
         color: Colors.$TextColor;
@@ -227,7 +238,7 @@
         border-radius: 0.5rem;
         padding: 0.5rem;
 
-        z-index: 5;
+        z-index: 55;
     }
 
     .folder:hover .folderPath {
