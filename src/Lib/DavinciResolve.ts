@@ -153,8 +153,8 @@ export class ResolveFunctions {
      * let currentTimeline: Timeline = ResolveFunctions.GetCurrentTimeline();
      * ```
      */
-    public static GetCurrentTimeline(): Timeline {
-        this.GetCurrentProject();
+    public static GetCurrentTimeline(fetchNewProject: boolean = true): Timeline {
+        if (fetchNewProject) this.GetCurrentProject();
         this.CurrentTimeline = this.CurrentProject.GetCurrentTimeline();
         return this.CurrentTimeline;
     }

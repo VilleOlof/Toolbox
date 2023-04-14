@@ -13,7 +13,7 @@
 
     let _Settings = GlobalSettings.GetInstance(componentID);
 
-    let UpdateInterval: number = _Settings.RegisterSetting('Update Interval', 'How often the timecode should update (Seconds)', 0.5, SettingTypes.Type.Numeric, { Step: 0.1, Min: 0.1 });
+    let UpdateInterval: number = _Settings.RegisterSetting('Update Interval', 'How often the timecode should update (Seconds)', 1, SettingTypes.Type.Numeric, { Step: 0.1, Min: 0.1 });
     let StartOnZero: boolean = _Settings.RegisterSetting('Start On Zero', 'Start the timecode on 00:00:00:00', true, SettingTypes.Type.Checkbox);
     let BackgroundColor: string = _Settings.RegisterSetting('Background Color', 'Background color of the module', '#28282E', SettingTypes.Type.Color);
     let ShowTitle: boolean = _Settings.RegisterSetting('Show Title', 'Show the title of the module', true, SettingTypes.Type.Checkbox);
@@ -37,21 +37,29 @@
     }
 
     let timecode: string = "00:00:00:00";
+    let oldResolveTimecode: string = "00:00:00:00";
+    let timeline: Timeline = ResolveFunctions.GetCurrentTimeline();
 
-    function GetTimecode() {
-        let resolveTimecode: string = ResolveFunctions.GetCurrentTimeline().GetCurrentTimecode();
+    ResolveFunctions.SubscribeToChange(ResolveFunctions.SubscribeTypes.Timeline, (newTimeline: Timeline) => {
+        timeline = newTimeline;
+        console.log("Timeline changed");
+    });
 
-        let timecodeArray: string[] = resolveTimecode.split(":");
-        let hours: number = parseInt(timecodeArray[0]);
-        let minutes: number = parseInt(timecodeArray[1]);
-        let seconds: number = parseInt(timecodeArray[2]);
-        let frames: number = parseInt(timecodeArray[3]);
+    async function GetTimecode() {
+        let resolveTimecode: string = timeline.GetCurrentTimecode();
+        if (resolveTimecode == oldResolveTimecode) return;
+
+        let hours: number = +resolveTimecode.substring(0, 2);
+        let minutes: number = +resolveTimecode.substring(3, 5);
+        let seconds: number = +resolveTimecode.substring(6, 8);
+        let frames: number = +resolveTimecode.substring(9, 11);
 
         if (StartOnZero) hours -= 1;
 
-        let timecodeString: string = hours.toString().padStart(2, "0") + ":" + minutes.toString().padStart(2, "0") + ":" + seconds.toString().padStart(2, "0") + ":" + frames.toString().padStart(2, "0");
+        let timecodeString: string = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}:${frames.toString().padStart(2, "0")}`;
 
         timecode = timecodeString;
+        oldResolveTimecode = resolveTimecode;
     }
 
     GetTimecode();
