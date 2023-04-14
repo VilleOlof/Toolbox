@@ -23,6 +23,15 @@ If you find any, please report them in the [Issues](https://github.com/VilleOlof
 
 - **[Timecode](./modules/Timecode.svelte)**  
     A simple module that displays the current timecode of the timeline.  
+- **[Counter](./modules/Counter.svelte)**  
+    Two counters that can be used to count up or down.  
+    They also have a combined sum and difference counter.  
+- **[Notes](./modules/Notes.svelte)**  
+    Allows you to write notes and save them between sessions (Or not!).  
+- **[Folders](./modules/Folders.svelte)**  
+    A small module that allows you to bind folders to icon buttons.  
+    This is useful for quickly opening common used folders.  
+    Hover over an icon to see the folder path and modify it.  
 
 ## Installation  
 
