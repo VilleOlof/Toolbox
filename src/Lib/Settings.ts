@@ -444,6 +444,27 @@ class Settings {
     }
 
     /**
+     * Updates a setting info.
+     * 
+     * @param settingName The name
+     * @param settingDescription The description
+     * @param defaultValue The default value
+     * @param type The type of the setting input
+     * @param ExtraData Extra data for the setting type (Optional)
+     */
+    public UpdateSetting(settingName: string, settingDescription: string, defaultValue: any, type: SettingTypes.Type, ExtraData?: SettingTypes.ExtraDataTypes) {
+        this.SetSettingInfo(settingName, {
+            Value: defaultValue,
+            Default: defaultValue,
+            Type: type,
+            Description: settingDescription,
+            ExtraData: ExtraData,
+        });
+
+        GlobalSettings.Save(this._ComponentID, this);
+    }
+
+    /**
      * Sets a setting value.
      * 
      * @param settingName The name of the setting

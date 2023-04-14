@@ -97,5 +97,7 @@
         font-size: 1rem;
 
         margin: 0rem 0.25rem;
+
+        cursor: pointer;
     }
 </style>
