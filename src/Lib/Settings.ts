@@ -500,10 +500,12 @@ class Settings {
      * });
      * ```
      */
-    public SetSettingInfo(settingName: string, settingInfo: SettingTypes.Info): void {
+    public SetSettingInfo<T>(settingName: string, settingInfo: SettingTypes.Info): T {
         this._Settings[settingName] = settingInfo;
 
         GlobalSettings.Save(this._ComponentID, this);
+
+        return <T>settingInfo.Value;
     }
 
     /**

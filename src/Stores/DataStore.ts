@@ -108,11 +108,13 @@ export class DataStore {
      * this.Set("Key", "Value");
      * ```
      */
-    public Set(key: string, value: any = undefined, notify: boolean = true, save: boolean = true): void {
+    public Set<T>(key: string, value: T = undefined, notify: boolean = true, save: boolean = true): T {
         if (this._Data === undefined) this._Data = {};
         this._Data[key] = value;
         if (notify) this.Notify(key, value);
         if (this.SaveUponChange || save) this.Save();
+
+        return value;
     };
 
     /**
