@@ -52,6 +52,8 @@ To create your own custom made modules.
 You can copy the template module in ./modules and rename the file to the name of your module.  
 This template module has most of the common in-house imports and code required for a module.  
 
+Module names can't contain spaces, and should be in PascalCase to match the file name.  
+
 Every module consists of a componentID which the plugin uses to identify the module.  
 The component HTML should be wrapped in a main tag with the componentID as the id.  
 **Note: componentID must be the same as the filename (excluding extension)**
@@ -89,6 +91,8 @@ So you only need to load the settings data once at the start of the module life 
 ### Module Settings
 
 ### Module Data
+
+### Common
 
 ## Docs  
 

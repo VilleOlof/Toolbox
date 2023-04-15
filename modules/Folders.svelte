@@ -28,7 +28,7 @@
     const PopupSideChoiceToRem = (side: string) => {
         switch (side) {
             case "Left":
-                return "-13.5rem";
+                return "-17rem";
             case "Right":
                 return "3rem";
         }

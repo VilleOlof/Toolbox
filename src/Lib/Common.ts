@@ -44,7 +44,7 @@ export namespace Common {
          * let file: string = Common.IO.ReadFile("path/to/file");
          * 
          * // Reading a file as JSON
-         * let file: any = Common.IO.ReadFile<{[key: string]: number}("path/to/file", true);
+         * let file: {[key: string]: number} = Common.IO.ReadFile<{[key: string]: number}>("path/to/file", true);
          * ```
          */
         export function ReadFile<T>(path: string, json?: boolean): string | T {
@@ -89,17 +89,22 @@ export namespace Common {
          * Common.IO.OpenFolder("path/to/folder", "/select, "file.txt");
          * ```
          */
-        export function OpenFolder(filePath: string, ..._arguments: string[]): void {
+        export function OpenFolder(filePath: string, _arguments: string[], onlyArguments: boolean = false): void {
             const fileManager: string = process.platform === "win32" ? "explorer" : "open";
 
-            filePath = path.replace(/\//g, path.sep);
+            if (filePath) filePath = filePath.replace(/\//g, path.sep);
 
             if (!_arguments) {
                 spawn(fileManager, [filePath]);
+                return;
+            }
+            if (onlyArguments) {
+                spawn(fileManager, _arguments);
+                return;
             }
 
-            spawn(fileManager, [..._arguments], {
-                cwd: path
+            spawn(fileManager, _arguments, {
+                cwd: filePath
             })
         }
 
@@ -118,8 +123,8 @@ export namespace Common {
          * Common.IO.OpenFile("path/to/file", "/select, "file.txt");
          * ```
          */
-        export function OpenFile(path: string, ..._arguments: string[]): void {
-            OpenFolder(path, ..._arguments);
+        export function OpenFile(filePath: string, _arguments: string[], onlyArguments: boolean = false): void {
+            OpenFolder(filePath, _arguments, onlyArguments);
         }
 
         /**
