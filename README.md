@@ -1,4 +1,4 @@
-
+<!-- markdownlint-disable-next-line -->
 <img src="./src/assets/Logo.png" width="600" alt="Davinki Toolbox">
 
 ----
