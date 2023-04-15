@@ -29,7 +29,7 @@ If you find any, please report them in the [Issues](https://github.com/VilleOlof
 - **[Notes](./modules/Notes.svelte)**  
     Allows you to write notes and save them between sessions (Or not!).  
 - **[Folders](./modules/Folders.svelte)**  
-    A small module that allows you to bind folders to icon buttons.  
+    A small module that allows you to bind folders to colorful icon buttons.  
     This is useful for quickly opening common used folders.  
     Hover over an icon to see the folder path and modify it.  
 
@@ -79,10 +79,16 @@ If any new dependencies are added alongside a new module, they will need to be a
 And then run `npm install` to install the new dependencies.  
 After that, run `npm run build` to build the project with the new dependencies.  
 
+Modules also have full access to the [Davinci Resolve API](./src/Lib/ResolveAPI.d.ts), The file system and other Node.js modules.  
+
 Note: Going to the settings page acts like a soft-refresh.  
 Any temporary data that is stored in the module will be lost.  
 It will destroy the component and re-create it.  
 So you only need to load the settings data once at the start of the module life cycle.  
+
+### Module Settings
+
+### Module Data
 
 ## Docs  
 
