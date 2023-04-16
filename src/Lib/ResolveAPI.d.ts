@@ -1,3 +1,5 @@
+//Davinci Resolve Version: 18.1.5
+
 // Some undocumented types were taken from: https://gist.github.com/bradcordeiro/2f00120fad252a1b2bffcb882c9c941b
 
 /**
@@ -1813,6 +1815,37 @@ declare type Timeline = {
      * Grabs stills from all the clips of the timeline at ‘stillFrameSource’ (1 - First frame, 2 - Middle frame). Returns the list of GalleryStill objects.
      */
     GrabAllStills(stillFrameSource: 1 | 2): GalleryStill[];
+
+    /**
+     * Applies ARRI CDL and LUT. Returns True if successful, False otherwise.
+     */
+    ApplyArriCdlLut(): boolean;
+
+    /**
+     * Sets clip enabled based on argument.
+     * 
+     * @param enabled the enabled status
+     */
+    SetClipEnabled(enabled: boolean): boolean;
+
+    /**
+     * Gets clip enabled status.
+     */
+    GetClipEnabled(): boolean;
+
+    /**
+     * Returns the label of the node at nodeIndex.
+     * 
+     * @param nodeIndex the node index
+     */
+    GetNodeLabel(nodeIndex: number): string
+
+    /**
+     * Loads user defined data burn in preset for clip when supplied presetName (string). Returns true if successful.
+     * 
+     * @param presetName the preset name
+     */
+    LoadBurnInPreset(presetName: string): boolean;
 };
 
 declare type TimelineItem = {
