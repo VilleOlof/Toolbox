@@ -32,6 +32,8 @@ If you find any, please report them in the [Issues](https://github.com/VilleOlof
     A small module that allows you to bind folders to colorful icon buttons.  
     This is useful for quickly opening common used folders.  
     Hover over an icon to see the folder path and modify it.  
+- **[Open At Playhead](./modules/OpenAtPlayhead.svelte)**  
+    Opens the current file at the current playhead position in a new explorer window.  
 
 ## Installation  
 
