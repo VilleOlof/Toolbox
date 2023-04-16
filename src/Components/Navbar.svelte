@@ -150,7 +150,7 @@
 
         box-shadow: 0 1rem 1rem rgba(19, 19, 19, 0.384);
 
-        z-index: 3;
+        z-index: 15;
 
         -webkit-app-region: drag;
         user-select: none;

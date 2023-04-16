@@ -4,6 +4,8 @@ import moduleIgnores from '../../module_ignore.json'
 import { DataStore } from '../Stores/DataStore';
 import { DragHandler } from './DragHandler';
 
+const fs = require('fs');
+
 export namespace ModuleHandler {
 
     export let ColumnContainer: HTMLDivElement = undefined;
@@ -154,6 +156,10 @@ export namespace ModuleHandler {
 
         modules.forEach(module => {
             if (moduleIgnores.includes(module)) return;
+
+            const file = `${__dirname}/../modules/${module}.svelte`;
+            if (!fs.existsSync(file)) return;
+            
             moduleImports[module] = (async function() {
                 return (await import(/* @vite-ignore*/ `../../modules/${module}.svelte`)).default
             });

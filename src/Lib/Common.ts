@@ -139,6 +139,7 @@ export namespace Common {
             title?: string,
             defaultPath?: string,
             buttonLabel?: string,
+            filters?: { name: string, extensions: string[] }[],
             properties?: FileDialogProperties[],
         }
 
@@ -166,9 +167,12 @@ export namespace Common {
          * });
          * ```
          */
-        export function Dialog(options: FileDialogOptions): void {
+        export function Dialog(options: FileDialogOptions): string[] { 
             /* @ts-ignore */
-            electron.remote.dialog.showOpenDialogSync(options);
+            const result = electron.remote.dialog.showOpenDialogSync(options);
+            if (!result) return [];
+
+            return result;
         }
 
         /**
@@ -288,5 +292,19 @@ export namespace Common {
         });
 
         return result;
+    }
+
+    /**
+     * Formats a string with the given values.
+     * 
+     * @param string the string to format
+     * @param values the values to format the string with
+     * @returns the formatted string
+     */
+    export function FormatString(string: string, ...values: string[]) {
+        for (let index: number = 0; index < values.length; index++) {
+            string = string.replace(`{${index}}`, values[index]);
+        }
+        return string;
     }
 }

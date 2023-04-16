@@ -1,4 +1,5 @@
 <script lang="ts">
+    import ModuleQuickDrop from "./Components/ModuleQuickDrop.svelte";
     import ModuleView from "./Components/ModuleView.svelte";
     import Navbar from "./Components/Navbar.svelte";
 
@@ -26,6 +27,8 @@
         }
     });
 </script>
+
+<ModuleQuickDrop />
 
 <Navbar />
 
