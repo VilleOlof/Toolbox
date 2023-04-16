@@ -16,6 +16,13 @@
             height: window.innerHeight
         })
 
+        /* @ts-ignore */
+        const position = require('electron').remote.getCurrentWindow().getPosition();
+        AppSettings.SetSetting('WindowPosition', {
+            x: position[0],
+            y: position[1]
+        });
+
         PluginCleanUp();
         /* @ts-ignore */
         require('electron').remote.getCurrentWindow().close();
@@ -154,6 +161,10 @@
 
         -webkit-app-region: drag;
         user-select: none;
+
+        & img {
+            -webkit-user-drag: none;
+        }
     }
 
     #editModeBG {

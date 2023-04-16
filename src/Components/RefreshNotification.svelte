@@ -42,15 +42,21 @@
     function RelaunchApp(): void {
 
         // @ts-ignore // it thinks that 'remote' is not a property of 'electron'
-        const app = require('electron').remote.app;
+        const remote = require('electron').remote;
 
         AppSettings.SetSetting('WindowSize', {
             width: window.innerWidth,
             height: window.innerHeight
         })
 
-        app.relaunch();
-        app.exit();
+        const position = remote.getCurrentWindow().getPosition();
+        AppSettings.SetSetting('WindowPosition', {
+            x: position[0],
+            y: position[1]
+        });
+
+        remote.app.relaunch();
+        remote.app.exit();
     }
 
     function RefreshAppWithNewModules(): void {

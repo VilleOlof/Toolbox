@@ -1,9 +1,18 @@
 <script lang="ts">
     import { onDestroy, onMount } from "svelte";
     import { ModuleHandler } from "../Lib/ModuleHandler";
+    import { AppSettings } from "../Lib/AppSettings";
 
     onMount(async () => {
         await ModuleHandler.Init(document.getElementById("columnContainer") as HTMLDivElement);
+
+        const MirrorFlipped = AppSettings.GetSetting("MirrorFlipped", false);
+        
+        const mainContainer: HTMLElement = document.querySelector('#mainColumnContainer');
+        mainContainer.setAttribute('style', `align-items: ${MirrorFlipped ? "flex-end" : "flex-start"};`);
+
+        const columnContainer: HTMLElement = document.querySelector('#columnContainer');
+        columnContainer.setAttribute('style', `flex-direction: ${MirrorFlipped ? "row-reverse" : "row"};`);
     });
 
     onDestroy(() => {
@@ -13,7 +22,7 @@
 
 </script>
 
-<main>
+<main id=mainColumnContainer>
     <div id="columnContainer"></div>
 </main>
 
@@ -23,6 +32,8 @@
 
     main {
         transform: translateY(3rem);
+
+        @include Flex.Container(flex-start, flex-start, column);
     }
 
     :global(.module) {
@@ -44,7 +55,7 @@
 
 
     :global(#columnContainer) {
-        @include Flex.Container(flex-start, flex-start, row);
+        @include Flex.Container(flex-end, flex-start, row);
         display: inline-flex;
 
         gap: 0.5rem;

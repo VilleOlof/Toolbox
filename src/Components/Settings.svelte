@@ -134,6 +134,8 @@
 
     const toggleAlwaysOnTop = () => {
         currentWindow.setAlwaysOnTop(!currentWindow.isAlwaysOnTop(), 'screen-saver');
+
+        AppSettings.SetSetting('AlwaysOnTop', currentWindow.isAlwaysOnTop());
     }
 
     const Zoom = (zoom: number, append: boolean = true) => {
@@ -163,6 +165,11 @@
         ModuleHandler.UpdateNavEntries();
     }
 
+    const MirrorFlipModules = () => {
+        let MirrorFlipped = AppSettings.GetSetting('MirrorFlipped', false);
+        AppSettings.SetSetting('MirrorFlipped', !MirrorFlipped);
+    }
+
 </script>
 
 <main>
@@ -180,6 +187,7 @@
         </div>
 
         <div id="otherContentBottom">
+            <button class="btnStyle" on:click={MirrorFlipModules}>Mirror Flip Modules</button>
             <button class="btnStyle" on:click={ClearColumns}>Clear All Columns</button>
             <button class="btnStyle" on:click={OpenModuleFolder}>Open Modules Folder</button>
         </div>

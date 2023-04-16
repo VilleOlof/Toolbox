@@ -1,3 +1,4 @@
+import { AppSettings } from "./AppSettings";
 import { ModuleHandler } from "./ModuleHandler";
 
 export namespace DragHandler {
@@ -107,18 +108,26 @@ export namespace DragHandler {
             return;
         }
 
-        const ColumnDistanceMid = (AllColumns[1].getBoundingClientRect().left - AllColumns[0].getBoundingClientRect().right) / 2;
+        const ColumnDistanceMid = Math.abs((AllColumns[1].getBoundingClientRect().left - AllColumns[0].getBoundingClientRect().right) / 2);
 
         AllColumns.forEach((column) => {
             if (!ActiveColumn?.element) return;
     
             const ColumnBounds = column.getBoundingClientRect();
             const middleX = ColumnBounds.left + (ColumnBounds.width / 2);
+
+            const MirrorFlipped = AppSettings.GetSetting('MirrorFlipped', false);
+            let InsertBefore = event.clientX >= (ColumnBounds.left - ColumnDistanceMid) && event.clientX <= middleX;
+            let InsertAfter = event.clientX >= middleX && event.clientX <= (ColumnBounds.right + ColumnDistanceMid);
+
+            if (MirrorFlipped) {
+                [InsertBefore, InsertAfter] = [InsertAfter, InsertBefore];
+            }
     
-            if (event.clientX >= (ColumnBounds.left - ColumnDistanceMid) && event.clientX <= middleX) {
+            if (InsertBefore) {
                 ColumnContainer.insertBefore(ActiveColumn.element, column);
             }
-            else if (event.clientX >= middleX && event.clientX <= (ColumnBounds.right + ColumnDistanceMid)) {
+            else if (InsertAfter) {
                 if (column.nextSibling) {
                     ColumnContainer.insertBefore(ActiveColumn.element, column.nextSibling);
                 }

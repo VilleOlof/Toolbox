@@ -5,7 +5,8 @@ const os = require('os')
 const fs = require('fs')
 
 const AppSettings = require('../AppSettings.json')
-AppSettings.WindowSize = AppSettings.WindowSize || {width: 900, height: 825}
+AppSettings.WindowSize = AppSettings.WindowSize || {width: 900, height: 825};
+AppSettings.WindowPosition = AppSettings.WindowPosition || {x: 250, y: 250};
 fs.writeFileSync(path.join(__dirname, '../AppSettings.json'), JSON.stringify(AppSettings, null, 4))
 
 function createWindow () {
@@ -23,6 +24,13 @@ function createWindow () {
         autoHideMenuBar: true,
         frame: false,
     })
+
+    // Set the window position
+    mainWindow.setPosition(AppSettings.WindowPosition.x, AppSettings.WindowPosition.y)
+
+    mainWindow.setAlwaysOnTop(AppSettings.AlwaysOnTop ?? false, 'screen-saver');
+
+    mainWindow.setIcon(nativeImage.createFromPath(__dirname + '/../src/assets/Icon.png'))
 
     // Hide the menu bar (enable below code to hide menu bar)
     //mainWindow.setMenu(null);
