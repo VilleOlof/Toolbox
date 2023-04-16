@@ -302,7 +302,12 @@ export class ResolveFunctions {
             });
 
             if (!Resolve.GetVersionString()) {
+                // @ts-ignore // it thinks that 'remote' is not a property of 'electron'
+                const app = require('electron').remote.app;
                 QuitResolve();
+
+                app.relaunch();
+                app.exit();
             }
 
         }, delaySeconds * 1000);

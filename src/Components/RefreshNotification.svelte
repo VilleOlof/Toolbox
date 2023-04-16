@@ -75,11 +75,11 @@
         refreshHoverText.style.display = state ? 'block' : 'none';
     }
 
-    //CheckForNewModules();
+    CheckForNewModules();
     setInterval(() => {
         if (NoNotification) return;
 
-        //CheckForNewModules();
+        CheckForNewModules();
     }, 5000);
 
 </script>

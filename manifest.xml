@@ -2,7 +2,7 @@
 <BlackmagicDesign>
     <Plugin>
         <Id>com.villeolof.toolbox</Id>
-        <Name>Toolbox</Name>
+        <Name>Davinki Toolbox</Name>
         <Version>1.0</Version>
         <Description></Description>
         <FilePath>./Electron/main.js</FilePath>

@@ -133,7 +133,7 @@
     }
 
     const toggleAlwaysOnTop = () => {
-        currentWindow.setAlwaysOnTop(!currentWindow.isAlwaysOnTop());
+        currentWindow.setAlwaysOnTop(!currentWindow.isAlwaysOnTop(), 'screen-saver');
     }
 
     const Zoom = (zoom: number, append: boolean = true) => {
@@ -207,7 +207,9 @@
     @use '../scss/Flex';
     @use '../scss/Colors';
 
-    main {transform: translateY(3rem);}
+    main {
+        transform: translateY(3rem);
+    }
 
     #settingsContainer {
         @include Flex.Container(flex-start, center, column);
@@ -225,7 +227,7 @@
         margin: 0.5rem;
 
         border-radius: 0.5rem;
-	    filter: drop-shadow(0 0 0.25em #0000005e);
+        filter: drop-shadow(0 0 0.25em #0000005e);
 
         :global(h2) {
             margin-left: 0.5rem;

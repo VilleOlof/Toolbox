@@ -41,7 +41,7 @@
     function CopyModulesToModulesDirectory(files: string[]): void {
         files.forEach((file: string) => {
             const onlyFileName = path.basename(file);
-            const modulesDirectory: string = path.join(__dirname, '../modules');
+            const modulesDirectory: string = path.join(__dirname, '/../modules');
 
             fs.copyFileSync(file, `${modulesDirectory}/${onlyFileName}`, fs.constants.COPYFILE_EXCL, (err: any) => {
                 if (err) throw err;
