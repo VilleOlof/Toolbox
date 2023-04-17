@@ -3,6 +3,9 @@
 
 ----
 
+<!-- markdownlint-disable-next-line -->
+**Studio Version Of Davinci Resolve Is Required**
+
 A Davinci Resolve plugin that provides a modular toolbox for creating custom tools.  
 This plugin runs with Electron, and uses Svelte for the UI and custom modules.  
 

@@ -35,6 +35,8 @@
             <button on:click={() => counter_1 += positiveIncrement}>+{positiveIncrement}</button>
             <button on:click={() => counter_1 += negativeIncrement}>{negativeIncrement}</button>
         </div>
+
+        <div id=lineBreak></div>
     
         <div class="counter">
             <h1>{counter_2}</h1>
@@ -45,7 +47,7 @@
 
     <div id=bottom>
         <p>Difference: {Difference}</p>
-        <p>Sum: {Sum}</p>
+        <p>Summary: {Sum}</p>
     </div>
 </main>
 
@@ -57,6 +59,7 @@
         display: flex;
         flex-direction: row;
         justify-content: center;
+        align-items: center;
 
         text-align: center;
     }
@@ -71,15 +74,26 @@
         }
     }
 
+    #lineBreak {
+        width: 0.2rem;
+        height: 5rem;
+
+        background-color: Colors.$BackgroundColor;
+
+        margin: 0.5rem 0;
+    }
+
     #bottom {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
+        justify-content: space-evenly;
 
-        margin: 0.5rem 0 0 0;
+        margin: 0.2rem 0 0 0;
 
         p {
-            font-size: 1.5rem;
+            font-size: 1rem;
+            opacity: 0.5;
 
             margin: 0.4rem 0;
         }

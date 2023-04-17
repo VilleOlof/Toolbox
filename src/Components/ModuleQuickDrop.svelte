@@ -9,6 +9,8 @@
         event.stopPropagation();
         event.preventDefault();
 
+        if (event.dataTransfer.types[0] != "Files") return;
+
         dropzone.style.display = "flex";
     }
 
