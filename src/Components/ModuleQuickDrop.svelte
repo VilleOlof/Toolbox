@@ -90,6 +90,7 @@
 
 <div class="activeDrop" bind:this={dropzone}>
     <img src="../src/assets/DropHere.svg" alt="Drop Here">
+    <div id=border></div>
 </div>
 
 <style lang="scss">
@@ -126,6 +127,16 @@
             //give the image a little bit of a bounce
             animation: hithere 2s ease infinite;
         }
+    }
+
+    #border {
+        position: absolute;
+
+        width: 97.5%;
+        height: 97.5%;
+
+        border: 0.25rem dashed rgba(Colors.$TextColor, 0.5);
+        border-radius: 1rem;
     }
 
     @keyframes hithere {

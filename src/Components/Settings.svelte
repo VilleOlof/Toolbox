@@ -341,6 +341,8 @@
 
         margin: 1rem;
 
+        font-size: 1rem;
+
         @include Flex.Container(flex-start, flex-start, column);
 
         p {

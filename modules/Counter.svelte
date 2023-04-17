@@ -112,6 +112,8 @@
 
         margin: 0rem 0.25rem;
 
+        min-width: 3rem;
+
         cursor: pointer;
     }
 </style>
