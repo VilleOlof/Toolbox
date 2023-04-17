@@ -4,7 +4,7 @@ import moduleIgnores from '../../module_ignore.json'
 import { DataStore } from '../Stores/DataStore';
 import { DragHandler } from './DragHandler';
 
-const fs = require('fs');
+import { Common } from './Common';
 
 export namespace ModuleHandler {
 
@@ -158,7 +158,7 @@ export namespace ModuleHandler {
             if (moduleIgnores.includes(module)) return;
 
             const file = `${__dirname}/../modules/${module}.svelte`;
-            if (!fs.existsSync(file)) return;
+            if (!Common.IO.FileExists(file)) return;
             
             moduleImports[module] = (async function() {
                 return (await import(/* @vite-ignore*/ `../../modules/${module}.svelte`)).default

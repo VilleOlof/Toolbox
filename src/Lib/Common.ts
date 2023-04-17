@@ -47,16 +47,17 @@ export namespace Common {
          * let file: {[key: string]: number} = Common.IO.ReadFile<{[key: string]: number}>("path/to/file", true);
          * ```
          */
-        export function ReadFile<T>(path: string, json?: boolean): string | T {
+        export function ReadFile<T = string>(path: string, json?: boolean): T {
             let file: string = fs.readFileSync(path, "utf8");
-            if (!file) return "";
+            if (!file) return <T>"";
 
             if (json) return <T>JSON.parse(file);
-            return file;
+            return <T>file;
         }
 
         /**
          * Writes a file to the file system.
+         * If content is not a string it will be converted to JSON by default.
          * 
          * @param path the path to the file
          * @param content the content to write to the file
@@ -71,10 +72,20 @@ export namespace Common {
          * Common.IO.WriteFile("path/to/file", { "key": "value" }, true);
          * ```
          */
-        export function WriteFile(path: string, content: string, json?:boolean ): void {
-            if (json) content = JSON.stringify(content, null, 4);
+        export function WriteFile(path: string, content: any, json?:boolean ): void {
+            if (json || typeof content != "string") content = JSON.stringify(content, null, 4);
             
             fs.writeFileSync(path, content, "utf8");
+        }
+
+        /**
+         * Checks if a file exists.
+         * 
+         * @param path the path to the file
+         * @returns true if the file exists
+         */
+        export function FileExists(path: string): boolean {
+            return fs.existsSync(path);
         }
 
         /**
@@ -111,7 +122,7 @@ export namespace Common {
          * Common.IO.OpenFolder("path/to/folder", "/select, "file.txt");
          * ```
          */
-        export function OpenFolder(filePath: string, _arguments: string[], onlyArguments: boolean = false): void {
+        export function OpenFolder(filePath: string, _arguments?: string[], onlyArguments: boolean = false): void {
             const fileManager: string = process.platform === "win32" ? "explorer" : "open";
 
             if (filePath) filePath = filePath.replace(/\//g, path.sep);
@@ -145,7 +156,7 @@ export namespace Common {
          * Common.IO.OpenFile("path/to/file", "/select, "file.txt");
          * ```
          */
-        export function OpenFile(filePath: string, _arguments: string[], onlyArguments: boolean = false): void {
+        export function OpenFile(filePath: string, _arguments?: string[], onlyArguments: boolean = false): void {
             OpenFolder(filePath, _arguments, onlyArguments);
         }
 

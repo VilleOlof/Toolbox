@@ -1,6 +1,6 @@
 <script lang="ts">
-    import moduleIgnores from '../../module_ignore.json'
     import { AppSettings } from '../Lib/AppSettings';
+    import { Common } from '../Lib/Common';
 
     const NPM_Command: string = 'npm run build';
     const moduleListPath: string = '/../module_list.json';
@@ -8,15 +8,15 @@
     let ShowNotification: boolean = false;
     let NoNotification: boolean = false;
 
-    const fs = require('fs');
-
     function GetModulesInDirectory(): string[] {
         const path = require('path');
         
         const modulesDirectory: string = path.join(__dirname, '../modules');
         let modules: string[] = [];
 
-        fs.readdirSync(modulesDirectory).forEach((file: string) => {
+        const files = Common.IO.ReadDirectory(modulesDirectory);
+
+        files.forEach((file: string) => {
             const Name: string = path.basename(file, '.svelte');
             if (Name.endsWith(".disabled")) return;
             modules.push(Name);
@@ -26,7 +26,7 @@
     }
 
     function GetCurrentModules(): string[] {
-        return JSON.parse(fs.readFileSync(__dirname + moduleListPath));
+        return <string[]>Common.IO.ReadFile(__dirname + moduleListPath, true);
     }
 
     function CheckForNewModules(): void {
@@ -49,7 +49,7 @@
             height: window.innerHeight
         })
 
-        const position = remote.getCurrentWindow().getPosition();
+        const position = Common.Electron.GetCurrentWindow().getPosition();
         AppSettings.SetSetting('WindowPosition', {
             x: position[0],
             y: position[1]
@@ -60,13 +60,8 @@
     }
 
     function RefreshAppWithNewModules(): void {
-        const { exec } = require('child_process');
-
-        exec(NPM_Command,{
-            cwd: __dirname
-        }, (error: any) => {
-            if (error) console.log(`error: ${error.message}`);
-
+        const proccess = Common.ExecuteCommand(NPM_Command, __dirname);
+        proccess.on('exit', () => {
             RelaunchApp();
         });
     }

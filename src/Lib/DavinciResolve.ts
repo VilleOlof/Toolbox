@@ -303,6 +303,7 @@ export class ResolveFunctions {
                 }
             });
 
+            //TODO
             if (!Resolve.GetVersionString()) {
                 // @ts-ignore // it thinks that 'remote' is not a property of 'electron'
                 const app = require('electron').remote.app;

@@ -1,4 +1,5 @@
 import { DataStore } from "../Stores/DataStore";
+import { Common } from "./Common";
 
 /**
  * The global settings namespace.
@@ -34,9 +35,8 @@ namespace GlobalSettings {
         _ComponentSettings = {};
 
         let SettingsPath: string = __dirname + "/../Settings.json";
-        const fs = require("fs");
 
-        let SettingsJSON: Record<string, Settings> = JSON.parse(fs.readFileSync(SettingsPath, "utf8"));
+        let SettingsJSON: Record<string, Settings> = Common.IO.ReadFile(SettingsPath, true);
 
         for (let componentID in SettingsJSON) {
             let settings = new Settings(componentID);
@@ -85,28 +85,6 @@ namespace GlobalSettings {
     }
 
     /**
-     * Saves the settings to the JSON file.
-     * 
-     * @param JSON The JSON string to save.
-     * @param SettingsPath The path to the settings file.
-     * 
-     * @example
-     * 
-     * ```ts
-     * let settingsJSON: string = JSON.stringify(GlobalSettings._Settings, null, 4);
-     * GlobalSettings.SaveToJSON(settingsJSON);
-     * ```
-     */
-    export function SaveToJSON(JSON: string, SettingsPath: string = "./../Settings.json"): void {
-        const fs = require("fs");
-        SettingsPath = __dirname + SettingsPath;
-
-        fs.writeFileSync(SettingsPath, JSON, (err: any) => {
-            if (err) console.error(err);
-        });
-    }
-
-    /**
      * Saves the settings to the GlobalSettings.
      * 
      * @param componentID The component ID.
@@ -122,9 +100,11 @@ namespace GlobalSettings {
     export function Save(componentID: string, _Settings: Settings): void {
         GlobalSettings._ComponentSettings[componentID] = _Settings;
 
-        let settingsJSON: string = JSON.stringify(GlobalSettings._ComponentSettings, null, 4);
-
-        GlobalSettings.SaveToJSON(settingsJSON);
+        Common.IO.WriteFile(
+            Common.IO.GetRootFolder() + "./../Settings.json", 
+            GlobalSettings._ComponentSettings, 
+            true
+        );
     }
 
     /**
@@ -218,7 +198,7 @@ namespace SettingTypes {
      * The extra data types.
      */
     export type ExtraDataTypes = 
-      Text 
+    Text 
     | Numeric 
     | File 
     | Date

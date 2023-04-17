@@ -1,3 +1,5 @@
+import { Common } from "../Lib/Common";
+
 /**
  * A record of all the data stores that have been created.
  */
@@ -81,13 +83,8 @@ export class DataStore {
         }
     }
 
-    private static SaveToJSON(jsonString: string): void {
-        const fs = require("fs");
-        fs.writeFileSync(__dirname + this._JSONSavePath, jsonString, (err) => {
-            if (err) {
-                console.log(err);
-            }
-        });
+    private static SaveToFile(content: any): void {
+        Common.IO.WriteFile(__dirname + this._JSONSavePath, content, true);
     }
 
     /**
@@ -169,7 +166,7 @@ export class DataStore {
             settings[this._ComponentID] = this._Data;
 
             const json: string = JSON.stringify(settings, null, 4);
-            DataStore.SaveToJSON(json);
+            DataStore.SaveToFile(settings);
             return;
         }
 
@@ -184,9 +181,7 @@ export class DataStore {
             allData[key] = dataStore._Data;
         }
 
-        const json: string = JSON.stringify(allData, null, 4);
-
-        this.SaveToJSON(json);
+        DataStore.SaveToFile(allData);
     }
 
     /**

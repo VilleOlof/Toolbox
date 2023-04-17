@@ -4,6 +4,7 @@
     import { DataStore } from "../Stores/DataStore";
     import { AppSettings } from "../Lib/AppSettings";
     import { ModuleHandler } from "../Lib/ModuleHandler";
+    import { Common } from "../Lib/Common";
 
     const path = require('path');
     const { spawn } = require('child_process');
@@ -18,6 +19,7 @@
     }
 
     //Too many arguments passing around, need to refactor this
+    //Switch fully to svelte?
     async function GenerateSettingComponents(Settings: Record<string, Settings>): Promise<void> {
         const settingsContainer = document.getElementById('autoGenSettings') as HTMLDivElement;
 
@@ -124,34 +126,32 @@
         await GenerateSettingComponents(GlobalSettings._ComponentSettings);
     });
 
-    /* @ts-ignore */
-    const currentWindow = require('electron').remote.getCurrentWindow();
-
     const openDevTools = () => {
-        const devTools = currentWindow.webContents;
+        const devTools = Common.Electron.GetCurrentWindow().webContents;
         devTools.openDevTools();
     }
 
     const toggleAlwaysOnTop = () => {
+        const currentWindow = Common.Electron.GetCurrentWindow();
         currentWindow.setAlwaysOnTop(!currentWindow.isAlwaysOnTop(), 'screen-saver');
 
         AppSettings.SetSetting('AlwaysOnTop', currentWindow.isAlwaysOnTop());
     }
 
     const Zoom = (zoom: number, append: boolean = true) => {
+        const currentWindow = Common.Electron.GetCurrentWindow();
         if (append)
             currentWindow.webContents.setZoomFactor(currentWindow.webContents.getZoomFactor() + zoom);
         else if (!append) currentWindow.webContents.setZoomFactor(zoom);
     }
 
     const GithubEvent = () => {
-        require('electron').shell.openExternal('https://github.com/VilleOlof/Toolbox');
+        Common.Electron.OpenExternalLink('https://github.com/VilleOlof/Toolbox');
     }
 
     const OpenModuleFolder = () => {
         const modulePath = path.join(__dirname, '..', 'modules');
-        const fileManager = process.platform === 'win32' ? 'explorer' : 'open';
-        spawn(fileManager, [modulePath]);
+        Common.IO.OpenFolder(modulePath);
     }
 
     const ClearColumns = () => {

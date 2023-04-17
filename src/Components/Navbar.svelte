@@ -4,10 +4,11 @@
     import { DragHandler } from "../Lib/DragHandler";
     import { PluginCleanUp } from "../Lib/DavinciResolve";
     import { AppSettings } from "../Lib/AppSettings";
+    import { Common } from "../Lib/Common";
     import RefreshNotification from "./RefreshNotification.svelte";
 
     const GithubEvent = () => {
-        require('electron').shell.openExternal('https://github.com/VilleOlof/Toolbox');
+        Common.Electron.OpenExternalLink('https://github.com/VilleOlof/Toolbox');
     }
 
     const Close = () => {
@@ -16,16 +17,14 @@
             height: window.innerHeight
         })
 
-        /* @ts-ignore */
-        const position = require('electron').remote.getCurrentWindow().getPosition();
+        const position = Common.Electron.GetCurrentWindow().getPosition();
         AppSettings.SetSetting('WindowPosition', {
             x: position[0],
             y: position[1]
         });
 
         PluginCleanUp();
-        /* @ts-ignore */
-        require('electron').remote.getCurrentWindow().close();
+        Common.Electron.GetCurrentWindow().close();
     }
 
     const ToggleColumnDropdown = (Show: boolean) => {
