@@ -1,13 +1,41 @@
-import AppSettingsJSON from "../../AppSettings.json";
+import { Common } from "./Common";
 
 /**
  * AppSettings class
  * 
  * App settings are core-app settings for the plugin itself.
- * Not meant to change during the life time of the app.
- * And only through the AppSettings.json file.
+ * These are not visible in the plugin settings page.
  */
 export class AppSettings {
+
+    /**
+     * Is the AppSettings class initialized
+     */
+    private static _Init: boolean = false;
+
+    /**
+     * The AppSettings.json file
+     */
+    private static AppSettingsJSON: any;
+
+    /**
+     * Initialize the AppSettings class
+     * Should only be called once by the plugin itself at startup.
+     * 
+     * @returns {boolean} True if the class is initialized
+     */
+    public static Init(): boolean {
+        if (this._Init) return this._Init;
+
+        this._Init = true;
+
+        this.AppSettingsJSON = Common.IO.ReadFile(
+            Common.IO.GetRootFolder() + "/../AppSettings.json", 
+            true
+        );
+
+        return this._Init;
+    }
 
     /**
      * Get all settings
@@ -21,7 +49,7 @@ export class AppSettings {
      * ```
      */
     public static GetAllSettings(): any {
-        return AppSettingsJSON;
+        return this.AppSettingsJSON;
     }
 
     /**
@@ -38,7 +66,7 @@ export class AppSettings {
      * ```
      */
     public static GetSetting<T>(key: string, defaultValue?: T): T {
-        return AppSettingsJSON[key] ?? defaultValue;
+        return this.AppSettingsJSON[key] ?? defaultValue;
     }
 
     /**
@@ -49,7 +77,7 @@ export class AppSettings {
      * @returns {T} The setting
      */
     public static GetNestedSetting<T>(defaultValue?: T, ...key: string[]): T {
-        let value = AppSettingsJSON;
+        let value = this.AppSettingsJSON;
         for (const k of key) {
             value = value[k];
             if (value === undefined) {
@@ -65,17 +93,21 @@ export class AppSettings {
      * @param key The key of the setting
      * @param value The value of the setting
      */
-    public static SetSetting(key: string, value: any): void {
-        AppSettingsJSON[key] = value;
+    public static SetSetting<T>(key: string, value: T): T {
+        this.AppSettingsJSON[key] = value;
         this.Save();
+        return value;
     }
 
+    /**
+     * Saves the AppSettings to file
+     */
     private static Save(): void {
-        const jsonString = JSON.stringify(AppSettingsJSON, null, 4);
-
-        const fs = require("fs");
-
-        fs.writeFileSync(__dirname + "/../AppSettings.json", jsonString, "utf8");
+        Common.IO.WriteFile(
+            Common.IO.GetRootFolder() + "/../AppSettings.json", 
+            this.AppSettingsJSON, 
+            true
+        );
     }
 }
 

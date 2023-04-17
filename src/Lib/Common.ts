@@ -56,6 +56,28 @@ export namespace Common {
         }
 
         /**
+         * Writes a file to the file system.
+         * 
+         * @param path the path to the file
+         * @param content the content to write to the file
+         * @param json write the file as JSON if true
+         * 
+         * @example
+         * ```typescript
+         * // Writing a file as a string
+         * Common.IO.WriteFile("path/to/file", "content");
+         * 
+         * // Writing a file as JSON
+         * Common.IO.WriteFile("path/to/file", { "key": "value" }, true);
+         * ```
+         */
+        export function WriteFile(path: string, content: string, json?:boolean ): void {
+            if (json) content = JSON.stringify(content, null, 4);
+            
+            fs.writeFileSync(path, content, "utf8");
+        }
+
+        /**
          * Reads a directory from the file system.
          * 
          * @param path the path to the directory

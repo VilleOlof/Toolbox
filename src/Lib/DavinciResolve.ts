@@ -1,7 +1,7 @@
 import { AppSettings } from "./AppSettings";
 import { ResolveWorkerHandler } from "./ResolveWorkerHandler";
 
-const PluginID = AppSettings.GetSetting("PluginID", "");
+let PluginID: string;
 const WorkflowIntegration = require('../src/Lib/WorkflowIntegration.node'); //Runs from the /dist directory
 
 /**
@@ -15,6 +15,8 @@ export let Resolve: Resolve;
  * This should be called by the Plugin at startup
  */
 export function InitPlugin(): boolean {
+    PluginID = AppSettings.GetSetting("PluginID", "");
+
     const isInitialized = WorkflowIntegration.Initialize(PluginID);
     console.log(`Plugin initialized: ${isInitialized}`);
 
