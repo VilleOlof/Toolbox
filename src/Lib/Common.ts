@@ -1,5 +1,5 @@
 import { ChildProcess } from "child_process";
-import { BrowserWindow } from "electron";
+import { App, BrowserWindow, Shell } from "electron";
 
 const electron = require("electron");
 const fs = require("fs");
@@ -49,7 +49,10 @@ export namespace Common {
          */
         export function ReadFile<T = string>(path: string, json?: boolean): T {
             let file: string = fs.readFileSync(path, "utf8");
-            if (!file) return <T>"";
+            if (!file) {
+                console.log(`[Common.IO.ReadFile] File not found: ${path}`);
+                return undefined;
+            }
 
             if (json) return <T>JSON.parse(file);
             return <T>file;
@@ -72,8 +75,8 @@ export namespace Common {
          * Common.IO.WriteFile("path/to/file", { "key": "value" }, true);
          * ```
          */
-        export function WriteFile(path: string, content: any, json?:boolean ): void {
-            if (json || typeof content != "string") content = JSON.stringify(content, null, 4);
+        export function WriteFile(path: string, content: any, json?:boolean, stringifyContentDefault: boolean = true): void {
+            if ((json || typeof content != "string") && stringifyContentDefault) content = JSON.stringify(content, null, 4);
             
             fs.writeFileSync(path, content, "utf8");
         }
@@ -272,9 +275,13 @@ export namespace Common {
          * let app: Electron.App = Common.Electron.GetApp();
          * ```
          */
-        export function GetApp(): any {
+        export function GetApp(): App {
             /* @ts-ignore */
             return electron.remote.app;
+        }
+
+        export function GetShell(): Shell {
+            return electron.shell;
         }
     }
 
