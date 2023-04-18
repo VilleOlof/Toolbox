@@ -189,6 +189,10 @@
         );
     }
 
+    #title {
+        -webkit-app-region: drag !important;
+    }
+
     *:not(#navbarContainer) {
         -webkit-app-region: no-drag;
     }

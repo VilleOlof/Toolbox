@@ -280,6 +280,11 @@ export namespace Common {
             return electron.remote.app;
         }
 
+        /**
+         * Gets the current electron shell.
+         * 
+         * @returns the current electron shell
+         */
         export function GetShell(): Shell {
             return electron.shell;
         }

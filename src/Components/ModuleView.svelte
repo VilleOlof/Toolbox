@@ -9,10 +9,14 @@
         const MirrorFlipped = AppSettings.GetSetting("MirrorFlipped", false);
         
         const mainContainer: HTMLElement = document.querySelector('#mainColumnContainer');
-        mainContainer.setAttribute('style', `align-items: ${MirrorFlipped ? "flex-end" : "flex-start"};`);
+        //mainContainer.setAttribute('style', `align-items: ${MirrorFlipped ? "flex-end" : "flex-start"};`);
 
         const columnContainer: HTMLElement = document.querySelector('#columnContainer');
         columnContainer.setAttribute('style', `flex-direction: ${MirrorFlipped ? "row-reverse" : "row"};`);
+
+        const emptyDiv = document.createElement("div");
+        emptyDiv.setAttribute('style', 'flex-grow: 1');
+        columnContainer.appendChild(emptyDiv);
     });
 
     onDestroy(() => {

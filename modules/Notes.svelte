@@ -8,7 +8,8 @@
     const componentID: string = "Notes";
 
     onMount(() => {
-        ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Large);
+        ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Large,
+        "Allows you to write notes and save them between sessions (Or not!).");
     });
 
     let _Settings = GlobalSettings.GetInstance(componentID);

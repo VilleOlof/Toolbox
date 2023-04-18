@@ -20,10 +20,20 @@
 
     //Too many arguments passing around, need to refactor this
     //Switch fully to svelte?
-    async function GenerateSettingComponents(Settings: Record<string, Settings>): Promise<void> {
+    async function GenerateSettingComponents(): Promise<void> {
+
+        const Modules = ModuleHandler.RegisteredModules;
+
+        const SettingInstances: Record<string, Settings> = {};
+        
+        for (const [componentID, _] of Object.entries(Modules)) {
+            const settings = GlobalSettings.GetInstance(componentID);
+            SettingInstances[componentID] = settings;
+        }
+
         const settingsContainer = document.getElementById('autoGenSettings') as HTMLDivElement;
 
-        for (const [componentID, settingInstance] of Object.entries(Settings)) {
+        for (const [componentID, settingInstance] of Object.entries(SettingInstances)) {
             //Check if the component has been registered
             if (!ModuleHandler.RegisteredModules[componentID]) {
                 continue;
@@ -33,19 +43,56 @@
             componentContainer.id = componentID;
             componentContainer.classList.add('componentContainer');
 
-            AddSettingHeader(componentContainer, componentID);
+            let iconTextHover = AddSettingHeader(componentContainer, componentID);
 
             await LoopOverSettings(componentID, settingInstance, componentContainer);
+
+            if (iconTextHover) {
+                componentContainer.appendChild(iconTextHover);
+            }
 
             settingsContainer.appendChild(componentContainer);
         }
     }
 
-    function AddSettingHeader(componentContainer: HTMLDivElement, componentID: string): void {
+    function AddSettingHeader(componentContainer: HTMLDivElement, componentID: string): HTMLDivElement {
         const settingHeader: HTMLDivElement = document.createElement('div');
         settingHeader.classList.add('settingHeader');
 
-        settingHeader.appendChild(document.createElement('h2')).innerText = componentID;
+        const settingHeaderTitle: HTMLDivElement = document.createElement('div');
+        settingHeaderTitle.classList.add('settingHeaderTitle');
+
+        const title = <HTMLHeadElement>document.createElement('h2');
+        title.innerText = componentID;
+        settingHeaderTitle.appendChild(title);
+
+        let infoText: HTMLDivElement;
+
+        if (ModuleHandler.RegisteredModules[componentID].description) {
+            const infoIcon: HTMLImageElement = document.createElement('img');
+            infoIcon.src = path.join(__dirname, '../src/assets/Info.svg');
+            infoIcon.classList.add('infoIcon');
+
+            infoText = <HTMLDivElement>document.createElement('div');
+            infoText.classList.add('infoText');
+            infoText.innerText = ModuleHandler.RegisteredModules[componentID].description;
+
+            infoIcon.onmouseenter = () => {
+                infoText.style.display = 'block';
+            }
+
+            infoIcon.onmouseleave = () => {
+                infoText.style.display = 'none';
+            }
+
+            infoText.onmouseleave = () => {
+                infoText.style.display = 'none';
+            }
+
+            settingHeaderTitle.appendChild(infoIcon);
+        }
+
+        settingHeader.appendChild(settingHeaderTitle)
 
         const settingHeaderButtons: HTMLDivElement = document.createElement('div');
         settingHeaderButtons.classList.add('settingHeaderButtons');
@@ -73,38 +120,40 @@
         settingHeader.appendChild(settingHeaderButtons);
 
         componentContainer.appendChild(settingHeader);
+
+        return infoText ?? undefined;
     }
 
     async function LoopOverSettings(componentID: string, settingInstance: Settings,componentContainer: HTMLDivElement): Promise<void> {
         for (const [settingName, settingInfo] of Object.entries(settingInstance.GetAllComponentSettings())) {
-                const settingContainer: HTMLDivElement = document.createElement('div');
-                settingContainer.id = settingName;
-                settingContainer.classList.add('settingContainer');
+            const settingContainer: HTMLDivElement = document.createElement('div');
+            settingContainer.id = settingName;
+            settingContainer.classList.add('settingContainer');
 
-                const SpecificSettingHeader: HTMLDivElement = document.createElement('div');
-                SpecificSettingHeader.classList.add('specificSettingHeader');
-                
-                SpecificSettingHeader.appendChild(document.createElement('h3')).innerText = settingName;
+            const SpecificSettingHeader: HTMLDivElement = document.createElement('div');
+            SpecificSettingHeader.classList.add('specificSettingHeader');
+            
+            SpecificSettingHeader.appendChild(document.createElement('h3')).innerText = settingName;
 
-                const resetSpecificSetting = document.createElement('button');
-                resetSpecificSetting.innerText = 'Reset';
-                resetSpecificSetting.classList.add('btnStyle');
+            const resetSpecificSetting = document.createElement('button');
+            resetSpecificSetting.innerText = 'Reset';
+            resetSpecificSetting.classList.add('btnStyle');
 
-                resetSpecificSetting.onclick = () => {
-                    const settingInstance = GlobalSettings._ComponentSettings[componentID]
-                    if (!settingInstance) return;
-                    settingInstance.ResetSetting(settingName);
-                }
+            resetSpecificSetting.onclick = () => {
+                const settingInstance = GlobalSettings._ComponentSettings[componentID]
+                if (!settingInstance) return;
+                settingInstance.ResetSetting(settingName);
+            }
 
-                SpecificSettingHeader.appendChild(resetSpecificSetting);
+            SpecificSettingHeader.appendChild(resetSpecificSetting);
 
-                settingContainer.appendChild(SpecificSettingHeader);
+            settingContainer.appendChild(SpecificSettingHeader);
 
-                settingContainer.appendChild(document.createElement('p')).innerText = settingInfo.Description;
+            settingContainer.appendChild(document.createElement('p')).innerText = settingInfo.Description;
 
-                AddNewSettingInput(settingInfo, settingContainer, componentID, settingName);
+            AddNewSettingInput(settingInfo, settingContainer, componentID, settingName);
 
-                componentContainer.appendChild(settingContainer);
+            componentContainer.appendChild(settingContainer);
         }
     }
 
@@ -123,7 +172,7 @@
     }
 
     onMount(async () => {
-        await GenerateSettingComponents(GlobalSettings._ComponentSettings);
+        await GenerateSettingComponents();
     });
 
     const openDevTools = () => {
@@ -249,7 +298,7 @@
         margin: 0.4rem;
 
         border-radius: 0.25rem;
-	    filter: drop-shadow(0 0 0.25em #0000005e);
+        filter: drop-shadow(0 0 0.25em #0000005e);
     }
 
     :global(.settingContainer > h3) {
@@ -271,6 +320,45 @@
         @include Flex.Container(space-between, center, row);
 
         margin: 0 0.5rem;
+    }
+
+    :global(.settingHeaderTitle) {
+        @include Flex.Container(flex-start, center, row);
+    }
+
+    :global(.infoIcon) {
+        margin-left: 0.5rem;
+
+        cursor: pointer;
+
+        width: 1.75rem;
+        height: 1.75rem;
+
+        filter: invert(Colors.$IconInvertPercentage);
+
+        &:hover {
+            transform: scale(1.1);
+        }
+
+        transition: transform 0.2s ease-in-out;
+    }
+
+    :global(.infoText) {
+        background-color: Colors.$BackgroundColor;
+
+        padding: 0.5rem;
+        border-radius: 0.25rem;
+        border: 0.15rem solid darken(Colors.$BackgroundColor, 3%);
+
+        filter: drop-shadow(0 0 0.25em #0000005e);
+
+        position: absolute;
+        display: none;
+
+        max-width: 20rem;
+
+        top: 4.25rem;
+        left: 8.5rem;
     }
 
     #otherContent {

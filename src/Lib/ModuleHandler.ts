@@ -24,6 +24,7 @@ export namespace ModuleHandler {
 
     export type ModuleData = {
         name: string,
+        description: string,
         size: ComponentSize
     }
 
@@ -91,6 +92,8 @@ export namespace ModuleHandler {
         let savedColumns = _DataStore.Get<ColumnData[]>("Columns");
         if (!savedColumns) return undefined;
 
+        let OldRegisteredModules = _DataStore.Get<{[key: string]: ModuleData}>("RegisteredModules");
+
         for (let column of savedColumns) {
             let columnDiv = AddColumn(column.size, column.ID);
 
@@ -108,6 +111,7 @@ export namespace ModuleHandler {
 
                 RegisteredModules[moduleName] = {
                     name: moduleName,
+                    description: OldRegisteredModules[moduleName].description,
                     size: column.size
                 };
 
@@ -119,7 +123,7 @@ export namespace ModuleHandler {
         return ColumnContainer.innerHTML;
     }
 
-    export function RegisterModule(moduleName: string, componentSize: ComponentSize): void {
+    export function RegisterModule(moduleName: string, componentSize: ComponentSize, description?: string): void {
         console.log("Registering module: " + moduleName);
 
         let moduleDiv = document.getElementById(moduleName);
@@ -140,6 +144,7 @@ export namespace ModuleHandler {
 
         RegisteredModules[moduleName] = {
             name: moduleName,
+            description: description,
             size: componentSize
         };
 

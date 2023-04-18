@@ -12,7 +12,8 @@
     const componentID: string = "OpenAtPlayhead";
 
     onMount(() => {
-        ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Small);
+        ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Small,
+        "Opens the current file at the current playhead position in a new explorer window. ");
     });
 
     const OpenFileAtPlayhead = () => {

@@ -12,7 +12,8 @@
     const componentID: string = "Folders";
 
     onMount(() => {
-        ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Small);
+        ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Small,
+        "A small module that allows you to bind folders to colorful icon buttons.\nThis is useful for quickly opening common used folders.\nHover over an icon to see the folder path and modify it.");
 
         UpdateEmptyFolderCSS();
 

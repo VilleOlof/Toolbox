@@ -8,7 +8,8 @@
     const componentID: string = "Counter";
 
     onMount(() => {
-        ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Large);
+        ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Large,
+        "Two counters that can be used to count up or down.\nThey also have a combined sum and difference counter.");
     });
 
     let _Settings = GlobalSettings.GetInstance(componentID);

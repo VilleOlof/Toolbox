@@ -8,7 +8,8 @@
     const componentID: string = "Timecode";
 
     onMount(() => {
-        ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Large);
+        ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Large,
+        "A module that displays the current timecode of the timeline");
     });
 
     let _Settings = GlobalSettings.GetInstance(componentID);
