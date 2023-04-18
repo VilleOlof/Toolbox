@@ -7,7 +7,6 @@
     import { Common } from "../Lib/Common";
 
     const path = require('path');
-    const { spawn } = require('child_process');
 
     let InputComponents: Record<string, Function> = {};
 
@@ -51,6 +50,16 @@
                 componentContainer.appendChild(iconTextHover);
             }
 
+            //Check if settings should be minimized on load
+            const componentSettings = componentContainer.querySelector('.allComponentSettingsContainer') as HTMLDivElement;
+            let minimizedSettings = GlobalSettings.SettingsData.Get('MinimizedSettings', []);
+            if (minimizedSettings.includes(componentID) && componentSettings) {
+                componentSettings.style.display = 'none';
+
+                const arrowIcon = componentContainer.querySelector('.minimizeSettingsIcon') as HTMLImageElement;
+                arrowIcon.src = path.join(__dirname, '../src/assets/arrowUp.svg');
+            }
+
             settingsContainer.appendChild(componentContainer);
         }
     }
@@ -92,6 +101,35 @@
             settingHeaderTitle.appendChild(infoIcon);
         }
 
+        const minimizeSettingsIcon: HTMLImageElement = document.createElement('img');
+        minimizeSettingsIcon.src = path.join(__dirname, '../src/assets/arrowDown.svg');
+        minimizeSettingsIcon.classList.add('minimizeSettingsIcon');
+
+        let globalSettings = GlobalSettings.SettingsData;
+
+        minimizeSettingsIcon.onclick = () => {
+            const mainSettingsContainer = document.querySelector(`.allComponentSettingsContainer#${componentID}`) as HTMLDivElement;
+            if (!mainSettingsContainer) return;
+
+            let minimizedSettings = globalSettings.Get<string[]>('MinimizedSettings', []);
+
+            if (mainSettingsContainer.style.display === 'none') {
+                mainSettingsContainer.style.display = 'block';
+                minimizeSettingsIcon.src = path.join(__dirname, '../src/assets/arrowDown.svg');
+
+                minimizedSettings = minimizedSettings.filter((v) => v !== componentID);
+                globalSettings.Set('MinimizedSettings', minimizedSettings);
+            } else {
+                mainSettingsContainer.style.display = 'none';
+                minimizeSettingsIcon.src = path.join(__dirname, '../src/assets/arrowUp.svg');
+;
+                minimizedSettings.push(componentID);
+                globalSettings.Set('MinimizedSettings', minimizedSettings);
+            }
+        }
+
+        settingHeaderTitle.appendChild(minimizeSettingsIcon);
+
         settingHeader.appendChild(settingHeaderTitle)
 
         const settingHeaderButtons: HTMLDivElement = document.createElement('div');
@@ -125,6 +163,10 @@
     }
 
     async function LoopOverSettings(componentID: string, settingInstance: Settings,componentContainer: HTMLDivElement): Promise<void> {
+        const allComponentSettingsContainer = document.createElement('div') as HTMLDivElement;
+        allComponentSettingsContainer.id = componentID;
+        allComponentSettingsContainer.classList.add('allComponentSettingsContainer');
+        
         for (const [settingName, settingInfo] of Object.entries(settingInstance.GetAllComponentSettings())) {
             const settingContainer: HTMLDivElement = document.createElement('div');
             settingContainer.id = settingName;
@@ -153,8 +195,18 @@
 
             AddNewSettingInput(settingInfo, settingContainer, componentID, settingName);
 
-            componentContainer.appendChild(settingContainer);
+            allComponentSettingsContainer.appendChild(settingContainer);
         }
+
+        //Remove the minimize icon if no settings are present
+        if (allComponentSettingsContainer.children.length === 0) {
+            const minimizeSettingsIcon = componentContainer.querySelector('.minimizeSettingsIcon') as HTMLImageElement;
+            if (minimizeSettingsIcon) {
+                minimizeSettingsIcon.style.display = 'none';
+            }
+        }
+
+        componentContainer.appendChild(allComponentSettingsContainer);
     }
 
     async function AddNewSettingInput(settingInfo: SettingTypes.Info, settingContainer: HTMLDivElement, componentID: string, settingName: string): Promise<void> {
@@ -359,6 +411,23 @@
 
         top: 4.25rem;
         left: 8.5rem;
+    }
+
+    :global(.minimizeSettingsIcon) {
+        margin-left: 0.5rem;
+
+        cursor: pointer;
+
+        width: 2.5rem;
+        height: 2.5rem;
+
+        filter: invert(Colors.$IconInvertPercentage);
+
+        &:hover {
+            transform: scale(1.1);
+        }
+
+        transition: transform 0.2s ease-in-out;
     }
 
     #otherContent {

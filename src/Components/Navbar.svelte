@@ -206,11 +206,11 @@
             margin: 0;
             margin-left: 1rem;
 
-            @media screen and (max-width: 800px) {
+            @media screen and (max-width: 900px) {
                 font-size: 1.25em;
             }
-            @media screen and (max-width: 715px) {
-                font-size: 0.75em;
+            @media screen and (max-width: 815px) {
+                display: none;
             }
 
             transition: font-size 0.2s;
