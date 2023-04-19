@@ -446,6 +446,17 @@ export class ResolveFunctions {
         if (!this.CheckIfSubscribeTypeExists(SubscribeType)) return;
         ResolveFunctions._ChangeCallbacks[SubscribeType].forEach(callback => callback(object));
     }
+
+    public static ConvertTimecodeToFrames(timecode: string): number {
+        let timecodeArray: string[] = timecode.split(":");
+        let frames: number = 0;
+
+        frames += parseInt(timecodeArray[0]) * 60 * 25;
+        frames += parseInt(timecodeArray[1]) * 25;
+        frames += parseInt(timecodeArray[2]);
+
+        return frames;
+    }
 }
 
 /**

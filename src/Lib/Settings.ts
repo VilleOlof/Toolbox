@@ -284,6 +284,8 @@ namespace SettingTypes {
 
     export type Keybind = {
         placeholder?: string;
+        defaultModifierOne?: string;
+        defaultModifierTwo?: string;
     }
     
     /**

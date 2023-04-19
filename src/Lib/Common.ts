@@ -288,6 +288,61 @@ export namespace Common {
         export function GetShell(): Shell {
             return electron.shell;
         }
+
+        /**
+         * Registers a shortcut.
+         * 
+         * @param key the key to register
+         * @param callback the callback to execute when the key is pressed
+         */
+        export function RegisterShortcut(key: globalThis.Electron.Accelerator, callback: () => void): void {
+            electron.globalShortcut.register(key, callback);
+        }
+
+        /**
+         * Gets a shortcut accelerator.
+         * 
+         * @param modifierOne Modifier one
+         * @param modifierTwo Modifier two
+         * @param key Key
+         * @returns the accelerator
+         */
+        export function GetShortCutAccelerator(modifierOne: string, modifierTwo: string, key: string): globalThis.Electron.Accelerator {
+            return `${modifierOne}${modifierOne ? "+" : ""}${modifierTwo}${modifierTwo ? "+" : ""}${key}`;
+        }
+
+        /**
+         * Deconstructs an accelerator.
+         * 
+         * @param accelerator the accelerator to deconstruct
+         * @returns the deconstructed accelerator
+         */
+        // Not good but works.
+        export function DeconstructAccelerator(accelerator: globalThis.Electron.Accelerator): { modifierOne: string, modifierTwo: string, key: string } {
+            let parts = accelerator.split("+");
+
+            if (parts.length == 1) return {
+                modifierOne: "",
+                modifierTwo: "",
+                key: parts[0]
+            };
+            else if (parts.length == 2) return {
+                modifierOne: parts[0],
+                modifierTwo: "",
+                key: parts[1]
+            };
+            else if (parts.length == 3) return {
+                modifierOne: parts[0],
+                modifierTwo: parts[1],
+                key: parts[2]
+            };
+
+            return {
+                modifierOne: "",
+                modifierTwo: "",
+                key: ""
+            };
+        }
     }
 
     /**
