@@ -1,4 +1,5 @@
 import { AppSettings } from "./AppSettings";
+import { Common } from "./Common";
 import { ResolveWorkerHandler } from "./ResolveWorkerHandler";
 
 let PluginID: string;
@@ -49,6 +50,34 @@ export function QuitResolve(): void {
  */
 export function PluginCleanUp(): void {
     WorkflowIntegration.CleanUp();
+}
+
+/**
+ * Quits the Plugin  
+ * And saves the current window size and position
+ * 
+ * @param quitResolve Whether or not to quit Resolve
+ */
+export function AppQuit(quitResolve: boolean = false): void {
+    AppSettings.SetSetting('WindowSize', {
+        width: window.innerWidth,
+        height: window.innerHeight
+    })
+
+    const position = Common.Electron.GetCurrentWindow().getPosition();
+    AppSettings.SetSetting('WindowPosition', {
+        x: position[0],
+        y: position[1]
+    });
+
+    if (quitResolve) {
+        QuitResolve();
+    }
+    else {
+        PluginCleanUp();
+    }
+
+    Common.Electron.GetCurrentWindow().close();
 }
 
 /**

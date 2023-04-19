@@ -376,34 +376,34 @@ declare type RenderSettings = {
     /**
      * (when set True, the settings MarkIn and MarkOut are ignored)
      */
-    SelectAllFrames: boolean;
+    SelectAllFrames?: boolean;
 
-    MarkIn: number;
-    MarkOut: number;
+    MarkIn?: number;
+    MarkOut?: number;
 
-    TargetDir: string;
-    CustomName: string;
+    TargetDir?: string;
+    CustomName?: string;
 
     /**
      * 0 - Prefix, 1 - Suffix.
      */
-    UniqueFilenameStyle: 0 | 1;
+    UniqueFilenameStyle?: 0 | 1;
 
-    ExportVideo: boolean;
-    ExportAudio: boolean;
+    ExportVideo?: boolean;
+    ExportAudio?: boolean;
 
-    FormatWidth: number;
-    FormatHeight: number;
+    FormatWidth?: number;
+    FormatHeight?: number;
 
     /**
      * (examples: 23.976, 24)
      */
-    FrameRate: number;
+    FrameRate?: number;
 
     /**
      * (for SD resolution: “16_9” or “4_3”) (other resolutions: “square” or “cinemascope”)
      */
-    PixelAspectRatio: string
+    PixelAspectRatio?: string
 
     /**
      * possible values for current codec (if applicable):  
@@ -411,47 +411,47 @@ declare type RenderSettings = {
      * * [1 -> MAX] (int) - will set input bit rate
      * * [“Least”, “Low”, “Medium”, “High”, “Best”] (String) - will set input quality level
      */
-    VideoQuality: 0 | 1 | Number.MAX_SAFE_INTEGER |"Least" | "Low" | "Medium" | "High" | "Best";
+    VideoQuality?: 0 | 1 | Number.MAX_SAFE_INTEGER |"Least" | "Low" | "Medium" | "High" | "Best";
 
     /**
      * (example: “aac”)
      */
-    AudioCodec: string;
+    AudioCodec?: string;
 
-    AudioBitDepth: number;
-    AudioSampleRate: number;
+    AudioBitDepth?: number;
+    AudioSampleRate?: number;
 
     /**
      * (example: “Same as Project”, “AstroDesign”)
      */
-    ColorSpaceTag: string;
+    ColorSpaceTag?: string;
 
     /**
      * (example: “Same as Project”, “ACEScct”)
      */
-    GammaTag: string;
+    GammaTag?: string;
 
-    ExportAlpha: boolean;
+    ExportAlpha?: boolean;
 
     /**
      *  (example: “Main10”). Can only be set for H.264 and H.265.
      */
-    EncodingProfile: string;
+    EncodingProfile?: string;
 
     /**
      * Can only be set for H.264
      */
-    MultiPassEncode: boolean;
+    MultiPassEncode?: boolean;
 
     /**
      * 0 - Premultipled, 1 - Straight. Can only be set if “ExportAlpha” is true.
      */
-    AlphaMode: 0 | 1;
+    AlphaMode?: 0 | 1;
 
     /**
      * Only supported by QuickTime and MP4 formats.
      */
-    NetworkOptimization: boolean;
+    NetworkOptimization?: boolean;
 };
 
 /**
