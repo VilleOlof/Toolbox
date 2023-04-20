@@ -30,6 +30,12 @@
             SettingInstances[componentID] = settings;
         }
 
+        /**
+         * [key]: parentComponentID
+         * [value]: HTMLInputElement
+         */
+        const textBoxes: { [key: string]: HTMLInputElement } = {};
+
         const settingsContainer = document.getElementById('autoGenSettings') as HTMLDivElement;
 
         for (const [componentID, settingInstance] of Object.entries(SettingInstances)) {
@@ -324,6 +330,10 @@
         @include Flex.Container(flex-start, center, column);
 
         margin: 1rem;
+    }
+
+    #autoGenSettings {
+        @include Flex.Container(flex-start, center, column-reverse);
     }
 
     :global(.componentContainer) {

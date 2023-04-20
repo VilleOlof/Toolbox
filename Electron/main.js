@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow, nativeImage} = require('electron')
+const {app, BrowserWindow, nativeImage, ipcMain, globalShortcut} = require('electron')
 const path = require('path')
 const os = require('os')
 const fs = require('fs')
@@ -46,13 +46,35 @@ function createWindow () {
     if(AppSettings.AlwaysOpenDevTools) mainWindow.webContents.openDevTools()
 }
 
+ipcMain.handle('keybind:set', (event, keybind) => {
+    globalShortcut.register(keybind, () => {
+        BrowserWindow.getAllWindows()[0].webContents.send(`keybind:${keybind}`, keybind);
+    });
+});
+
+ipcMain.handle('keybind:unset', (event, keybind) => {
+    globalShortcut.unregister(keybind);
+});
+
+ipcMain.handle('keybind:unsetAll', (event) => {
+    globalShortcut.unregisterAll();
+});
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', createWindow)
 
+app.on('will-quit', () => {
+    // Unregister all shortcuts.
+    globalShortcut.unregisterAll();
+});
+
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
+    // Unregister all shortcuts.
+    globalShortcut.unregisterAll();
+
     // On macOS it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== 'darwin') {

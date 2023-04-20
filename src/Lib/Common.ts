@@ -289,6 +289,7 @@ export namespace Common {
             return electron.shell;
         }
 
+        let Callbacks: { [key: string]: () => void } = {};
         /**
          * Registers a shortcut.
          * 
@@ -296,7 +297,28 @@ export namespace Common {
          * @param callback the callback to execute when the key is pressed
          */
         export function RegisterShortcut(key: globalThis.Electron.Accelerator, callback: () => void): void {
-            electron.globalShortcut.register(key, callback);
+            electron.ipcRenderer.invoke('keybind:set', key);
+
+            electron.ipcRenderer.on(`keybind:${key}`, callback);
+            Callbacks[key.toString()] = callback;
+        }
+
+        /**
+         * Unregisters a shortcut.
+         * 
+         * @param key the key to unregister
+         */
+        export function UnregisterShortcut(key: globalThis.Electron.Accelerator): void {
+            electron.ipcRenderer.invoke('keybind:unset', key);
+            electron.ipcRenderer.removeAllListeners(`keybind:${key}`);
+            delete Callbacks[key.toString()];
+        }
+
+        export function UnregisterAllShortcuts(): void {
+            electron.ipcRenderer.invoke('keybind:unsetAll');
+            for (const key in Callbacks) {
+                electron.ipcRenderer.removeAllListeners(`keybind:${key}`);
+            }
         }
 
         /**
@@ -309,6 +331,16 @@ export namespace Common {
          */
         export function GetShortCutAccelerator(modifierOne: string, modifierTwo: string, key: string): globalThis.Electron.Accelerator {
             return `${modifierOne}${modifierOne ? "+" : ""}${modifierTwo}${modifierTwo ? "+" : ""}${key}`;
+        }
+
+        /**
+         * Gets a shortcut accelerator from a string.
+         * 
+         * @param accelerator the accelerator string
+         * @returns the accelerator
+         */
+        export function GetShortCutAcceleratorFromString(accelerator: string): globalThis.Electron.Accelerator {
+            return accelerator as globalThis.Electron.Accelerator;
         }
 
         /**

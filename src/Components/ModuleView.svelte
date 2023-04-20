@@ -2,6 +2,7 @@
     import { onDestroy, onMount } from "svelte";
     import { ModuleHandler } from "../Lib/ModuleHandler";
     import { AppSettings } from "../Lib/AppSettings";
+    import { Common } from "../Lib/Common";
 
     onMount(async () => {
         await ModuleHandler.Init(document.getElementById("columnContainer") as HTMLDivElement);
@@ -22,6 +23,8 @@
     onDestroy(() => {
         ModuleHandler.SaveLayout();
         ModuleHandler.DestroyInstances();
+
+        Common.Electron.UnregisterAllShortcuts();
     });
 
 </script>

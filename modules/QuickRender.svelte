@@ -44,6 +44,7 @@
     let QuitOnRender = _Settings.RegisterSetting("Quit Plugin On Render", "Saves and quits the plugin when pressing the 'Render' Button", false, SettingTypes.Type.Checkbox);
     let ClearJobsBeforeRender = _Settings.RegisterSetting("Clear Jobs Before Render", "Clears all render jobs in the queue before rendering", false, SettingTypes.Type.Checkbox);
     let PromptFolderOnRender = _Settings.RegisterSetting("Prompt Folder On Render", "Prompts the user to select a folder when pressing the 'Render' Button", false, SettingTypes.Type.Checkbox);
+    let UseMarkerTool = _Settings.RegisterSetting("Use Marker Tool", "Uses the marker tool to set the in and out points", false, SettingTypes.Type.Checkbox);
 
     let DataProfileFallback = JSON.parse(JSON.stringify(DefaultProfile));
     let RenderProfiles: Profile[] = _DataStore.Get<Profile[]>("RenderProfiles", [DataProfileFallback]);
@@ -169,12 +170,41 @@
         const presetName: string = renderPresets[CurrentProfile.RenderPresetIndex];
         project.LoadRenderPreset(presetName);
 
-        const renderSettings: RenderSettings = {
-            SelectAllFrames: true, //Fix this to render markers or something in the future
-            TargetDir: CurrentProfile.FilePath,
-            CustomName: GetFileName(),
+        let inPoint: number = 0;
+        let outPoint: number = 0;
+
+        let renderSettings: RenderSettings;
+
+        if (UseMarkerTool) {
+            let _MarkerToolDataStore = DataStore.GetDataStoreByID("MarkerTool");
+            if (!_MarkerToolDataStore) {
+                console.log("Marker Tool not found");
+                return;
+            }
+
+            let startMarkerData = _MarkerToolDataStore.Get<string>('StartMarker');
+            let endMarkerData = _MarkerToolDataStore.Get<string>('EndMarker');
+
+            if (startMarkerData && endMarkerData) {
+                const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+
+                inPoint = ResolveFunctions.GetMarkerFrameID(startMarkerData, currentTimeline);
+                outPoint = ResolveFunctions.GetMarkerFrameID(endMarkerData, currentTimeline);
+
+                inPoint += currentTimeline.GetStartFrame();
+                outPoint += currentTimeline.GetStartFrame();
+            }
         }
 
+        renderSettings = {
+            SelectAllFrames: (inPoint == 0 || outPoint == 0),
+            TargetDir: CurrentProfile.FilePath,
+            CustomName: GetFileName(),
+
+            MarkIn: inPoint,
+            MarkOut: outPoint,
+        }
+        
         project.SetRenderSettings(renderSettings);
 
         project.AddRenderJob();

@@ -447,15 +447,73 @@ export class ResolveFunctions {
         ResolveFunctions._ChangeCallbacks[SubscribeType].forEach(callback => callback(object));
     }
 
-    public static ConvertTimecodeToFrames(timecode: string): number {
+    public static ConvertTimecodeToFrames(timecode: string, framerate?: number): number {
         let timecodeArray: string[] = timecode.split(":");
-        let frames: number = 0;
 
-        frames += parseInt(timecodeArray[0]) * 60 * 25;
-        frames += parseInt(timecodeArray[1]) * 25;
-        frames += parseInt(timecodeArray[2]);
+        if (!framerate) framerate = this.GetTimelineFramerate();
+
+        let hours: number = parseInt(timecodeArray[0]);
+        let minutes: number = parseInt(timecodeArray[1]);
+        let seconds: number = parseInt(timecodeArray[2]);
+        let frames: number = parseInt(timecodeArray[3]);
+
+        frames += seconds * framerate;
+        frames += minutes * framerate * 60;
+        frames += hours * framerate * 60 * 60;
 
         return frames;
+    }
+
+    public static ConvertFramesToTimecode(frames: number, framerate?: number): string {
+        if (!framerate) framerate = this.GetTimelineFramerate();
+
+        let hours: number = 0;
+        let minutes: number = 0;
+        let seconds: number = 0;
+
+        while (frames >= framerate * 60 * 60) {
+            frames -= framerate * 60 * 60;
+            hours++;
+        }
+
+        while (frames >= framerate * 60) {
+            frames -= framerate * 60;
+            minutes++;
+        }
+
+        while (frames >= framerate) {
+            frames -= framerate;
+            seconds++;
+        }
+
+        return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}:${frames.toString().padStart(2, "0")}`;
+    }
+
+    public static CheckIfMarkerExists(markerData: string): boolean {
+        let timeline: Timeline = ResolveFunctions.GetCurrentTimeline();
+        let markers = timeline.GetMarkers();
+
+        for (const [frameID, MarkerData] of Object.entries(markers)) {
+            if (MarkerData.customData == markerData) return true;
+        }
+
+        return false;
+    }
+
+    public static GetMarkerFrameID(markerData: string, timeline?: Timeline): number {
+        let currentTimeline: Timeline = timeline ?? ResolveFunctions.GetCurrentTimeline();
+        let markers = currentTimeline.GetMarkers();
+
+        for (const [frameID, MarkerData] of Object.entries(markers)) {
+            if (MarkerData.customData == markerData) return parseInt(frameID);
+        }
+
+        return -1;
+    }
+
+    public static GetTimelineFramerate(timeline?: Timeline): number {
+        const currentTimeline = timeline ?? ResolveFunctions.GetCurrentTimeline();
+        return parseInt(currentTimeline.GetSetting("timelineFrameRate"));
     }
 }
 

@@ -4,6 +4,7 @@
     import { ModuleHandler } from '../src/Lib/ModuleHandler';
 
     import { onDestroy, onMount } from 'svelte';
+  import { DataStore } from "../src/Stores/DataStore";
 
     const componentID: string = "Timecode";
 
@@ -17,7 +18,7 @@
     let UpdateInterval: number = _Settings.RegisterSetting('Update Interval', 'How often the timecode should update (Seconds)', 1, SettingTypes.Type.Numeric, { Step: 0.1, Min: 0.1 });
     let StartOnZero: boolean = _Settings.RegisterSetting('Start On Zero', 'Start the timecode on 00:00:00:00', true, SettingTypes.Type.Checkbox);
     let BackgroundColor: string = _Settings.RegisterSetting('Background Color', 'Background color of the module', '#28282E', SettingTypes.Type.Color);
-    let ShowTitle: boolean = _Settings.RegisterSetting('Show Title', 'Show the title of the module', true, SettingTypes.Type.Checkbox);
+    let UseMarkerTool: boolean = _Settings.RegisterSetting('Use Marker Tool', 'Use the marker tool to set the starting point using the "start marker"', false, SettingTypes.Type.Checkbox);
 
     //check if the background color is dark or light and set the text color accordingly
     let textColor: string = "white";
@@ -50,14 +51,30 @@
         let resolveTimecode: string = timeline.GetCurrentTimecode();
         if (resolveTimecode == oldResolveTimecode) return;
 
-        let hours: number = +resolveTimecode.substring(0, 2);
-        let minutes: number = +resolveTimecode.substring(3, 5);
-        let seconds: number = +resolveTimecode.substring(6, 8);
-        let frames: number = +resolveTimecode.substring(9, 11);
+        let framerate = ResolveFunctions.GetTimelineFramerate(timeline);
+        let frames = ResolveFunctions.ConvertTimecodeToFrames(resolveTimecode, framerate);
 
-        if (StartOnZero) hours -= 1;
+        if (StartOnZero) {
+            // removes an hour from the timecode //
+            frames -= (60 * 60 * framerate)
+        }
+        if (UseMarkerTool) {
+            let markerDatastore = DataStore.GetDataStoreByID('MarkerTool')
+            if (!markerDatastore) return;
+            let startMarkerData = markerDatastore.Get<string>('StartMarker');
 
-        let timecodeString: string = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}:${frames.toString().padStart(2, "0")}`;
+            if (startMarkerData != null && ResolveFunctions.CheckIfMarkerExists(startMarkerData)) {
+                frames -= ResolveFunctions.GetMarkerFrameID(startMarkerData, timeline);
+                frames -= 1; //The marker duration is 1 frame
+            }
+        }
+
+        //Prevent negative timecodes
+        if (frames < 0) {
+            frames = 0;
+        }
+
+        let timecodeString: string = ResolveFunctions.ConvertFramesToTimecode(frames, framerate);
 
         timecode = timecodeString;
         oldResolveTimecode = resolveTimecode;
@@ -73,9 +90,6 @@
 </script>
 
 <main id={componentID} style="--text-color: {textColor}; --background-color: {BackgroundColor}">
-    {#if ShowTitle}
-        <p>{componentID}</p>
-    {/if}
     <h1>{timecode}</h1>
 </main>
 
@@ -89,12 +103,8 @@
         color: var(--text-color);
         
         text-align: center;
-    }
 
-    p {
-        margin: 0.5rem 0 0 0;
-
-        opacity: 0.5;
+        max-width: 100%;
     }
 
     h1 {

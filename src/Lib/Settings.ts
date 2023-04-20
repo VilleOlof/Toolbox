@@ -287,6 +287,12 @@ namespace SettingTypes {
         defaultModifierOne?: string;
         defaultModifierTwo?: string;
     }
+
+    export enum KeybindModifier {
+        'Alt' = 'Alt',
+        'Control' = 'CommandOrControl',
+        'Shift' = 'Shift',
+    }
     
     /**
      * The slider extra data type.
@@ -408,6 +414,13 @@ class Settings {
         
         //a bit jank, copilot generated and had issues with loading old values before. but this works
         let value = defaultValue
+
+        //Loads the default value for keybinds
+        if (type == SettingTypes.Type.Keybind) {
+            ExtraData = ExtraData as SettingTypes.Keybind;
+            defaultValue = Common.Electron.GetShortCutAccelerator(ExtraData.defaultModifierOne, ExtraData.defaultModifierTwo, defaultValue);
+        }
+
         if (loadOldValues) {
             value = this.GetSettingValue(settingName, defaultValue);
         }
