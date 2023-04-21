@@ -489,15 +489,18 @@ export class ResolveFunctions {
         return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}:${frames.toString().padStart(2, "0")}`;
     }
 
-    public static CheckIfMarkerExists(markerData: string): boolean {
+    public static CheckIfMarkerExists(markerData: string, getFrameID: boolean = false): ResolveFunctions.CheckMarker {
         let timeline: Timeline = ResolveFunctions.GetCurrentTimeline();
         let markers = timeline.GetMarkers();
 
         for (const [frameID, MarkerData] of Object.entries(markers)) {
-            if (MarkerData.customData == markerData) return true;
+            if (MarkerData.customData == markerData) {
+                if (getFrameID) return {Exists: true, FrameID: parseInt(frameID)};
+                else return {Exists: true};
+            }
         }
 
-        return false;
+        return {Exists: false};
     }
 
     public static GetMarkerFrameID(markerData: string, timeline?: Timeline): number {
@@ -529,5 +532,10 @@ export module ResolveFunctions {
         Pages = "Pages",
         Project = "Project",
         Timeline = "Timeline"
+    }
+
+    export type CheckMarker = {
+        Exists: boolean,
+        FrameID?: number
     }
 }

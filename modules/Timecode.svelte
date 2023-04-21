@@ -47,6 +47,7 @@
         console.log("Timeline changed");
     });
 
+    let markerDatastore: DataStore;
     async function GetTimecode() {
         let resolveTimecode: string = timeline.GetCurrentTimecode();
         if (resolveTimecode == oldResolveTimecode) return;
@@ -59,12 +60,13 @@
             frames -= (60 * 60 * framerate)
         }
         if (UseMarkerTool) {
-            let markerDatastore = DataStore.GetDataStoreByID('MarkerTool')
+            markerDatastore = markerDatastore ?? DataStore.GetDataStoreByID('MarkerTool')
             if (!markerDatastore) return;
             let startMarkerData = markerDatastore.Get<string>('StartMarker');
 
-            if (startMarkerData != null && ResolveFunctions.CheckIfMarkerExists(startMarkerData)) {
-                frames -= ResolveFunctions.GetMarkerFrameID(startMarkerData, timeline);
+            let Marker: ResolveFunctions.CheckMarker = ResolveFunctions.CheckIfMarkerExists(startMarkerData, true);
+            if (startMarkerData != null && Marker.Exists) {
+                frames -= Marker.FrameID;
                 frames -= 1; //The marker duration is 1 frame
             }
         }
