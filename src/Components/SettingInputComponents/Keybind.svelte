@@ -1,7 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { SettingTypes, GlobalSettings } from "../../Lib/Settings";
-    import Keystroke from "svelte-keystroke";
     import { Common } from "../../Lib/Common";
 
     export let componentID: string;
@@ -94,7 +93,7 @@
         <option value="Shift">Shift</option>
     </select>
     +
-    <input type="text" id={`${componentID}-${settingName}-keyStrokes`} bind:this={KeyStrokeElement} on:change={HandleInput} maxlength=1>
+    <input type="text" id={`${componentID}-${settingName}-keyStrokes`} bind:this={KeyStrokeElement} on:change={HandleInput}>
     <span></span>
     <img src="../src/assets/Info.svg" alt="Info" class=keybindInfo 
         on:mouseenter={() => { hoverText.style.display = 'block' }}

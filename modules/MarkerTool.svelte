@@ -42,14 +42,14 @@
         'The keybind used to create the start marker', 
         '1', 
         SettingTypes.Type.Keybind, 
-        <SettingTypes.Keybind>{defaultModifierOne: SettingTypes.KeybindModifier.Control, defaultModifierTwo: SettingTypes.KeybindModifier.Alt}
+        <SettingTypes.Keybind>{defaultModifierOne: SettingTypes.KeybindModifier.Shift, defaultModifierTwo: SettingTypes.KeybindModifier.Alt}
     );
     let EndMarkerShortcut: string = _Settings.RegisterSetting(
         'End Marker Keybind', 
         'The keybind used to create the end marker', 
         '2', 
         SettingTypes.Type.Keybind, 
-        <SettingTypes.Keybind>{defaultModifierOne: SettingTypes.KeybindModifier.Control, defaultModifierTwo: SettingTypes.KeybindModifier.Alt}
+        <SettingTypes.Keybind>{defaultModifierOne: SettingTypes.KeybindModifier.Shift, defaultModifierTwo: SettingTypes.KeybindModifier.Alt}
     );
 
     function GetPlayHeadFrame(timeline?: Timeline): number {
