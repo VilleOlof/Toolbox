@@ -43,7 +43,7 @@ function createWindow () {
     mainWindow.loadFile('../dist/index.html')
 
     // Open the DevTools (enable below code to show DevTools)
-    if(AppSettings.AlwaysOpenDevTools) mainWindow.webContents.openDevTools()
+    if(AppSettings.Debug) mainWindow.webContents.openDevTools()
 }
 
 ipcMain.handle('keybind:set', (event, keybind) => {

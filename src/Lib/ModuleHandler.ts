@@ -5,6 +5,7 @@ import { DataStore } from '../Stores/DataStore';
 import { DragHandler } from './DragHandler';
 
 import { Common } from './Common';
+import { AppSettings } from './AppSettings';
 
 export namespace ModuleHandler {
 
@@ -124,7 +125,7 @@ export namespace ModuleHandler {
     }
 
     export function RegisterModule(moduleName: string, componentSize: ComponentSize, description?: string): void {
-        console.log("Registering module: " + moduleName);
+        if (AppSettings.GetSetting<boolean>('Debug')) console.log("Registering module: " + moduleName);
 
         let moduleDiv = document.getElementById(moduleName);
         moduleDiv.classList.add("module");

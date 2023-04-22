@@ -12,7 +12,7 @@
 
         const MirrorFlipped = AppSettings.GetSetting("MirrorFlipped", false);
         
-        const mainContainer: HTMLElement = document.querySelector('#mainColumnContainer');
+        //const mainContainer: HTMLElement = document.querySelector('#mainColumnContainer');
         //mainContainer.setAttribute('style', `align-items: ${MirrorFlipped ? "flex-end" : "flex-start"};`);
 
         const columnContainer: HTMLElement = document.querySelector('#columnContainer');
