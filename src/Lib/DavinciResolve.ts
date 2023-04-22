@@ -495,7 +495,11 @@ export class ResolveFunctions {
 
         for (const [frameID, MarkerData] of Object.entries(markers)) {
             if (MarkerData.customData == markerData) {
-                if (getFrameID) return {Exists: true, FrameID: parseInt(frameID)};
+                if (getFrameID) {
+                    let markerData = MarkerData;
+                    markerData.frameId = parseInt(frameID);
+                    return {Exists: true, MarkerData: markerData};
+                }
                 else return {Exists: true};
             }
         }
@@ -536,6 +540,6 @@ export module ResolveFunctions {
 
     export type CheckMarker = {
         Exists: boolean,
-        FrameID?: number
+        MarkerData?: Marker
     }
 }

@@ -12,7 +12,9 @@
     const componentID: string = "Timer";
 
     onMount(() => {
-        ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Large);
+        ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Large,
+            "A simple module to keep track of time or a countdown."
+        );
 
         //CountdownInputChange();
     });
@@ -204,6 +206,20 @@
 
     input {
         max-width: 4rem;
+    }
+
+    input[type=number] {
+        height: 1.5rem;
+
+        border: none;
+        border-radius: 0.25rem;
+
+        background-color: Colors.$BackgroundColor;
+        color: Colors.$TextColor;
+
+        padding-left: 0.25rem;
+
+        outline: none;
     }
 
     .buttonStyle {

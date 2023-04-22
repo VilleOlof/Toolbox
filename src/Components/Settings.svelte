@@ -340,6 +340,7 @@
         background-color: Colors.$ColumnColor;
 
         min-width: 30rem;
+        width:100%;
 
         padding: 0.5rem;
 

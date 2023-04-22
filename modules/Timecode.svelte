@@ -66,7 +66,7 @@
 
             let Marker: ResolveFunctions.CheckMarker = ResolveFunctions.CheckIfMarkerExists(startMarkerData, true);
             if (startMarkerData != null && Marker.Exists) {
-                frames -= Marker.FrameID;
+                frames -= Marker.MarkerData.frameId;
                 frames -= 1; //The marker duration is 1 frame
             }
         }
