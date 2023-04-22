@@ -9,8 +9,8 @@
 
     let extraData: SettingTypes.Keybind = <SettingTypes.Keybind>settingInfo.ExtraData;
 
-    let modifierOne: string = extraData.defaultModifierOne;
-    let modifierTwo: string = extraData.defaultModifierTwo;
+    let modifierOne: string = extraData?.defaultModifierOne ?? SettingTypes.KeybindModifier.None;
+    let modifierTwo: string = extraData?.defaultModifierTwo ?? SettingTypes.KeybindModifier.None;
 
     let KeyStrokeElement: HTMLInputElement;
     let ModifierOneElement: HTMLSelectElement;

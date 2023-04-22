@@ -47,7 +47,9 @@ namespace GlobalSettings {
         SettingsData.Set("ShowSettingsMenu", false);
     }
 
+    export let DisableSettingButton: boolean = true;
     export function ChangeShowSettingsMenu(): void {
+        if (DisableSettingButton) return;
         let showSettingsMenu: boolean = SettingsData.Get<boolean>("ShowSettingsMenu", false);
         SettingsData.Set("ShowSettingsMenu", (!showSettingsMenu));
     }
@@ -284,14 +286,15 @@ namespace SettingTypes {
 
     export type Keybind = {
         placeholder?: string;
-        defaultModifierOne?: string;
-        defaultModifierTwo?: string;
+        defaultModifierOne?: KeybindModifier;
+        defaultModifierTwo?: KeybindModifier;
     }
 
     export enum KeybindModifier {
         'Alt' = 'Alt',
         'Control' = 'CommandOrControl',
         'Shift' = 'Shift',
+        'None' = ''
     }
     
     /**
@@ -418,7 +421,7 @@ class Settings {
         //Loads the default value for keybinds
         if (type == SettingTypes.Type.Keybind) {
             ExtraData = ExtraData as SettingTypes.Keybind;
-            defaultValue = Common.Electron.GetShortCutAccelerator(ExtraData.defaultModifierOne, ExtraData.defaultModifierTwo, defaultValue);
+            defaultValue = Common.Electron.GetShortCutAccelerator(ExtraData?.defaultModifierOne ?? SettingTypes.KeybindModifier.None, ExtraData?.defaultModifierTwo ?? SettingTypes.KeybindModifier.None, defaultValue);
         }
 
         if (loadOldValues) {

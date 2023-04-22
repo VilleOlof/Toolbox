@@ -3,9 +3,12 @@
     import { ModuleHandler } from "../Lib/ModuleHandler";
     import { AppSettings } from "../Lib/AppSettings";
     import { Common } from "../Lib/Common";
+    import { GlobalSettings } from "../Lib/Settings";
 
     onMount(async () => {
+        GlobalSettings.DisableSettingButton = true; // prevents user from going to settings while modules load.
         await ModuleHandler.Init(document.getElementById("columnContainer") as HTMLDivElement);
+        GlobalSettings.DisableSettingButton = false;
 
         const MirrorFlipped = AppSettings.GetSetting("MirrorFlipped", false);
         
