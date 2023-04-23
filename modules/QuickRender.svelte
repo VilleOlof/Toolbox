@@ -13,7 +13,7 @@
 
     onMount(() => {
         ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Large,
-            "A module that makes it easy and quick to render your timeline with just a few clicks."
+            "A module that makes it quick and easy to render your timeline with just a few clicks."
         );
     });
 

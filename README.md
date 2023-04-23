@@ -7,13 +7,10 @@
 **Studio Version Of Davinci Resolve Is Required**
 
 A Davinci Resolve plugin that provides a modular toolbox for creating custom tools.  
-This plugin runs with Electron, and uses Svelte for the UI and custom modules.  
+This plugin runs with Electron, and uses Svelte as the framework and custom modules files.  
 
-With Svelte as the framework, it provides an easy way to drag and drop modules into the ./modules folder  
-and have them automatically added to the toolbox (after a refresh, which the plugin will auto-detect).  
-
-With a built in easy to use settings & data storage system.  
-It makes it easy for custom modules to integrate with the plugins settings menu.  
+With .svelte files being the modules, it makes it easy to create custom modules.  
+And installing modules is a simple drag and drop onto the plugin window.  
 
 This wouldnt be possible without help from Stamsite,  
 who helped a ton with feature requests, testing, and general feedback.
@@ -21,6 +18,13 @@ who helped a ton with feature requests, testing, and general feedback.
 This plugin is still in early development, and my personal biggest project yet.  
 So there might be some bugs and issues.  
 If you find any, please report them in the [Issues](https://github.com/VilleOlof/Toolbox/issues) section.  
+
+----
+
+<!-- markdownlint-disable-next-line -->
+<img src="./src/assets/README-Example.png" width="1000" alt="Davinki Toolbox">
+
+----
 
 ## Default Modules
 
@@ -37,10 +41,20 @@ If you find any, please report them in the [Issues](https://github.com/VilleOlof
     Hover over an icon to see the folder path and modify it.  
 - **[Open At Playhead](./modules/OpenAtPlayhead.svelte)**  
     Opens the current file at the current playhead position in a new explorer window.  
+- **[Quick Render](./modules/QuickRender.svelte)**  
+    A module that makes it quick and easy to render your timeline with just a few clicks.
+- **[Quick Properties](./modules/QuickProperties.svelte)**  
+    Apply already defined properties to the current video item in the timeline quickly.  
+    Useful for quickly zooming in or out, or easily cropping the video.  
+- **[Marker Tool](./modules/MarkerTool.svelte)**  
+    Used to create specific markers used by other modules.  
+    Integrates with other modules such as the Quick Render module to render between markers.  
+- **[Timer](./modules/Timer.svelte)**  
+    A simple module to keep track of time or a countdown.  
 
-## Installation  
+## **Installation**  
 
-**Requires: Node.js / NPM**  
+**Requires: Node.js**  
 Go to the [Releases](https://github.com/VilleOlof/Toolbox/releases/)  
 And download the latest installer for your platform.  
 
@@ -48,20 +62,20 @@ Run the installer and if everything went well.
 You should just be able to run the plugin inside Davinci Resolve:  
 `DaVinci Resolve > Workspace > Workflow Integrations > Toolbox`  
 
-*MacOS & Linux installers havent been tested yet, so they might not work.*  
+*MacOS & Linux installers havent been tested yet.*  
 If you for some reason can't use the installer, you can also install the [plugin manually](#manual-installation).  
 
 ## Custom Modules
+
+**Only install third-party modules from people you trust.**
 
 To create your own custom made modules.  
 You can copy the template module in ./modules and rename the file to the name of your module.  
 This template module has most of the common in-house imports and code required for a module.  
 
-Module names can't contain spaces, and should be in PascalCase to match the file name.  
-
 Every module consists of a componentID which the plugin uses to identify the module.  
 The component HTML should be wrapped in a main tag with the componentID as the id.  
-**Note: componentID must be the same as the filename (excluding extension)**
+**Note: componentID must be the same as the filename (excluding extension), and can't contain spaces**
 
 ```HTML
 <main id={componentID}>
@@ -75,7 +89,11 @@ This should happen in the `onMount` function.
 ```js
 import { ModuleHandler } from '../src/Lib/ModuleHandler';
 onMount(() => {
-    ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Large);
+    ModuleHandler.RegisterModule(
+        componentID, 
+        ModuleHandler.ComponentSize.Large, 
+        "Module Description"
+    );
 });
 ```
 
@@ -95,9 +113,84 @@ So you only need to load the settings data once at the start of the module life 
 
 ### Module Settings
 
+With the built in settings page, you can easily create settings for your module.  
+The settings page is automatically generated depending on the settings you create.  
+
+To create a setting-  
+First call `GlobalSettings.GetInstance(componentID)` to get a setting instance for your module.  
+And then `Settings.RegisterSetting()` with the correct parameters.  
+
+Example:
+
+```typescript
+// Import the settings classes
+import { GlobalSettings, Settings, SettingTypes } from '../src/Lib/Settings';
+
+// Get the settings instance for your module
+const settings: Settings = GlobalSettings.GetInstance(componentID); 
+
+// Register a setting and store the value in a variable
+const settingValue = settings.RegisterSetting(
+    "GreatSettingName",         // Setting Name
+    "Useful for being great",   // Setting Description
+    55,                         // Default Value
+    SettingTypes.Type.Numeric,  // Setting Type
+    <SettingTypes.Numeric>{     // Extra Data (Optional)
+        Min: 4,
+        Max: 84,
+        Step: 0.25
+    }
+);
+```
+
 ### Module Data
 
+Modules can store data in the plugin.  
+This data is stored in the plugin settings file (./Data.json).
+
+To store data, you can use the `Stores/DataStore` namespace.
+
+To store any data, you first need to create a data store.  
+By calling `new DataStore(componentID)`.  
+And then storing a value by calling `Datastore.Set('DataName', 'Default Value')`.  
+
+Example:
+
+```typescript
+// Import the data store namespace
+import { DataStore } from '../src/Lib/Stores/DataStore';
+
+// Create a data store
+const dataStore: DataStore = new DataStore(componentID);
+
+// Set the data
+dataStore.Set('GreatData', 'Great Value');
+
+// Get the data
+const greatData: string = dataStore.Get<string>('GreatData');
+```
+
 ### Common
+
+To make modules even easier to create and more consistent.  
+There are some common functions that can be used for various things.  
+
+Like handling IO operations, interacting with Electron, registering keybinds and more.  
+
+Example:
+
+```typescript
+// Import the common namespace
+import { Common } from '../src/Lib/Common';
+
+const fileContent: string = Common.IO.ReadFile('C:/GreatFile.txt');
+
+Common.Electron.OpenExternalLink('https://www.google.com');
+
+Common.Electron.RegisterShortcut('Shift+Alt+G', () => {
+    console.log('Great Shortcut');
+});
+```
 
 ## Docs  
 
@@ -125,7 +218,7 @@ And then rebuild the project with `npm run build`.
 
 ## Manual Installation
 
-**Requires: Node.js / NPM**  
+**Requires: Node.js**  
 Copy the repository to your local machine.  
 And put the folder in the following directory:  
 
@@ -143,6 +236,3 @@ This will install all the dependencies and build the project.
 
 And then you can run the plugin inside Davinci Resolve:  
 `DaVinci Resolve > Workspace > Workflow Integrations > Toolbox`  
-
-*Since Davinci Resolve looks for a folder with a manifest.xml file inside of it.  
-It is currently recommended to just have the entire project folder inside the plugin folder.*  
