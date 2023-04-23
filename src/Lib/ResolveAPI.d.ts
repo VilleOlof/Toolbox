@@ -1978,7 +1978,7 @@ declare type TimelineItem = {
     /**
      * Sets the value of property “propertyKey” to value “propertyValue”
      */
-    SetProperty(propertyKey: string, propertyValue: string): boolean;
+    SetProperty(propertyKey: string, propertyValue: string | number | boolean): boolean;
     
     /**
      * returns the value of the specified key if no key is specified, the method returns TimelineItemProperties
