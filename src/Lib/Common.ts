@@ -1,5 +1,6 @@
 import { ChildProcess } from "child_process";
 import { App, BrowserWindow, Shell } from "electron";
+import { AppSettings } from "./AppSettings";
 
 const electron = require("electron");
 const fs = require("fs");
@@ -297,6 +298,11 @@ export namespace Common {
          * @param callback the callback to execute when the key is pressed
          */
         export function RegisterShortcut(key: globalThis.Electron.Accelerator, callback: () => void): void {
+            if (AppSettings.GetSetting("DisabledShortcuts", false) && key.toString() !== AppSettings.GetSetting("DisableShortcut-Keybind", "F1")) {
+                return; // Shortcuts are disabled
+            }
+            console.log(`Registering shortcut: ${key}`);
+
             electron.ipcRenderer.invoke('keybind:set', key);
 
             electron.ipcRenderer.on(`keybind:${key}`, callback);
@@ -314,10 +320,23 @@ export namespace Common {
             delete Callbacks[key.toString()];
         }
 
+        /**
+         * Unregisters all shortcuts.
+         */
         export function UnregisterAllShortcuts(): void {
             electron.ipcRenderer.invoke('keybind:unsetAll');
             for (const key in Callbacks) {
                 electron.ipcRenderer.removeAllListeners(`keybind:${key}`);
+            }
+        }
+
+        /**
+         * Registers all callback saved shortcuts.
+         */
+        export function RegisterAllShortcuts(): void {
+            for (const key in Callbacks) {
+                electron.ipcRenderer.invoke('keybind:set', key);
+                electron.ipcRenderer.on(`keybind:${key}`, Callbacks[key]);
             }
         }
 
@@ -374,6 +393,34 @@ export namespace Common {
                 modifierTwo: "",
                 key: ""
             };
+        }
+
+        /**
+         * Disables all shortcuts.
+         * This function is mostly used just by the plugin but can be used if so wished.
+         */
+        export function DisableAllShortcutsAction(): string {
+            let disabled: boolean = !AppSettings.GetSetting("DisabledShortcuts", false);
+            AppSettings.SetSetting("DisabledShortcuts", disabled);
+            return disabled ? "Enable" : "Disable";
+        }
+
+        export function RegisterUnregisterShortcut(): void {
+            const UnregisterAllKeybind = AppSettings.GetSetting("DisableShortcut-Keybind", "F1");
+
+            RegisterShortcut(UnregisterAllKeybind, () => {
+                if (AppSettings.GetSetting('Debug')) console.log(`Pressed ${UnregisterAllKeybind}: ${AppSettings.GetSetting('DisabledShortcuts')}`);
+                DisableAllShortcutsAction();
+                
+                UnregisterAllShortcuts();
+
+                if (AppSettings.GetSetting('DisabledShortcuts', false)) {
+                    RegisterUnregisterShortcut();
+                }
+                else {
+                    RegisterAllShortcuts();
+                }
+            });
         }
     }
 

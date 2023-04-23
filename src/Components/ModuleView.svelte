@@ -21,6 +21,8 @@
         const emptyDiv = document.createElement("div");
         emptyDiv.setAttribute('style', 'flex-grow: 1');
         columnContainer.appendChild(emptyDiv);
+
+        Common.Electron.RegisterUnregisterShortcut();
     });
 
     onDestroy(() => {
@@ -28,6 +30,7 @@
         ModuleHandler.DestroyInstances();
 
         Common.Electron.UnregisterAllShortcuts();
+        Common.Electron.RegisterUnregisterShortcut();
     });
 
 </script>

@@ -30,12 +30,6 @@
             SettingInstances[componentID] = settings;
         }
 
-        /**
-         * [key]: parentComponentID
-         * [value]: HTMLInputElement
-         */
-        const textBoxes: { [key: string]: HTMLInputElement } = {};
-
         const settingsContainer = document.getElementById('autoGenSettings') as HTMLDivElement;
 
         for (const [componentID, settingInstance] of Object.entries(SettingInstances)) {
@@ -276,6 +270,19 @@
         let MirrorFlipped = AppSettings.GetSetting('MirrorFlipped', false);
         AppSettings.SetSetting('MirrorFlipped', !MirrorFlipped);
     }
+    let DisableKeybindTextPrefix = AppSettings.GetSetting("DisabledShortcuts", false) ? "Enable" : "Disable";
+    // ------------
+    function GetSettingInstances(): {[key: string]: Settings} {
+        const settingInstances: {[key: string]: Settings} = {};
+
+        for (const [componentID, _] of Object.entries(ModuleHandler.RegisteredModules)) {
+            const settings = GlobalSettings.GetInstance(componentID);
+            settingInstances[componentID] = settings;
+        }
+
+        return settingInstances;
+    }
+    let infoTextsElement: {[key: string]: HTMLDivElement} = {};
 
 </script>
 
@@ -297,6 +304,7 @@
             <button class="btnStyle" on:click={MirrorFlipModules}>Mirror Flip Modules</button>
             <button class="btnStyle" on:click={ClearColumns}>Clear All Columns</button>
             <button class="btnStyle" on:click={OpenModuleFolder}>Open Modules Folder</button>
+            <button class="btnStyle" on:click={() => { DisableKeybindTextPrefix = Common.Electron.DisableAllShortcutsAction() }}>{DisableKeybindTextPrefix} Shortcuts</button>
         </div>
     </div>
     
@@ -305,6 +313,37 @@
         <h1>Modules</h1>
     
         <div id="autoGenSettings"></div>
+
+        <!--TODO:-->
+        <!-- <div id="newAutoGenSettings">
+            {#each Object.entries(GetSettingInstances()) as [componentID, settingInstance]}
+                {#if ModuleHandler.RegisteredModules[componentID]}
+                    <div id={componentID} class=componentContainer>
+                        <div class="settingHeader">
+                            <div class="settingHeaderTitle">
+                                <h2>{componentID}</h2>
+
+                                {#if ModuleHandler.RegisteredModules[componentID].description}
+                                    <img src="../src/assets/Info.svg" alt="Info" class=infoIcon
+                                        on:mouseenter={() => { infoTextsElement[componentID].style.display = 'block' }}
+                                        on:mouseleave={() => { infoTextsElement[componentID].style.display = 'none' }}
+                                    >
+
+                                    <div class="infoText" bind:this={infoTextsElement[componentID]} on:mouseleave={() => { infoTextsElement[componentID].style.display = 'none' }}>{ModuleHandler.RegisteredModules[componentID].description}</div>
+                                {/if}
+
+                                <img src="../src/assets/arrowDown.svg" alt="Minimize" class=minimizeSettingsIcon
+                                on:click={() => {
+                                    
+                                }}
+                                >
+                            </div>
+                        </div>
+                    </div>
+                {/if}
+
+            {/each}
+        </div> -->
     
     </div>
 </main>

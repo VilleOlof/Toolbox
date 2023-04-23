@@ -7,7 +7,7 @@
     import { ModuleHandler } from '../src/Lib/ModuleHandler';
     import { Common } from '../src/Lib/Common';
 
-    import { onMount } from 'svelte';
+    import { afterUpdate, onMount } from 'svelte';
     import { onDestroy } from "svelte";
     import { slide } from "svelte/transition";
 
@@ -180,7 +180,6 @@
                             return;
                         }
 
-                        console.log(key, value);
                         item.SetProperty(key, value);
                     });
 
@@ -208,7 +207,7 @@
 
     function UpdateTrackInputsOnMount() {
         for (const [propertyName, properties] of Object.entries(_Properties)) {
-            let trackInput = document.querySelector(`#${propertyName}-track`) as HTMLInputElement;
+            let trackInput = document.querySelector(`#${properties.Name}-track`) as HTMLInputElement;
             if (trackInput === null) continue;
 
             trackInput.value = properties.Tracks.join(",");
@@ -225,6 +224,10 @@
 
         trackInfo.classList.toggle("minimized");
     }
+
+    afterUpdate(() => {
+        UpdateTrackInputsOnMount();
+    });
 
 </script>
 
@@ -261,7 +264,7 @@
 
                         <div class="detail">
                             <label for={`${properties.Name}-name`}>Name</label>
-                            <input type="text" id={`${properties.Name}-name`} class=propertyNameInput bind:value={properties.Name} pattern="^[a-zA-Z0-9]+$" maxlength=13>
+                            <input type="text" id={`${properties.Name}-name`} class=propertyNameInput bind:value={properties.Name} pattern="^[a-zA-Z0-9_\-]+$" maxlength=13>
                         </div>
 
                         <div class="detail">
@@ -412,8 +415,8 @@
             margin: 0.25rem;
         }
 
-        top: 6rem;
-        left: 2.5rem;
+        top: -3.5rem;
+        left: -7rem;
     }
 
     .bottomButtons {
@@ -442,6 +445,8 @@
         flex-direction: row;
         align-items: center;
         justify-content: flex-end;
+
+        position: relative;
     }
 
     .propertyNameInput:invalid, .propertyTrack:invalid {
