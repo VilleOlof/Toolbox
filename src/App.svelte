@@ -1,10 +1,12 @@
 <script lang="ts">
+    import { fade, fly } from "svelte/transition";
     import ModuleQuickDrop from "./Components/ModuleQuickDrop.svelte";
     import ModuleView from "./Components/ModuleView.svelte";
     import Navbar from "./Components/Navbar.svelte";
 
     import Settings from "./Components/Settings.svelte";
     import { GlobalSettings } from "./Lib/Settings";
+    import { AppSettings } from "./Lib/AppSettings";
 
     let settingComponent;
     let moduleViewComponent;
@@ -16,13 +18,13 @@
         if (ShowSettings) {
             if (!moduleViewComponent) return;
 
-            console.log("destroying moduleView, Opening settings");
+            if (AppSettings.GetSetting('Debug')) console.log("destroying moduleView, Opening settings");
             moduleViewComponent.$destroy();
         }
         else {
             if (!settingComponent) return;
 
-            console.log("destroying settings, Opening moduleView");
+            if (AppSettings.GetSetting('Debug')) console.log("destroying settings, Opening moduleView");
             settingComponent.$destroy();
         }
     });
@@ -33,7 +35,9 @@
 <Navbar />
 
 {#if ShowSettings}
-    <Settings bind:this={settingComponent}/>
+    <div in:fly="{{ y: -200, duration: 500 }}" out:fade>
+        <Settings bind:this={settingComponent}/>
+    </div>
 {:else}
     <ModuleView bind:this={moduleViewComponent} />
 {/if}

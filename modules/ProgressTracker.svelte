@@ -81,11 +81,16 @@
         return endFrame;
     }
 
+    let OldTimecode: string = "";
     function CalculateContentProccessed(): void {
+        const currentTimecode = currenTimeline.GetCurrentTimecode();
+        if (OldTimecode == currentTimecode) return;
+        OldTimecode = currentTimecode;
+
         const startFrame: number = GetStartFrame();
         const endFrame: number = GetEndFrame();
 
-        const currentFrame: number = ResolveFunctions.ConvertTimecodeToFrames(currenTimeline.GetCurrentTimecode()) - currenTimeline.GetStartFrame();
+        const currentFrame: number = ResolveFunctions.ConvertTimecodeToFrames(currentTimecode) - currenTimeline.GetStartFrame();
 
         const totalFrames: number = endFrame - startFrame;
 
@@ -102,12 +107,16 @@
         ContentProccessedText = `${Math.round(percentage)}%`;
     }
 
-    function CalculateVideoProgress(): void {
+    function CalculateVideoProgress(): void {   
+        const currentTimecode = currenTimeline.GetCurrentTimecode();
+        if (OldTimecode == currentTimecode) return;
+        OldTimecode = currentTimecode;
+
         let framerate = ResolveFunctions.GetTimelineFramerate(currenTimeline);
         const startFrame: number = GetStartFrame();
         const endFrame: number = VideoProgressTargetMinutes * 60 * framerate;
 
-        const currentFrame: number = ResolveFunctions.ConvertTimecodeToFrames(currenTimeline.GetCurrentTimecode()) - currenTimeline.GetStartFrame();
+        const currentFrame: number = ResolveFunctions.ConvertTimecodeToFrames(currentTimecode) - currenTimeline.GetStartFrame();
 
         const totalFrames: number = endFrame - startFrame;
 

@@ -84,7 +84,7 @@
         margin: 0 0.5rem 0 0.5rem;
 
         border-radius: 0.5rem;
-	    filter: drop-shadow(0 0 0.25em #000);
+        filter: drop-shadow(0 0 0.25em #000);
 
         height: 100%;
 
@@ -93,6 +93,17 @@
         &:empty {
             background-color: rgba(Colors.$ColumnColor, 0.75);
         } 
+
+        animation: fadeIn 0.2s ease-in-out 1;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
     }
 
     :global(.is-large) {

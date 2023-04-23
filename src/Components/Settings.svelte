@@ -517,6 +517,18 @@
             margin: 0;
             margin-bottom: 0.5rem;
         }
+
+        opacity: 0;
+        animation: opacity 0.2s ease-in-out 0.5s forwards;
+    }
+
+    @keyframes opacity {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
     }
 
     #cornerGithub {

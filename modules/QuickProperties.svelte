@@ -9,6 +9,7 @@
 
     import { onMount } from 'svelte';
     import { onDestroy } from "svelte";
+    import { slide } from "svelte/transition";
 
     const componentID: string = "QuickProperties";
 
@@ -215,16 +216,7 @@
     }
 
     function MinimizeProperty(propertyName: string): void {
-        let propertyContainer = document.querySelector(`#${propertyName}-propertyDetail`);
-        if (propertyContainer === null) return;
-
-        propertyContainer.classList.toggle("minimized");
-
-        if (propertyContainer.classList.contains("minimized")) {
-            _Properties[propertyName].Minimized = true;
-        } else {
-            _Properties[propertyName].Minimized = false;
-        }
+        _Properties[propertyName].Minimized = !_Properties[propertyName].Minimized;
     }
 
     function ToggleTrackInfoHover(propertyName: string) {
@@ -255,39 +247,42 @@
                     </div>
                 </div>
 
-                <div id={`${properties.Name}-propertyDetail`} class=propertyDetail class:minimized={properties.Minimized}>
-                    <div class="detail">
-                        <label for={`${properties.Name}-keybindEnabled`}>Enable Keybind</label>
-                        <input type="checkbox" id={`${properties.Name}-keybindEnabled`} class=keybindEnabled bind:checked={properties.KeybindEnabled}>
-                    </div>
+                {#if !properties.Minimized}
+                    <div id={`${properties.Name}-propertyDetail`} class=propertyDetail transition:slide|local>
+                        <div class="detail">
+                            <label for={`${properties.Name}-keybindEnabled`}>Enable Keybind</label>
+                            <input type="checkbox" id={`${properties.Name}-keybindEnabled`} class=keybindEnabled bind:checked={properties.KeybindEnabled}>
+                        </div>
 
-                    <div class="detail">
-                        <label for={`${properties.Name}-append`}>Append</label>
-                        <input type="checkbox" id={`${properties.Name}-append`} class=propertyAppend bind:checked={properties.Append}>
-                    </div>
+                        <div class="detail">
+                            <label for={`${properties.Name}-append`}>Append</label>
+                            <input type="checkbox" id={`${properties.Name}-append`} class=propertyAppend bind:checked={properties.Append}>
+                        </div>
 
-                    <div class="detail">
-                        <label for={`${properties.Name}-name`}>Name</label>
-                        <input type="text" id={`${properties.Name}-name`} class=propertyNameInput bind:value={properties.Name} pattern="^[a-zA-Z0-9]+$" maxlength=13>
-                    </div>
+                        <div class="detail">
+                            <label for={`${properties.Name}-name`}>Name</label>
+                            <input type="text" id={`${properties.Name}-name`} class=propertyNameInput bind:value={properties.Name} pattern="^[a-zA-Z0-9]+$" maxlength=13>
+                        </div>
 
-                    <div class="detail">
-                        <label for={`${properties.Name}-track`}>Tracks</label>
-                        <div class="trackRightSide">
-                            <img src="../src/assets/Info.svg" alt="Info" id={`${properties.Name}-trackInfo`} class=trackInfo on:mouseenter={() => { ToggleTrackInfoHover(properties.Name) }} on:mouseleave={() => { ToggleTrackInfoHover(properties.Name) }}>
-                            <div id={`${properties.Name}-trackInfoHover`} class="trackInfoHover minimized">
-                                <p>Tracks are seperated by a comma<br>Example: 1,2,5,8</p>
+                        <div class="detail">
+                            <label for={`${properties.Name}-track`}>Tracks</label>
+                            <div class="trackRightSide">
+                                <img src="../src/assets/Info.svg" alt="Info" id={`${properties.Name}-trackInfo`} class=trackInfo on:mouseenter={() => { ToggleTrackInfoHover(properties.Name) }} on:mouseleave={() => { ToggleTrackInfoHover(properties.Name) }}>
+                                <div id={`${properties.Name}-trackInfoHover`} class="trackInfoHover minimized">
+                                    <p>Tracks are seperated by a comma<br>Example: 1,2,5,8</p>
+                                </div>
+
+                                <input type="text" id={`${properties.Name}-track`} pattern="^\d+(,\d+)*$" class=propertyTrack on:change={(e) => { TrackInputChange(e, properties.Name)}}>
                             </div>
+                        </div>
 
-                            <input type="text" id={`${properties.Name}-track`} pattern="^\d+(,\d+)*$" class=propertyTrack on:change={(e) => { TrackInputChange(e, properties.Name)}}>
+                        <div class="bottomButtons">
+                            <button on:click={() => { AddItemProperties(properties) }} class="setProperties buttonStyle">Set Properties</button>
+                            <button on:click={() => { RemoveProperty(properties.Name) }} class="removeProperties buttonStyle">Remove</button>
                         </div>
                     </div>
+                {/if}
 
-                    <div class="bottomButtons">
-                        <button on:click={() => { AddItemProperties(properties) }} class="setProperties buttonStyle">Set Properties</button>
-                        <button on:click={() => { RemoveProperty(properties.Name) }} class="removeProperties buttonStyle">Remove</button>
-                    </div>
-                </div>
             </div>
 
             <div class="PropertieslineBreak"></div>
