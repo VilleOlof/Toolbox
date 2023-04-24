@@ -161,9 +161,13 @@
                     
                     const ZoomGang = item.GetProperty("ZoomGang");
                     Object.entries(itemProps).forEach(([key, value]) => {
-                        if (value === undefined || value == 0) return;
+                        if (value === undefined) return;
+                        const isPosition = key == "Pan" || key == "Tilt";
+                        if (value == 0 && !isPosition) return;
 
                         if (properties.Append) {
+                            if (value == 0) return;
+
                             let currentValue = item.GetProperty(key);
 
                             if (currentValue === undefined || currentValue == 0) return;
@@ -245,7 +249,7 @@
                 <div id={`${properties.Name}-propertyHeader`} class=propertyHeader>
                     <h1>{properties.Name}</h1>
                     <div class=headerButtons>
-                        <button on:click={() => { MinimizeProperty(properties.Name) }} class=buttonStyle>Minimize</button>
+                        <button on:click={() => { MinimizeProperty(properties.Name) }} class=buttonStyle>{properties.Minimized ? 'Expand' : 'Minimize'}</button>
                         <button on:click={() => { ApplyProperties(properties) }} class=buttonStyle>Apply</button>
                     </div>
                 </div>

@@ -81,11 +81,11 @@
         return endFrame;
     }
 
-    let OldTimecode: string = "";
+    let OldTimecodeContentProccessed: string = "";
     function CalculateContentProccessed(): void {
         const currentTimecode = currenTimeline.GetCurrentTimecode();
-        if (OldTimecode == currentTimecode) return;
-        OldTimecode = currentTimecode;
+        if (OldTimecodeContentProccessed == currentTimecode) return;
+        OldTimecodeContentProccessed = currentTimecode;
 
         const startFrame: number = GetStartFrame();
         const endFrame: number = GetEndFrame();
@@ -107,10 +107,11 @@
         ContentProccessedText = `${Math.round(percentage)}%`;
     }
 
+    let OldTimecodeVideoProgress: string = "";
     function CalculateVideoProgress(): void {   
         const currentTimecode = currenTimeline.GetCurrentTimecode();
-        if (OldTimecode == currentTimecode) return;
-        OldTimecode = currentTimecode;
+        if (OldTimecodeVideoProgress == currentTimecode) return;
+        OldTimecodeVideoProgress = currentTimecode;
 
         let framerate = ResolveFunctions.GetTimelineFramerate(currenTimeline);
         const startFrame: number = GetStartFrame();

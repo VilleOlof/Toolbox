@@ -94,7 +94,10 @@
 
 
 <main id={componentID}>
-    <button id="clampButton" on:click={Clamp}>Clamp</button>
+    <h1 id=title>Clamp</h1>
+    <button id="clampButton" on:click={Clamp}>
+        <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 96 960 960" width="48" fill="currentColor"><path d="M109.086 946.914v-230.74h79.218v151.522h151.522v79.218h-230.74Zm511.088 0v-79.218h151.522V716.174h79.783v230.74H620.174ZM284.739 725.74 230.999 673l59.087-59.652h-221v-75.261h221L230.999 479l53.74-53.305L434.479 576l-149.74 149.74Zm391.087 0L526.087 576l149.739-150.305L729.566 479l-59.087 59.087h221v75.261h-221L729.566 673l-53.74 52.74Zm-566.74-289.914V204.521h230.74v79.783H188.304v151.522h-79.218Zm662.61 0V284.304H620.174v-79.783h231.305v231.305h-79.783Z"/></svg>
+    </button>
 </main>
 
 
@@ -102,40 +105,37 @@
     @use '../src/scss/Colors';
 
     main {
-        width: 100%;
-
         display: flex;
-        flex-direction: column;
-        justify-content: center;
         align-items: center;
+        justify-content: center;
+        flex-direction: column;
+
+        text-align: center;
+    }
+
+    #title {
+        opacity: 0.5;
+        font-size: 1rem;
+
+        margin: 0.3rem;
+        margin-bottom: 0;
     }
 
     #clampButton {
-        width: 4rem;
-        height: 3rem;
-
-        background-color: Colors.$BackgroundColor;
-        color: Colors.$TextColor;
-        font-size: 1rem;
-
+        background-color: transparent;
         border: none;
-        border-radius: 0.5em;
-
-        margin: 0.25rem;
-
-        cursor: pointer;
-
         outline: none;
+        cursor: pointer;
+        padding: 0;
+        margin: 0;
 
-        transition: transform 0.1s ease-in-out;
+        color: Colors.$TextColor;
 
         &:hover {
-            transform: scale(0.9)
+            color: darken(Colors.$TextColor, 30%);
         }
 
-        &:active {
-            transform: scale(0.8)
-        }
+        transition: color 0.2s;
     }
 
 </style>
