@@ -136,61 +136,41 @@
         return _Properties[properties.Name];
     }
 
-    //refactor to more functions instead of 6 level of indentation
+    //refactor to more functions instead of 6 level of indentation, and also indicating to the user that its loading
     function ApplyProperties(properties: Property): void {
         let currentTimeline = ResolveFunctions.GetCurrentTimeline();
-        let timelineTrackCount = currentTimeline.GetTrackCount(ResolveEnums.TrackType.Video);
 
-        let itemProps = properties.ItemProperties;
-        for (let propertyTrackCount = 1; propertyTrackCount <= properties.Tracks.length; propertyTrackCount++) {
-            if (propertyTrackCount >= timelineTrackCount) {
-                return;
-            }
+        ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, properties.Tracks, currentTimeline, (item, trackIndex) => {
+            if (item === undefined) return;
 
-            let itemsInTrack = currentTimeline.GetItemListInTrack(ResolveEnums.TrackType.Video, propertyTrackCount);
+            const ZoomGang = item.GetProperty("ZoomGang");
+            Object.entries(properties.ItemProperties).forEach(([key, value]) => {
+                if (value === undefined) return;
+                const isPosition = key == "Pan" || key == "Tilt";
+                if (value == 0 && !isPosition) return;
 
-            //find the item thats above the timeline cursor
-            let playheadPosition = ResolveFunctions.ConvertTimecodeToFrames(currentTimeline.GetCurrentTimecode());
-            for (let item of itemsInTrack) {
-                if (item === undefined) continue;
+                if (properties.Append) {
+                    if (value == 0) return;
 
-                let itemStart = item.GetStart();
-                let itemEnd = item.GetEnd();
+                    let currentValue = item.GetProperty(key);
 
-                if (playheadPosition >= itemStart && playheadPosition <= itemEnd) {
+                    if (currentValue === undefined || currentValue == 0) return;
+                    if (currentValue.toString() == "true" || currentValue.toString() == "false") return; //probably a better way to 
+                    if (ZoomGang && key == "ZoomY") return;
+
+                    if (key == "ZoomX") {
+                        value -= 1; //removes the 1 that is default zoom level.
+                    }
                     
-                    const ZoomGang = item.GetProperty("ZoomGang");
-                    Object.entries(itemProps).forEach(([key, value]) => {
-                        if (value === undefined) return;
-                        const isPosition = key == "Pan" || key == "Tilt";
-                        if (value == 0 && !isPosition) return;
+                    value = currentValue + value;
+                    item.SetProperty(key, value);
 
-                        if (properties.Append) {
-                            if (value == 0) return;
-
-                            let currentValue = item.GetProperty(key);
-
-                            if (currentValue === undefined || currentValue == 0) return;
-                            if (currentValue.toString() == "true" || currentValue.toString() == "false") return; //probably a better way to 
-                            if (ZoomGang && key == "ZoomY") return;
-
-                            if (key == "ZoomX") {
-                                value -= 1; //removes the 1 that is default zoom level.
-                            }
-                            
-                            value = currentValue + value;
-                            item.SetProperty(key, value);
-
-                            return;
-                        }
-
-                        item.SetProperty(key, value);
-                    });
-
-                    break;
+                    return;
                 }
-            }
-        }
+
+                item.SetProperty(key, value);
+            });
+        });
     }
 
     function TrackInputChange(event: any, _propertiesName: string): void {
@@ -250,7 +230,7 @@
                     <h1>{properties.Name}</h1>
                     <div class=headerButtons>
                         <button on:click={() => { MinimizeProperty(properties.Name) }} class=buttonStyle>{properties.Minimized ? 'Expand' : 'Minimize'}</button>
-                        <button on:click={() => { ApplyProperties(properties) }} class=buttonStyle>Apply</button>
+                        <button on:click={() => {  ApplyProperties(properties) }} class=buttonStyle>Apply</button>
                     </div>
                 </div>
 
@@ -298,7 +278,7 @@
     </div>
 </main>
 
-
+<!-- svelte-ignore css-unused-selector (code added)-->
 <style lang="scss">
     @use '../src/scss/Colors';
 
@@ -513,12 +493,18 @@
 
         margin-bottom: 0.25rem;
         margin-top: 0.25rem;
+
+        transition: background-color 0.1s ease-in-out;
     }
 
     .PropertieslineBreak {
         @extend .lineBreak;
 
         background-color: Colors.$ModuleColor;
+    }
+
+    .progress {
+        background-color: #73ff60 !important;
     }
 
 </style>

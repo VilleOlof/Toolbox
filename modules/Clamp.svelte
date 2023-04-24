@@ -45,49 +45,28 @@
     function Clamp() {
         const currentTimeline = ResolveFunctions.GetCurrentTimeline();
         const currentProject = ResolveFunctions.GetCurrentProject();
-        const timelineTrackAmount = currentTimeline.GetTrackCount(ResolveEnums.TrackType.Video);
+        
+        ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, trackAmount, currentTimeline, (item, trackIndex) => {
+            const ZoomLevel = item.GetProperty("ZoomX") as number;
+            const PanLevel = item.GetProperty("Pan") as number;
+            const TiltLevel = item.GetProperty("Tilt") as number;
 
-        for (let currentTrackIndex = 1; currentTrackIndex <= trackAmount; currentTrackIndex++) {
-            if (currentTrackIndex >= timelineTrackAmount) {
-                return;
+            const TimelineResolutionX = parseInt(currentProject.GetSetting('timelineResolutionWidth')) / 2;
+            const TimelineResolutionY = parseInt(currentProject.GetSetting('timelineResolutionHeight')) / 2;
+
+            const Pan = TimelineResolutionX * (ZoomLevel - 1);
+            const Tilt = TimelineResolutionY * (ZoomLevel - 1);
+
+            if (Math.abs(PanLevel) > Pan) {
+                const newPan = Pan * (PanLevel < 0 ? -1 : 1);
+                item.SetProperty("Pan", newPan);
             }
 
-            const currentTrackItems = currentTimeline.GetItemListInTrack(ResolveEnums.TrackType.Video, currentTrackIndex);
-
-            const playHeadPosition = ResolveFunctions.ConvertTimecodeToFrames(currentTimeline.GetCurrentTimecode());
-
-            for (let item of currentTrackItems) {
-                if (item === undefined) continue;
-
-                let itemStart = item.GetStart();
-                let itemEnd = item.GetEnd();
-
-                if (playHeadPosition >= itemStart && playHeadPosition <= itemEnd) {
-                    // Clamp the item, still a bit unsure how this exactly works but its from old scripts.
-                    //should also take crop into account but that is not implemented yet.
-
-                    const ZoomLevel = item.GetProperty("ZoomX") as number;
-                    const PanLevel = item.GetProperty("Pan") as number;
-                    const TiltLevel = item.GetProperty("Tilt") as number;
-
-                    const TimelineResolutionX = parseInt(currentProject.GetSetting('timelineResolutionWidth')) / 2;
-                    const TimelineResolutionY = parseInt(currentProject.GetSetting('timelineResolutionHeight')) / 2;
-
-                    const Pan = TimelineResolutionX * (ZoomLevel - 1);
-                    const Tilt = TimelineResolutionY * (ZoomLevel - 1);
-
-                    if (Math.abs(PanLevel) > Pan) {
-                        const newPan = Pan * (PanLevel < 0 ? -1 : 1);
-                        item.SetProperty("Pan", newPan);
-                    }
-
-                    if (Math.abs(TiltLevel) > Tilt) {
-                        const newTilt = Tilt * (TiltLevel < 0 ? -1 : 1);
-                        item.SetProperty("Tilt", newTilt);
-                    }
-                }
+            if (Math.abs(TiltLevel) > Tilt) {
+                const newTilt = Tilt * (TiltLevel < 0 ? -1 : 1);
+                item.SetProperty("Tilt", newTilt);
             }
-        }
+        });
     }
 
 </script>

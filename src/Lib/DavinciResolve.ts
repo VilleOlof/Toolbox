@@ -1,5 +1,6 @@
 import { AppSettings } from "./AppSettings";
 import { Common } from "./Common";
+import { ResolveEnums } from "./ResolveEnums";
 import { ResolveWorkerHandler } from "./ResolveWorkerHandler";
 
 let PluginID: string;
@@ -447,6 +448,13 @@ export class ResolveFunctions {
         ResolveFunctions._ChangeCallbacks[SubscribeType].forEach(callback => callback(object));
     }
 
+    /**
+     * Converrts timecode to frames
+     * 
+     * @param timecode the timecode to convert
+     * @param framerate the framerate to use (defaults to the current timeline framerate)
+     * @returns {number} the frames
+     */
     public static ConvertTimecodeToFrames(timecode: string, framerate?: number): number {
         let timecodeArray: string[] = timecode.split(":");
 
@@ -464,6 +472,13 @@ export class ResolveFunctions {
         return frames;
     }
 
+    /**
+     * Converts frames to timecode
+     * 
+     * @param frames the frames to convert
+     * @param framerate the framerate to use (defaults to the current timeline framerate)
+     * @returns {string} the timecode
+     */
     public static ConvertFramesToTimecode(frames: number, framerate?: number): string {
         if (!framerate) framerate = this.GetTimelineFramerate();
 
@@ -489,6 +504,14 @@ export class ResolveFunctions {
         return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}:${frames.toString().padStart(2, "0")}`;
     }
 
+    /**
+     * Checks if a marker exists
+     * and optionally returns the marker object if it does
+     * 
+     * @param markerData The customdata of the marker
+     * @param getFrameID Whether or not to return the frame of the marker (or kinda the entire object)
+     * @returns {ResolveFunctions.CheckMarker} 
+     */
     public static CheckIfMarkerExists(markerData: string, getFrameID: boolean = false): ResolveFunctions.CheckMarker {
         let timeline: Timeline = ResolveFunctions.GetCurrentTimeline();
         let markers = timeline.GetMarkers();
@@ -507,6 +530,13 @@ export class ResolveFunctions {
         return {Exists: false};
     }
 
+    /**
+     * Returns the frame of a marker
+     * 
+     * @param markerData The customdata of the marker
+     * @param timeline The timeline (optional, will use the current timeline if not provided)
+     * @returns The frame of the marker
+     */
     public static GetMarkerFrameID(markerData: string, timeline?: Timeline): number {
         let currentTimeline: Timeline = timeline ?? ResolveFunctions.GetCurrentTimeline();
         let markers = currentTimeline.GetMarkers();
@@ -518,9 +548,145 @@ export class ResolveFunctions {
         return -1;
     }
 
+    /**
+     * Gets the current timeline framerate
+     * 
+     * @param timeline The timeline (optional, will use the current timeline if not provided)
+     * @returns The current timeline framerate
+     */
     public static GetTimelineFramerate(timeline?: Timeline): number {
         const currentTimeline = timeline ?? ResolveFunctions.GetCurrentTimeline();
         return parseInt(currentTimeline.GetSetting("timelineFrameRate"));
+    }
+
+    /**
+     * A quick way to get the current timeline on any track
+     * Uses binary search and other optimizations to find the current timeline item.
+     * 
+     * @param trackType The track type to search in
+     * @param tracks What tracks to search in
+     * @param timeline The timeline (optional, will use the current timeline if not provided)
+     * @param itemCallback A callback upon finding the item(s) (optional)
+     * @returns The current timeline item(s)
+     */
+    public static GetTimelineItem(trackType: ResolveEnums.TrackType = ResolveEnums.TrackType.Video, tracks: number[] | number = 1, timeline?: Timeline, itemCallback?: ResolveFunctions.TimelineItemCallback): TimelineItem | TimelineItem[] {
+        const returnItems: TimelineItem[] = [];
+        const currentTimeline = timeline ?? ResolveFunctions.GetCurrentTimeline();
+
+        //check if tracks is an array, if not, make it an array
+        let userInputTracks: number[] = []
+        if (typeof tracks == 'number') {
+            for (let i = 0; i < tracks; i++) {
+                userInputTracks.push(i + 1);
+            }
+        }
+        else userInputTracks = tracks;
+
+        const StartFrame = 0;
+        const timelineStartFrame =  currentTimeline.GetStartFrame()
+
+        const EndFrame = currentTimeline.GetEndFrame() - timelineStartFrame;
+
+        const Playhead = this.ConvertTimecodeToFrames(currentTimeline.GetCurrentTimecode()) - timelineStartFrame;
+
+        const timelineTracks = currentTimeline.GetTrackCount(trackType);
+        //Take the lowest number of tracks between the tracks array and the timeline tracks
+        const tracksToLoop = userInputTracks.length > timelineTracks ? timelineTracks : userInputTracks.length;
+        
+        for (let trackIndex = 1; trackIndex <= tracksToLoop; trackIndex++) {
+            const trackItems = currentTimeline.GetItemListInTrack(trackType, trackIndex);
+            if (trackItems.length <= 0) continue; //no items in the track, continue to the next track
+
+            const averageFramesPerItem = (EndFrame - StartFrame) / trackItems.length;
+
+            const educatedGuessItem = trackItems[Math.floor(Playhead / averageFramesPerItem)];
+
+            //found the item directly
+            if (this.CheckIfFrameIsOnItem(Playhead, educatedGuessItem)) {
+                if (itemCallback === undefined) returnItems.push(educatedGuessItem);
+                else {
+                    itemCallback(educatedGuessItem, trackIndex);
+                }
+                continue;
+            }
+
+            //special case where can we can find the item if the length is 2 or 3
+            if (trackItems.length == 2) {
+                const firstItem = trackItems[0];
+                let returnItem = trackItems[1];
+
+                if (Playhead >= firstItem.GetStart() && Playhead <= firstItem.GetEnd()) returnItem = firstItem;
+                
+                if (itemCallback === undefined) returnItems.push(returnItem);
+                else {
+                    itemCallback(returnItem, trackIndex);
+                }
+                continue;
+            }
+            else if (trackItems.length == 3) {
+                const middleItem = trackItems[1];
+
+                const middleStart = middleItem.GetStart();
+                const middleEnd = middleItem.GetEnd();
+
+                if (Playhead >= middleStart && Playhead <= middleEnd) {
+                    if (itemCallback === undefined) returnItems.push(middleItem);
+                    else {
+                        itemCallback(middleItem, trackIndex);
+                    }
+                    continue;
+                }
+
+                else if (Playhead < middleStart) return trackItems[0];
+                else if (Playhead > middleEnd) return trackItems[2];
+            }
+            
+            //then we do a binary search to find the item
+            let left = 0;
+            let right = trackItems.length - 1;
+            let middle = Math.floor((left + right) / 2);
+
+            const PlayheadStart = Playhead + timelineStartFrame;
+
+            while (left <= right) {
+                const middleItem = trackItems[middle];
+
+                const middleStart = middleItem.GetStart();
+                const middleEnd = middleItem.GetEnd();
+
+                if (PlayheadStart >= middleStart && PlayheadStart <= middleEnd) {
+                    if (itemCallback === undefined) {
+                        returnItems.push(middleItem);
+                    }
+                    else {
+                        itemCallback(middleItem, trackIndex);
+                    }
+                    break;
+                }
+                
+                else if (PlayheadStart < middleStart) right = middle - 1;
+                else if (PlayheadStart > middleEnd) left = middle + 1;
+
+                middle = Math.floor((left + right) / 2);
+            }
+            
+        }
+
+        if (returnItems.length == 0) return undefined;
+        else if (returnItems.length == 1) return returnItems[0];
+
+        return returnItems;
+    }
+
+    /**
+     * Checks if the frame is inside an item
+     * 
+     * @param frame the frame to check with
+     * @param item the item to check against
+     * @returns If its inside or not
+     */
+    private static CheckIfFrameIsOnItem(frame: number, item: TimelineItem): boolean {
+        return frame >= item.GetStart() && frame <= item.GetEnd();
     }
 }
 
@@ -538,8 +704,16 @@ export module ResolveFunctions {
         Timeline = "Timeline"
     }
 
+    /**
+     * The return object for the CheckIfMarkerExists function
+     */
     export type CheckMarker = {
         Exists: boolean,
         MarkerData?: Marker
     }
+
+    /**
+     * The callback for the GetTimelineItem function
+     */
+    export type TimelineItemCallback = (item: TimelineItem, trackIndex: number) => void;
 }
