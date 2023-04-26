@@ -688,6 +688,24 @@ export class ResolveFunctions {
     private static CheckIfFrameIsOnItem(frame: number, item: TimelineItem): boolean {
         return frame >= item.GetStart() && frame <= item.GetEnd();
     }
+
+    /**
+     * Gets a media folder object by name
+     * Currently only restricted to root > subfolders directly, and no subfolders of subfolders
+     * 
+     * @param folderName The name of the folder
+     * @returns The folder object
+     */
+    public static GetMediaFolder(folderName: string): Folder {
+        const mediapool = this.GetCurrentProject().GetMediaPool();
+        const rootSubFolders = mediapool.GetRootFolder().GetSubFolderList();
+
+        for (let i = 0; i < rootSubFolders.length; i++) {
+            const folder = rootSubFolders[i];
+
+            if (folder.GetName() == folderName) return folder;
+        }
+    }
 }
 
 /**

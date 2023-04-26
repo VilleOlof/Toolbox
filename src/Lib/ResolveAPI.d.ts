@@ -493,9 +493,9 @@ declare type Resolution = {
  * Clip Information
  */
 declare type ClipInfo = {
-    mediaPoolItem: MediaPoolItem;
-    startFrame: number;
-    endFrame: number;
+    mediaPoolItem?: MediaPoolItem;
+    startFrame?: number;
+    endFrame?: number;
     mediaType?: number = 1 | 2;
     
     //**Undocumented**//
@@ -1408,7 +1408,7 @@ declare type MediaPool = {
      * (Look at the clipInfo type for more information)
      * Returns the list of appended timelineItems.
      */
-    AppendToTimeline(...clipInfo: ClipInfo): TimelineItem[];
+    AppendToTimeline(clipInfo: ClipInfo[]): TimelineItem[];
     
     /**
      * Creates new timeline with specified name, and appends the specified MediaPoolItem objects.
@@ -1781,7 +1781,7 @@ declare type Timeline = {
     /**
      * Creates a compound clip of input timeline items with an optional clipInfo map: {“startTimecode” : “00:00:00:00”, “name” : “Compound Clip 1”}. It returns the created timeline item.
      */
-    CreateCompoundClip(timelineItems: TimelineItem[], clipInfo: ClipInfo): TimelineItem;
+    CreateCompoundClip(timelineItems: TimelineItem[], clipInfo: {}): TimelineItem;
     
     /**
      * Creates a Fusion clip of input timeline items. It returns the created timeline item.
@@ -1863,7 +1863,7 @@ declare type Timeline = {
      * @param trackType 
      * @param audioChannelSubType 
      */
-    AddTrack(trackType: ResolveEnums.TrackType, audioChannelSubType: string): boolean;
+    AddTrack(trackType: ResolveEnums.TrackType | string, audioChannelSubType?: string): boolean;
 
     /**
      * **Undocumented**
@@ -1983,7 +1983,7 @@ declare type TimelineItem = {
     /**
      * returns the value of the specified key if no key is specified, the method returns TimelineItemProperties
      */
-    GetProperty(propertyKey?: string): number | TimelineItemProperties
+    GetProperty(propertyKey?: string): number | boolean | TimelineItemProperties
     
     /**
      * Creates a new marker at given frameId position and with given marker information. ‘customData’ is optional and helps to attach user specific data to the marker.

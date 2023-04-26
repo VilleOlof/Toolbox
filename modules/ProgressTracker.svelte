@@ -103,6 +103,13 @@
             return;
         }
 
+        //check if the number is valid
+        if (isNaN(percentage)) {
+            ContentProccessedPercentange = 0;
+            ContentProccessedText = "0%";
+            return;
+        }
+
         ContentProccessedPercentange = percentage;
         ContentProccessedText = `${Math.round(percentage)}%`;
     }
@@ -127,6 +134,13 @@
         if (percentage > 100) {
             VideoProgressPercentange = 100;
             VideoProgressText = "100%";
+            return;
+        }
+
+        //check if the number is valid
+        if (isNaN(percentage)) {
+            VideoProgressPercentange = 0;
+            VideoProgressText = "0%";
             return;
         }
 
