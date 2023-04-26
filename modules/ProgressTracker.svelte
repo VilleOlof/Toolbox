@@ -40,9 +40,9 @@
 
     $: _Datastore.Set("VideoProgressTargetMinutes", VideoProgressTargetMinutes);
 
-    let currenTimeline = ResolveFunctions.GetCurrentTimeline();
+    let currentTimeline = ResolveFunctions.GetCurrentTimeline();
     ResolveFunctions.SubscribeToChange(ResolveFunctions.SubscribeTypes.Timeline, (timeline: Timeline) => {
-        currenTimeline = timeline;
+        currentTimeline = timeline;
     });
 
     let MarkerToolDatastore: DataStore;
@@ -65,7 +65,7 @@
     }
 
     function GetEndFrame(): number {
-        let endFrame: number = currenTimeline.GetEndFrame() - currenTimeline.GetStartFrame();
+        let endFrame: number = currentTimeline.GetEndFrame() - currentTimeline.GetStartFrame();
 
         if (_UseMarkerTool) {
             MarkerToolDatastore = MarkerToolDatastore ?? DataStore.GetDataStoreByID('MarkerTool');
@@ -83,14 +83,15 @@
 
     let OldTimecodeContentProccessed: string = "";
     function CalculateContentProccessed(): void {
-        const currentTimecode = currenTimeline.GetCurrentTimecode();
+        if (!currentTimeline) return;
+        const currentTimecode = currentTimeline.GetCurrentTimecode();
         if (OldTimecodeContentProccessed == currentTimecode) return;
         OldTimecodeContentProccessed = currentTimecode;
 
         const startFrame: number = GetStartFrame();
         const endFrame: number = GetEndFrame();
 
-        const currentFrame: number = ResolveFunctions.ConvertTimecodeToFrames(currentTimecode) - currenTimeline.GetStartFrame();
+        const currentFrame: number = ResolveFunctions.ConvertTimecodeToFrames(currentTimecode) - currentTimeline.GetStartFrame();
 
         const totalFrames: number = endFrame - startFrame;
 
@@ -116,15 +117,16 @@
 
     let OldTimecodeVideoProgress: string = "";
     function CalculateVideoProgress(): void {   
-        const currentTimecode = currenTimeline.GetCurrentTimecode();
+        if (!currentTimeline) return;
+        const currentTimecode = currentTimeline.GetCurrentTimecode();
         if (OldTimecodeVideoProgress == currentTimecode) return;
         OldTimecodeVideoProgress = currentTimecode;
 
-        let framerate = ResolveFunctions.GetTimelineFramerate(currenTimeline);
+        let framerate = ResolveFunctions.GetTimelineFramerate(currentTimeline);
         const startFrame: number = GetStartFrame();
         const endFrame: number = VideoProgressTargetMinutes * 60 * framerate;
 
-        const currentFrame: number = ResolveFunctions.ConvertTimecodeToFrames(currentTimecode) - currenTimeline.GetStartFrame();
+        const currentFrame: number = ResolveFunctions.ConvertTimecodeToFrames(currentTimecode) - currentTimeline.GetStartFrame();
 
         const totalFrames: number = endFrame - startFrame;
 

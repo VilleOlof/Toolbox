@@ -118,6 +118,7 @@
 
     function AddItemProperties(properties: Property): Property {
         let currentTimeline = ResolveFunctions.GetCurrentTimeline();
+        if (!currentTimeline) return properties;
 
         let currentVideoItem = currentTimeline.GetCurrentVideoItem();
         if (!currentVideoItem) return properties;
@@ -139,6 +140,7 @@
     //refactor to more functions instead of 6 level of indentation, and also indicating to the user that its loading
     function ApplyProperties(properties: Property): void {
         let currentTimeline = ResolveFunctions.GetCurrentTimeline();
+        if (!currentTimeline) return;
 
         ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, properties.Tracks, currentTimeline, (item, trackIndex) => {
             if (item === undefined) return;

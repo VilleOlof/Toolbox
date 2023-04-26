@@ -443,12 +443,23 @@
     let ActionFunctions = {
         "Add Track": (trackName: string, trackType: ResolveEnums.TrackType) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+            if (!currentTimeline) {
+                console.warn("No timeline selected");
+                return;
+            }
+
             currentTimeline.AddTrack(trackType.toLowerCase(), "mono");
+
             const trackCount = currentTimeline.GetTrackCount(trackType);
             currentTimeline.SetTrackName(trackType, trackCount, trackName);
         },
         "Delete Track": (trackName: string, trackType: ResolveEnums.TrackType) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+            if (!currentTimeline) {
+                console.warn("No timeline selected");
+                return;
+            }
+
             const trackCount = currentTimeline.GetTrackCount(trackType);
             for (let i = 1; i <= trackCount; i++) {
                 const CurrenttrackName = currentTimeline.GetTrackName(trackType, i);
@@ -464,6 +475,11 @@
         },
         "Import Media": (importType: "Timeline" | "Mediapool", defaultPath: string, fileOrFolder: "File" | "Folder", startFrame:number = 0, clipColor: ResolveEnums.ClipColor = ResolveEnums.ClipColor.Blue, trackIndex?: number, mediapoolBinName?: string) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+            if (!currentTimeline) {
+                console.warn("No timeline selected");
+                return;
+            }
+
             const currentProject = ResolveFunctions.GetCurrentProject();
             const currentMediapool = currentProject.GetMediaPool();
 
@@ -509,6 +525,10 @@
         },
         "Apply LUT": (filePath: string, tracks: string) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+            if (!currentTimeline) {
+                console.warn("No timeline selected");
+                return;
+            }
 
             const trackArray = tracks.split(",").map(Number);
             const timelineItems = ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, trackArray, currentTimeline) as TimelineItem[];
@@ -529,14 +549,22 @@
             mediapool.AddSubFolder(ParentFolder, binName);
         },
         "Add Marker": (markerName: string, markerColor: ResolveEnums.MarkerColor, markerDuration: number, markerPosition: number, usePlayhead: boolean) => { // Works but only with certain colors, only (Blue, Green, Pink, Purple, Yellow), The rest 11 wont appear
-            const currenTimeline = ResolveFunctions.GetCurrentTimeline();
+            const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+            if (!currentTimeline) {
+                console.warn("No timeline selected");
+                return;
+            }
 
             //god forgive me for nesting ternary operators
-            markerPosition = markerPosition ? markerPosition : usePlayhead ? (ResolveFunctions.ConvertTimecodeToFrames(currenTimeline.GetCurrentTimecode()) - currenTimeline.GetStartFrame()) : 0;
-            currenTimeline.AddMarker(markerPosition, markerColor, markerName, "Generated Marker From Quick Actions", markerDuration);
+            markerPosition = markerPosition ? markerPosition : usePlayhead ? (ResolveFunctions.ConvertTimecodeToFrames(currentTimeline.GetCurrentTimecode()) - currentTimeline.GetStartFrame()) : 0;
+            currentTimeline.AddMarker(markerPosition, markerColor, markerName, "Generated Marker From Quick Actions", markerDuration);
         },
         "New Compound": (tracks: string, compoundClipName: string) => { //Works but maybe should implement audio too.
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+            if (!currentTimeline) {
+                console.warn("No timeline selected");
+                return;
+            }
 
             const trackNumbers = tracks.split(",").map(Number);
             let timelineItems = ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, trackNumbers, currentTimeline) as TimelineItem[];
@@ -549,14 +577,28 @@
         },
         "Insert Generator": (generator: ResolveEnums.TimelineGenerator) => { //Just some of them work, ("BT.2111 Color Bar HLG Narrow", "BT.2111 Color Bar PQ Full", "BT.2111 Color Bar PQ Narrow") doesnt get inserted
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+            if (!currentTimeline) {
+                console.warn("No timeline selected");
+                return;
+            }
+
             currentTimeline.InsertGeneratorIntoTimeline(generator);
         },
         "Insert Title": (title: ResolveEnums.TitleNames) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+            if (!currentTimeline) {
+                console.warn("No timeline selected");
+                return;
+            }
+
             currentTimeline.InsertTitleIntoTimeline(title);
         },
         "Lock Track": (tracks: string, trackType: ResolveEnums.TrackType, Lock: boolean) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+            if (!currentTimeline) {
+                console.warn("No timeline selected");
+                return;
+            }
 
             const trackNumbers = tracks.split(",").map(Number);
             const trackCount = currentTimeline.GetTrackCount(trackType);
@@ -577,6 +619,10 @@
         },
         "Clip Position": (Pan: number, Tilt: number, AnchorX: number, AnchorY: number) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+            if (!currentTimeline) {
+                console.warn("No timeline selected");
+                return;
+            }
 
             const trackCount = currentTimeline.GetTrackCount(ResolveEnums.TrackType.Video);
 
@@ -589,6 +635,10 @@
         },
         "Clip Zoom": (ZoomX: number, ZoomY: number, Pitch: number, Yaw: number) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+            if (!currentTimeline) {
+                console.warn("No timeline selected");
+                return;
+            }
 
             const trackCount = currentTimeline.GetTrackCount(ResolveEnums.TrackType.Video);
 
@@ -601,6 +651,10 @@
         },
         "Clip Rotation": (Rotation: number, FlipX: boolean, FlipY: boolean) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+            if (!currentTimeline) {
+                console.warn("No timeline selected");
+                return;
+            }
 
             const trackCount = currentTimeline.GetTrackCount(ResolveEnums.TrackType.Video);
 
@@ -612,6 +666,10 @@
         },
         "Clip Crop": (CropLeft: number, CropRight: number, CropTop: number, CropBottom: number, CropSoftness: number, CropRetain: boolean) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+            if (!currentTimeline) {
+                console.warn("No timeline selected");
+                return;
+            }
 
             const trackCount = currentTimeline.GetTrackCount(ResolveEnums.TrackType.Video);
 
@@ -626,6 +684,10 @@
         },
         "Clip Opacity": (opacity: number) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+            if (!currentTimeline) {
+                console.warn("No timeline selected");
+                return;
+            }
 
             const trackCount = currentTimeline.GetTrackCount(ResolveEnums.TrackType.Video);
 
