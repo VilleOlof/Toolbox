@@ -16,4 +16,10 @@ And list of priorities.
 - Add more modules and hence, features  
 - Quickly change themes?  
 - Convert to SvelteKit? (Tauri would be best but doubt that will work with resolve)  
-- Remake settings in more svelte like way?
+- Remake settings in more svelte like way?  
+- Find a way to save window size, position and such but not in AppSettings? (or have critical constant information in another file)
+
+## Bugs
+
+- Installer doesnt run NPM commands properly (again)
+- Modules get stuck when dragging a module into a different sized containers drag corner

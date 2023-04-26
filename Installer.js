@@ -7,7 +7,7 @@ const { clearInterval } = require('timers');
 const RepoZipURL = 'https://github.com/VilleOlof/Toolbox/archive/refs/heads/main.zip';
 
 //DEV URL
-//const RepoZipURL = 'https://cdn.discordapp.com/attachments/365772775832420353/1095864411882799155/Toolbox-main.zip'
+//const RepoZipURL = 'https://cdn.discordapp.com/attachments/365772775832420353/1100879494681743380/Toolbox-main_1.zip'
 
 function Install(path) {
     //Update path to new workflow folder
@@ -15,33 +15,10 @@ function Install(path) {
 
     DownloadRepo(path);
     UnzipRepo(path);
-
-    //Update path to new repo folder
-    path = path += '/Toolbox-main'
-    //CreateJSONFiles(path);
-
-    //wait for the path to exist
-    let attempts = 0;
-    let pathInterval = setInterval(() => {
-        if (fs.existsSync(path)) {
-            clearInterval(pathInterval);
-            console.log('Path Exists');
-
-            NPMInstall(path);
-
-        }
-        if (attempts > 10) {
-            clearInterval(pathInterval);
-            console.log('Path Doesnt Exist');
-        }
-        attempts++;
-    }, 500);
-
-
 }
 
 function CreateWorkflowFolder(path) {
-    path = `${path}/Workflow Integration Plugins`
+    path = `${path}/Workflow Integration Plugins-TEST`
     exec(`mkdir -p "${path}"`, (err, stdout, stderr) => {
         if (err) {
             //console.log(`Error: ${err}`);
@@ -78,6 +55,10 @@ function UnzipRepo(Path) {
             CreateJSONFiles(Path + '/Toolbox-main');
 
             DeleteOldZip(Path);
+
+            Path = Path += '/Toolbox-main'
+
+            NPMInstall(Path);
         }
         if (attempts > 10) {
             clearInterval(downloadInterval);
