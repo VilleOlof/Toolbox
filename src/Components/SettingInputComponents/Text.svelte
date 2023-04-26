@@ -22,7 +22,7 @@
 
 </script>
 
-{#if extraData.List !== undefined}
+{#if extraData?.List !== undefined}
     <datalist id={`${componentID}-${settingName}-list`}>
         {#each extraData.List as listEntry}
             <option value={listEntry} />
@@ -31,11 +31,11 @@
 {/if}
 
 <input type="text"
-    maxlength={extraData.MaxLength ?? Infinity}
-    minlength={extraData.MinLength ?? 0}
-    placeholder={extraData.Placeholder ?? undefined}
-    pattern={extraData.Pattern ?? undefined}
-    list={extraData.List ? `${componentID}-${settingName}-list` : undefined}
+    maxlength={extraData?.MaxLength ?? Infinity}
+    minlength={extraData?.MinLength ?? 0}
+    placeholder={extraData?.Placeholder ?? undefined}
+    pattern={extraData?.Pattern ?? undefined}
+    list={extraData?.List ? `${componentID}-${settingName}-list` : undefined}
 
     bind:value={settingInfo.Value}
     on:input={HandleInput}

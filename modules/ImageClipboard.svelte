@@ -12,13 +12,15 @@
     const componentID: string = "ImageClipboard";
 
     onMount(() => {
-        ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Small);
+        ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Small,
+            "Saves the clipboard image to a folder and imports it into the media pool"
+        );
     });
 
     let _Settings = GlobalSettings.GetInstance(componentID);
 
     const defaultPath = Common.IO.CombinePaths(Common.IO.GetHomeDirectory(), "Pictures/Davinki Toolbox Clipboard");
-    const clipboardFolder = _Settings.RegisterSetting("Clipboard Folder", "The folder where all images will be saved to (Project>Image)", defaultPath, SettingTypes.Type.File);
+    const clipboardFolder = _Settings.RegisterSetting("Clipboard Folder", "The folder where all images will be saved to (Project>Image)", defaultPath, SettingTypes.Type.Text);
     const clipboardPrefix = _Settings.RegisterSetting("Clipboard Prefix", "The prefix for all images saved from the clipboard", "Clipboard", SettingTypes.Type.Text);
     const mediaPoolBinName = _Settings.RegisterSetting("MediaPool Bin Name", "The name of the bin where all images will be imported to", "Clipboard", SettingTypes.Type.Text);
 
