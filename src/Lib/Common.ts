@@ -6,6 +6,7 @@ const electron = require("electron");
 const fs = require("fs");
 const path = require('path');
 const crypto = require('crypto');
+const os = require('os');
 
 const { exec, spawn } = require("child_process");
 
@@ -80,6 +81,15 @@ export namespace Common {
             if ((json || typeof content != "string") && stringifyContentDefault) content = JSON.stringify(content, null, 4);
             
             fs.writeFileSync(path, content, "utf8");
+        }
+
+        /**
+         * Creates a directory.
+         * 
+         * @param path the path to the directory
+         */
+        export function CreateDirectory(path: string): void {
+            fs.mkdirSync(path);
         }
 
         /**
@@ -227,6 +237,25 @@ export namespace Common {
         export function GetRootFolder(): string {
             return __dirname;
         }
+
+        /**
+         * Gets the home directory of the user.
+         * 
+         * @returns the home directory
+         */
+        export function GetHomeDirectory(): string {
+            return os.homedir();
+        }
+
+        /**
+         * Combines multiple paths into one.
+         * 
+         * @param paths the paths to combine
+         * @returns the combined path
+         */
+        export function CombinePaths(...paths: string[]): string {
+            return path.join(...paths);
+        }
     }
 
     /**
@@ -288,6 +317,15 @@ export namespace Common {
          */
         export function GetShell(): Shell {
             return electron.shell;
+        }
+
+        /**
+         * Gets the current electron clipboard.
+         * 
+         * @returns the current electron clipboard
+         */
+        export function GetClipboard(): globalThis.Electron.Clipboard {
+            return electron.clipboard;
         }
 
         let Callbacks: { [key: string]: () => void } = {};
