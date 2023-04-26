@@ -44,6 +44,8 @@
 
     function Clamp() {
         const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+        if (!currentTimeline) return;
+
         const currentProject = ResolveFunctions.GetCurrentProject();
         
         ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, trackAmount, currentTimeline, (item, trackIndex) => {

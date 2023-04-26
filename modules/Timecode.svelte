@@ -49,6 +49,7 @@
 
     let markerDatastore: DataStore;
     async function GetTimecode() {
+        if (!timeline) return;
         let resolveTimecode: string = timeline.GetCurrentTimecode();
         if (resolveTimecode == oldResolveTimecode) return;
 

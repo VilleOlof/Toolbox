@@ -10,6 +10,7 @@
     import { onDestroy, onMount } from 'svelte';
 
     const componentID: string = "MarkerTool";
+    //Maybe optimize all the calls to get a timeline?
 
     onMount(() => {
         ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Small,
@@ -54,6 +55,8 @@
 
     function GetPlayHeadFrame(timeline?: Timeline): number {
         let currentTimeline: Timeline = timeline ?? ResolveFunctions.GetCurrentTimeline();
+        if (!currentTimeline) return 0;
+
         let playHead: string = currentTimeline.GetCurrentTimecode();
 
         let playHeadFrame: number = ResolveFunctions.ConvertTimecodeToFrames(playHead);
@@ -65,6 +68,7 @@
 
     function CheckIfMarkerExists(markerData: string): boolean {
         let timeline: Timeline = ResolveFunctions.GetCurrentTimeline();
+        if (!timeline) return false;
         let markers = timeline.GetMarkers();
 
         for (const [frameID, MarkerData] of Object.entries(markers)) {
@@ -77,6 +81,8 @@
     const StartMarkerData: string = "MarkerTool-StartMarker";
     function CreateStartMarker(): void {
         let timeline: Timeline = ResolveFunctions.GetCurrentTimeline();
+        if (!timeline) return;
+
         let playHeadPosition = GetPlayHeadFrame(timeline);
 
         if (CheckIfMarkerExists(StartMarkerData)) timeline.DeleteMarkerByCustomData(StartMarkerData);
@@ -94,6 +100,8 @@
     const EndMarkerData: string = "MarkerTool-EndMarker";
     function CreateEndMarker(): void {
         let timeline: Timeline = ResolveFunctions.GetCurrentTimeline();
+        if (!timeline) return;
+
         let playHeadPosition = GetPlayHeadFrame(timeline);
 
         if (CheckIfMarkerExists(EndMarkerData))  timeline.DeleteMarkerByCustomData(EndMarkerData);
@@ -110,6 +118,8 @@
 
     function ClearBothMarkers(): void {
         let timeline: Timeline = ResolveFunctions.GetCurrentTimeline();
+        if (!timeline) return;
+
         if (CheckIfMarkerExists(StartMarkerData)) timeline.DeleteMarkerByCustomData(StartMarkerData);
         if (CheckIfMarkerExists(EndMarkerData)) timeline.DeleteMarkerByCustomData(EndMarkerData);
     }

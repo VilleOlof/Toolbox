@@ -18,6 +18,8 @@
 
     const OpenFileAtPlayhead = () => {
         const timeline: Timeline = ResolveFunctions.GetCurrentTimeline();
+        if (!timeline) return;
+
         const currentItem = timeline.GetCurrentVideoItem();
         if (!currentItem) return;
 
