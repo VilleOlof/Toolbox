@@ -320,6 +320,15 @@ export namespace Common {
         }
 
         /**
+         * Gets Electron
+         * 
+         * @returns Electron
+         */
+        export function GetElectron(): typeof globalThis.Electron.CrossProcessExports {
+            return electron;
+        }
+
+        /**
          * Gets the current electron clipboard.
          * 
          * @returns the current electron clipboard
@@ -523,5 +532,14 @@ export namespace Common {
             string = string.replace(`{${index}}`, values[index]);
         }
         return string;
+    }
+
+    /**
+     * Gets the OS node module.
+     * 
+     * @returns the OS node module
+     */
+    export function GetOSModule(): typeof os {
+        return os;
     }
 }

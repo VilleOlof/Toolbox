@@ -7,6 +7,8 @@ import { DragHandler } from './DragHandler';
 import { Common } from './Common';
 import { AppSettings } from './AppSettings';
 
+import { Statistics } from './Statistics';
+
 export namespace ModuleHandler {
 
     export let ColumnContainer: HTMLDivElement = undefined;
@@ -46,6 +48,11 @@ export namespace ModuleHandler {
             DragHandler.Init();
 
             _FirstLoad = false;
+
+            //this is here since the statistics include registered modules
+            //and those need to be loaded before sending the statistics
+            Statistics.SendStatisticsOnStartup();
+
             return ColumnContainer;
         }
 

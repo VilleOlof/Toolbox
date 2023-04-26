@@ -16,8 +16,8 @@
             "Tracks your progress in the timeline and shows it in a progress bar\nContent Proccessed: The progress from start to end\nVideo Progress: The progress from start to a set amount of minutes"
         );
 
-        CalculateContentProccessed();
-        CalculateVideoProgress();
+        //CalculateContentProccessed();
+        //CalculateVideoProgress();
 
         setInterval(() => {
             CalculateContentProccessed();

@@ -4,11 +4,13 @@
 ----
 
 <!-- markdownlint-disable-next-line -->
-**Studio Version Of Davinci Resolve Is Required**
+<p style=text-align:center><b>Studio Version Of Davinci Resolve Is Required</b></p>
 
-A Davinci Resolve plugin that provides a modular toolbox for creating custom tools.  
+>Increase your productivity and workflow with this plugin.  
+>This plugin provides a modular toolbox for easy integration with Davinci Resolve.  
+>And customize the layout of the plugin to your liking!
+
 This plugin runs with Electron, and uses Svelte as the framework and custom modules files.  
-
 With .svelte files being the modules, it makes it easy to create custom modules.  
 And installing modules is a simple drag and drop onto the plugin window.  
 
@@ -28,27 +30,36 @@ If you find any, please report them in the [Issues](https://github.com/VilleOlof
 
 ## Default Modules
 
-- **[Timecode](./modules/Timecode.svelte)**  
-    A simple module that displays the current timecode of the timeline.  
-- **[Counter](./modules/Counter.svelte)**  
-    Two counters that can be used to count up or down.  
-    They also have a combined sum and difference counter.  
-- **[Notes](./modules/Notes.svelte)**  
-    Allows you to write notes and save them between sessions (Or not!).  
-- **[Folders](./modules/Folders.svelte)**  
-    A small module that allows you to bind folders to colorful icon buttons.  
-    This is useful for quickly opening common used folders.  
-    Hover over an icon to see the folder path and modify it.  
-- **[Open At Playhead](./modules/OpenAtPlayhead.svelte)**  
-    Opens the current file at the current playhead position in a new explorer window.  
 - **[Quick Render](./modules/QuickRender.svelte)**  
     A module that makes it quick and easy to render your timeline with just a few clicks.
 - **[Quick Properties](./modules/QuickProperties.svelte)**  
     Apply already defined properties to the current video item in the timeline quickly.  
     Useful for quickly zooming in or out, or easily cropping the video.  
+- **[Quick Actions](./modules/QuickActions.svelte)**  
+    An advanced module for doing mundane tasks quickly  
+    Import Media, Add Tracks, Apply LUT and more by clicking one button!  
+- **[Image Clipboard](./modules/ImageClipboard.svelte)**  
+    Saves the clipboard image to a folder and imports it into the media pool  
+- **[Folders](./modules/Folders.svelte)**  
+    A small module that allows you to bind folders to colorful icon buttons.  
+    This is useful for quickly opening common used folders.  
+    Hover over an icon to see the folder path and modify it.  
 - **[Marker Tool](./modules/MarkerTool.svelte)**  
     Used to create specific markers used by other modules.  
-    Integrates with other modules such as the Quick Render module to render between markers.  
+    Integrates with other modules such as the Quick Render module to render between markers.
+- **[Progress Tracker](./modules/ProgressTracker.svelte)**  
+    Tracks your progress in the timeline and shows it in a progress bar  
+- **[Clamp](./modules/Clamp.svelte)**  
+    Used to clamp a video to fit the screen border exactly.  
+- **[Timecode](./modules/Timecode.svelte)**  
+    A simple module that displays the current timecode of the timeline.  
+- **[Open At Playhead](./modules/OpenAtPlayhead.svelte)**  
+    Opens the current file at the current playhead position in a new explorer window.  
+- **[Counter](./modules/Counter.svelte)**  
+    Two counters that can be used to count up or down.  
+    They also have a combined sum and difference counter.  
+- **[Notes](./modules/Notes.svelte)**  
+    Allows you to write notes and save them between sessions (Or not!).  
 - **[Timer](./modules/Timer.svelte)**  
     A simple module to keep track of time or a countdown.  
 
