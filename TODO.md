@@ -10,6 +10,7 @@ And list of priorities.
 - Updater.js (Check for updates, and update source files)  
 - Shutdown Plugin if Davinci Is closed (If possible, BG thread, ping pong?)  
 - Update DataStore to be more like Settings in terms of data loading.  
+- Add an indicator in moduleView that shortcuts are enabled/disabled.
 
 ## Other Stuff  
 

@@ -416,6 +416,7 @@
         @include Flex.Container(space-between, center, row);
 
         margin: 0.5rem;
+        max-height: 3rem;
     }
 
     :global(.specificSettingHeader) {
