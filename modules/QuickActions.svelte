@@ -141,6 +141,12 @@
                     value: 0,
                 },
                 {
+                    name: "Origin Frame",
+                    type: "dropdown",
+                    value: "Relative",
+                    dropdownOptions: ["Relative", "Start"]
+                },
+                {
                     name: "Clip Color",
                     type: "dropdown",
                     value: "Blue",
@@ -331,6 +337,11 @@
                     name: "Anchor Y",
                     type: "number",
                     value: 0,
+                },
+                {
+                    name: "Tracks (1,2,3)",
+                    type: "string",
+                    value: "1"
                 }
             ],
             Minimized: false,
@@ -359,6 +370,11 @@
                     name: "Yaw",
                     type: "number",
                     value: 0,
+                },
+                {
+                    name: "Tracks (1,2,3)",
+                    type: "string",
+                    value: "1"
                 }
             ],
             Minimized: false,
@@ -382,6 +398,11 @@
                     name: "Flip Y",
                     type: "boolean",
                     value: false,
+                },
+                {
+                    name: "Tracks (1,2,3)",
+                    type: "string",
+                    value: "1"
                 }
             ],
             Minimized: false,
@@ -420,6 +441,11 @@
                     name: "Crop Retain",
                     type: "boolean",
                     value: false,
+                },
+                {
+                    name: "Tracks (1,2,3)",
+                    type: "string",
+                    value: "1"
                 }
             ],
             Minimized: false,
@@ -433,6 +459,102 @@
                     name: "Opacity",
                     type: "number",
                     value: 100,
+                },
+                {
+                    name: "Tracks (1,2,3)",
+                    type: "string",
+                    value: "1"
+                }
+            ],
+            Minimized: false,
+            UUID: ""
+        },
+        {
+            name: "Clip Color",
+            function: "Clip Color",
+            values: [
+                {
+                    name: "Color",
+                    type: "dropdown",
+                    value: "Blue",
+                    dropdownOptions: Object.values(ResolveEnums.ClipColor),
+                },
+                {
+                    name: "Tracks (1,2,3)",
+                    type: "string",
+                    value: "1"
+                },
+                {
+                    name: "Track Type",
+                    type: "dropdown",
+                    value: "Video",
+                    dropdownOptions: Object.keys(ResolveEnums.TrackType),
+                }
+            ],
+            Minimized: false,
+            UUID: ""
+        },
+        {
+            name: "Disable Clip",
+            function: "Disable Clip",
+            values: [
+                {
+                    name: "Disabled",
+                    type: "boolean",
+                    value: true,
+                },
+                {
+                    name: "Tracks (1,2,3)",
+                    type: "string",
+                    value: "1"
+                },
+                {
+                    name: "Track Type",
+                    type: "dropdown",
+                    value: "Video",
+                    dropdownOptions: Object.keys(ResolveEnums.TrackType),
+                }
+            ],
+            Minimized: false,
+            UUID: ""
+        },
+        {
+            name: "Delete Clip",
+            function: "Delete Clip",
+            values: [
+                {
+                    name: "Tracks (1,2,3)",
+                    type: "string",
+                    value: "1"
+                },
+                {
+                    name: "Track Type",
+                    type: "dropdown",
+                    value: "Video",
+                    dropdownOptions: Object.keys(ResolveEnums.TrackType),
+                }
+            ],
+            Minimized: false,
+            UUID: ""
+        },
+        {
+            name: "Duplicate Clip",
+            function: "Duplicate Clip",
+            values: [
+                {
+                    name: "Origin Track",
+                    type: "number",
+                    value: 1,
+                },
+                {
+                    name: "Destination Track",
+                    type: "number",
+                    value: 2,
+                },
+                {
+                    name: "Frame Offset",
+                    type: "number",
+                    value: 0,
                 }
             ],
             Minimized: false,
@@ -473,7 +595,7 @@
             const currentMediapool = ResolveFunctions.GetCurrentProject().GetMediaPool();
             currentMediapool.CreateEmptyTimeline(timelineName);
         },
-        "Import Media": (importType: "Timeline" | "Mediapool", defaultPath: string, fileOrFolder: "File" | "Folder", startFrame:number = 0, clipColor: ResolveEnums.ClipColor = ResolveEnums.ClipColor.Blue, trackIndex?: number, mediapoolBinName?: string) => {
+        "Import Media": (importType: "Timeline" | "Mediapool", defaultPath: string, fileOrFolder: "File" | "Folder", startFrame:number = 0, originFrame: "Relative" | "Start", clipColor: ResolveEnums.ClipColor = ResolveEnums.ClipColor.Blue, trackIndex?: number, mediapoolBinName?: string) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
@@ -511,17 +633,46 @@
             importedItem.SetClipColor(clipColor);
 
             if (importType == "Timeline") {
+                let recordFrame: number;
+                if (originFrame == "Relative") {
+                    const playhead = ResolveFunctions.ConvertTimecodeToFrames(currentTimeline.GetCurrentTimecode());
+                    recordFrame = playhead + startFrame;
+                    console.log(recordFrame, playhead, startFrame);
+                }
+                else {
+                    recordFrame = currentTimeline.GetStartFrame() + startFrame;
+                }
+
                 const clipInfo: ClipInfo = {
                     mediaPoolItem: importedItem,
                     startFrame: parseInt(importedItem.GetClipProperty("Start") as string),
                     endFrame: parseInt(importedItem.GetClipProperty("End") as string),
 
                     trackIndex: trackIndex,
-                    recordFrame: currentTimeline.GetStartFrame() + startFrame
+                    recordFrame: recordFrame
                 }
 
                 currentMediapool.AppendToTimeline([clipInfo]);
             }
+        },
+        "Duplicate Clip": (originTrack: number, destTrack: number, frameOffset: number) => {
+            const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+            const currentMediapool = ResolveFunctions.GetCurrentProject().GetMediaPool();
+
+            const selectedItem = ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, originTrack, currentTimeline) as TimelineItem;
+            const mediaReference = selectedItem.GetMediaPoolItem();
+
+            const clipInfo: ClipInfo = {
+                mediaPoolItem: mediaReference,
+                startFrame: parseInt(mediaReference.GetClipProperty("Start") as string),
+                endFrame: parseInt(mediaReference.GetClipProperty("End") as string),
+
+                trackIndex: destTrack,
+                recordFrame: (selectedItem.GetStart() + frameOffset)
+            }
+
+            currentMediapool.AppendToTimeline([clipInfo]);
+
         },
         "Apply LUT": (filePath: string, tracks: string) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
@@ -617,63 +768,63 @@
                 now = Date.now();
             }
         },
-        "Clip Position": (Pan: number, Tilt: number, AnchorX: number, AnchorY: number) => {
+        "Clip Position": (Pan: number, Tilt: number, AnchorX: number, AnchorY: number, tracks: string) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
                 return;
             }
 
-            const trackCount = currentTimeline.GetTrackCount(ResolveEnums.TrackType.Video);
+            const trackNumbers = tracks.split(",").map(Number);
 
-            ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, trackCount, currentTimeline, (item) => {
+            ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, trackNumbers, currentTimeline, (item) => {
                 item.SetProperty("Pan", Pan);
                 item.SetProperty("Tilt", Tilt);
                 item.SetProperty("AnchorPointX", AnchorX);
                 item.SetProperty("AnchorPointY", AnchorY);
             });
         },
-        "Clip Zoom": (ZoomX: number, ZoomY: number, Pitch: number, Yaw: number) => {
+        "Clip Zoom": (ZoomX: number, ZoomY: number, Pitch: number, Yaw: number, tracks: string) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
                 return;
             }
 
-            const trackCount = currentTimeline.GetTrackCount(ResolveEnums.TrackType.Video);
+            const trackNumbers = tracks.split(",").map(Number);
 
-            ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, trackCount, currentTimeline, (item) => {
+            ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, trackNumbers, currentTimeline, (item) => {
                 item.SetProperty("ZoomX", ZoomX);
                 item.SetProperty("ZoomY", ZoomY);
                 item.SetProperty("Pitch", Pitch);
                 item.SetProperty("Yaw", Yaw);
             });
         },
-        "Clip Rotation": (Rotation: number, FlipX: boolean, FlipY: boolean) => {
+        "Clip Rotation": (Rotation: number, FlipX: boolean, FlipY: boolean, tracks: string) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
                 return;
             }
 
-            const trackCount = currentTimeline.GetTrackCount(ResolveEnums.TrackType.Video);
+            const trackNumbers = tracks.split(",").map(Number);
 
-            ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, trackCount, currentTimeline, (item) => {
+            ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, trackNumbers, currentTimeline, (item) => {
                 item.SetProperty("RotationAngle", Rotation);
                 item.SetProperty("FlipX", FlipX);
                 item.SetProperty("FlipY", FlipY);
             });
         },
-        "Clip Crop": (CropLeft: number, CropRight: number, CropTop: number, CropBottom: number, CropSoftness: number, CropRetain: boolean) => {
+        "Clip Crop": (CropLeft: number, CropRight: number, CropTop: number, CropBottom: number, CropSoftness: number, CropRetain: boolean, tracks: string) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
                 return;
             }
 
-            const trackCount = currentTimeline.GetTrackCount(ResolveEnums.TrackType.Video);
+            const trackNumbers = tracks.split(",").map(Number);
 
-            ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, trackCount, currentTimeline, (item) => {
+            ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, trackNumbers, currentTimeline, (item) => {
                 item.SetProperty("CropLeft", CropLeft);
                 item.SetProperty("CropRight", CropRight);
                 item.SetProperty("CropTop", CropTop);
@@ -682,18 +833,60 @@
                 item.SetProperty("CropRetain", CropRetain);
             });
         },
-        "Clip Opacity": (opacity: number) => {
+        "Clip Opacity": (opacity: number, tracks: string) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
                 return;
             }
 
-            const trackCount = currentTimeline.GetTrackCount(ResolveEnums.TrackType.Video);
+            const trackNumbers = tracks.split(",").map(Number);
 
-            ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, trackCount, currentTimeline, (item) => {
+            ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, trackNumbers, currentTimeline, (item) => {
                 item.SetProperty("Opacity", opacity);
             });
+        },
+        "Clip Color": (color: ResolveEnums.ClipColor, tracks: string, trackType: ResolveEnums.TrackType) => {
+            const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+            if (!currentTimeline) {
+                console.warn("No timeline selected");
+                return;
+            }
+
+            const trackNumbers = tracks.split(",").map(Number);
+
+            ResolveFunctions.GetTimelineItem(trackType, trackNumbers, currentTimeline, (item) => {
+                item.SetClipColor(color);
+            });
+        },
+        "Disable Clip": (state: boolean, tracks: string, trackType: ResolveEnums.TrackType) => {
+            const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+            if (!currentTimeline) {
+                console.warn("No timeline selected");
+                return;
+            }
+
+            const trackNumbers = tracks.split(",").map(Number);
+
+            ResolveFunctions.GetTimelineItem(trackType, trackNumbers, currentTimeline, (item) => {
+                item.SetClipEnabled(!state);
+            });
+        },
+        "Delete Clip": (tracks: string, trackType: ResolveEnums.TrackType) => {
+            const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+            if (!currentTimeline) {
+                console.warn("No timeline selected");
+                return;
+            }
+
+            const trackNumbers = tracks.split(",").map(Number);
+
+            let items = ResolveFunctions.GetTimelineItem(trackType, trackNumbers, currentTimeline) as TimelineItem[];
+            if (!Array.isArray(items)) {
+                items = [items];
+            }
+
+            currentTimeline.DeleteClips(items);
         }
     }
 

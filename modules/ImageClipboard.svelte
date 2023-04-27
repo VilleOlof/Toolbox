@@ -29,6 +29,7 @@
         if (!clipboardImage) return;
 
         const fileBuffer: Buffer = clipboardImage.toPNG();
+        if (fileBuffer.length == 0) return;
 
         const fileName: string = `${clipboardPrefix}_${FormatTime(new Date())}.png`;
 

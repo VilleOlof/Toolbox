@@ -1920,7 +1920,7 @@ declare type Timeline = {
      * 
      * @param items 
      */
-    DeleteClips(items: []): boolean;
+    DeleteClips(items: TimelineItem[]): boolean;
 };
 
 declare type TimelineItem = {

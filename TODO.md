@@ -21,5 +21,4 @@ And list of priorities.
 
 ## Bugs
 
-- Installer doesnt run NPM commands properly (again)
 - Modules get stuck when dragging a module into a different sized containers drag corner

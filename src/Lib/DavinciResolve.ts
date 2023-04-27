@@ -575,7 +575,7 @@ export class ResolveFunctions {
 
         //check if tracks is an array, if not, make it an array
         let userInputTracks: number[] = []
-        if (typeof tracks == 'number') {
+        if (!Array.isArray(tracks)) {
             for (let i = 0; i < tracks; i++) {
                 userInputTracks.push(i + 1);
             }
@@ -591,10 +591,13 @@ export class ResolveFunctions {
 
         const timelineTracks = currentTimeline.GetTrackCount(trackType);
         //Take the lowest number of tracks between the tracks array and the timeline tracks
-        const tracksToLoop = userInputTracks.length > timelineTracks ? timelineTracks : userInputTracks.length;
+        let tracksToLoop = userInputTracks.length //> timelineTracks ? timelineTracks : userInputTracks.length;
+        if (userInputTracks.length > timelineTracks) {
+            tracksToLoop = timelineTracks;
+        }
         
-        for (let trackIndex = 1; trackIndex <= tracksToLoop; trackIndex++) {
-            const trackItems = currentTimeline.GetItemListInTrack(trackType, trackIndex);
+        for (let trackIndex = 0; trackIndex < tracksToLoop; trackIndex++) {
+            const trackItems = currentTimeline.GetItemListInTrack(trackType, userInputTracks[trackIndex]);
             if (trackItems.length <= 0) continue; //no items in the track, continue to the next track
 
             const averageFramesPerItem = (EndFrame - StartFrame) / trackItems.length;
@@ -611,35 +614,36 @@ export class ResolveFunctions {
             }
 
             //special case where can we can find the item if the length is 2 or 3
-            if (trackItems.length == 2) {
-                const firstItem = trackItems[0];
-                let returnItem = trackItems[1];
+            //TODO: Some bugs with this, need to fix
+            // if (trackItems.length == 2) {
+            //     const firstItem = trackItems[0];
+            //     let returnItem = trackItems[1];
 
-                if (Playhead >= firstItem.GetStart() && Playhead <= firstItem.GetEnd()) returnItem = firstItem;
+            //     if (Playhead >= firstItem.GetStart() && Playhead <= firstItem.GetEnd()) returnItem = firstItem;
                 
-                if (itemCallback === undefined) returnItems.push(returnItem);
-                else {
-                    itemCallback(returnItem, trackIndex);
-                }
-                continue;
-            }
-            else if (trackItems.length == 3) {
-                const middleItem = trackItems[1];
+            //     if (itemCallback === undefined) returnItems.push(returnItem);
+            //     else {
+            //         itemCallback(returnItem, trackIndex);
+            //     }
+            //     continue;
+            // }
+            // else if (trackItems.length == 3) {
+            //     const middleItem = trackItems[1];
 
-                const middleStart = middleItem.GetStart();
-                const middleEnd = middleItem.GetEnd();
+            //     const middleStart = middleItem.GetStart();
+            //     const middleEnd = middleItem.GetEnd();
 
-                if (Playhead >= middleStart && Playhead <= middleEnd) {
-                    if (itemCallback === undefined) returnItems.push(middleItem);
-                    else {
-                        itemCallback(middleItem, trackIndex);
-                    }
-                    continue;
-                }
+            //     if (Playhead >= middleStart && Playhead <= middleEnd) {
+            //         if (itemCallback === undefined) returnItems.push(middleItem);
+            //         else {
+            //             itemCallback(middleItem, trackIndex);
+            //         }
+            //         continue;
+            //     }
 
-                else if (Playhead < middleStart) return trackItems[0];
-                else if (Playhead > middleEnd) return trackItems[2];
-            }
+            //     else if (Playhead < middleStart) return trackItems[0];
+            //     else if (Playhead > middleEnd) return trackItems[2];
+            // }
             
             //then we do a binary search to find the item
             let left = 0;
