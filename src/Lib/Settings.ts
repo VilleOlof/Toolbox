@@ -103,7 +103,7 @@ namespace GlobalSettings {
         GlobalSettings._ComponentSettings[componentID] = _Settings;
 
         Common.IO.WriteFile(
-            Common.IO.GetRootFolder() + "./../Settings.json", 
+            Common.IO.GetRootFolder() + "/../Settings.json", 
             GlobalSettings._ComponentSettings, 
             true
         );

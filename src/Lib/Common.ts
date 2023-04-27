@@ -79,8 +79,8 @@ export namespace Common {
          */
         export function WriteFile(path: string, content: any, json?:boolean, stringifyContentDefault: boolean = true): void {
             if ((json || typeof content != "string") && stringifyContentDefault) content = JSON.stringify(content, null, 4);
-            
-            fs.writeFileSync(path, content, "utf8");
+
+            fs.writeFileSync(path, content, { encoding: "utf8", flag: "w" });
         }
 
         /**
