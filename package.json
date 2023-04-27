@@ -6,7 +6,7 @@
   "main": "./Electron/main.js",
   "scripts": {
     "start": "electron .",
-    "buildInstaller": "pkg --out-path ./InstallerBuilds Installer.js",
+    "buildInstaller": "pkg -t node16-macos-x64,node16-win-x64 --out-path ./InstallerBuilds Installer.js",
     "vite:build": "vite build",
     "vite": "vite build --watch",
     "build": "node ./PrepareModules.js && vite build",

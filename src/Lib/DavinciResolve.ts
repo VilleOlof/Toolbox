@@ -4,7 +4,8 @@ import { ResolveEnums } from "./ResolveEnums";
 import { ResolveWorkerHandler } from "./ResolveWorkerHandler";
 
 let PluginID: string;
-const WorkflowIntegration = require('../src/Lib/WorkflowIntegration.node'); //Runs from the /dist directory
+//const WorkflowIntegration = require('../src/Lib/WorkflowIntegration.node'); //Runs from the /dist directory
+const WorkflowIntegration = require('../../../Developer/Workflow Integrations/Examples/SamplePlugin/WorkflowIntegration.node');
 
 /**
  * The Resolve API

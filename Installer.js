@@ -117,7 +117,11 @@ function DeleteOldZip(Path) {
 
 const args = process.argv.slice(2);
 
-// Default path to DaVinci Resolve
+
+// Default path to DaVinci Resolve in Windows
 let DavinciPath = args[0] ?? `${process.env.PROGRAMDATA}\\Blackmagic Design\\DaVinci Resolve\\Support`
+if (process.platform === 'darwin') {
+    DavinciPath = args[0] ?? '/Library/Application Support/Blackmagic Design/DaVinci Resolve/Support'
+}
 
 Install(DavinciPath);

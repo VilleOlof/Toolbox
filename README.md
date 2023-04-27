@@ -66,6 +66,9 @@ If you find any, please report them in the [Issues](https://github.com/VilleOlof
 ## **Installation**  
 
 **Requires: Node.js**  
+Windows: Go to [Node.js](https://nodejs.org/en/) and download the latest LTS version.
+MacOS: You can install Node.js with [Homebrew](https://brew.sh/) by running `brew install node` in the terminal.
+
 Go to the [Releases](https://github.com/VilleOlof/Toolbox/releases/)  
 And download the latest installer for your platform.  
 
@@ -73,8 +76,9 @@ Run the installer and if everything went well.
 You should just be able to run the plugin inside Davinci Resolve:  
 `DaVinci Resolve > Workspace > Workflow Integrations > Toolbox`  
 
-*MacOS & Linux installers havent been tested yet.*  
+*MacOS installer havent been tested yet.*  
 If you for some reason can't use the installer, you can also install the [plugin manually](#manual-installation).  
+**Workflow Integrations are currently not supported on Linux.**
 
 ## Custom Modules
 
@@ -233,7 +237,8 @@ And then rebuild the project with `npm run build`.
 Copy the repository to your local machine.  
 And put the folder in the following directory:  
 
-`%ProgramData%\Blackmagic Design\DaVinci Resolve\Support\Workflow Integration Plugins\Toolbox`  
+Windows: `%ProgramData%\Blackmagic Design\DaVinci Resolve\Support\Workflow Integration Plugins\Toolbox`  
+MacOS: `~/Library/Application Support/Blackmagic Design/DaVinci Resolve/Workflow Integration Plugins/Toolbox`
 *(Note that neither `\Workflow Integration Plugins\` nor `\Toolbox` exist, so you will need to create them)*  
 
 Run the following command in the root directory of the project:  
@@ -244,6 +249,10 @@ npm run build
 ```  
 
 This will install all the dependencies and build the project.  
+
+You will also need to create two files in the root directory of the project.  
+`./Data.json` and `./Settings.json`
+And both should have the content `{}` inside them.
 
 And then you can run the plugin inside Davinci Resolve:  
 `DaVinci Resolve > Workspace > Workflow Integrations > Toolbox`  
