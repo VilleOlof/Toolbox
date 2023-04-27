@@ -18,7 +18,7 @@ function Install(path) {
 }
 
 function CreateWorkflowFolder(path) {
-    path = `${path}/Workflow Integration Plugins-TEST`
+    path = `${path}/Workflow Integration Plugins`
     exec(`mkdir -p "${path}"`, (err, stdout, stderr) => {
         if (err) {
             //console.log(`Error: ${err}`);
