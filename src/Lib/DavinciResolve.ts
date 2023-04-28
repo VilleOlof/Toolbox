@@ -619,8 +619,9 @@ export class ResolveFunctions {
             // if (trackItems.length == 2) {
             //     const firstItem = trackItems[0];
             //     let returnItem = trackItems[1];
+            //     console.log(firstItem, returnItem, trackItems)
 
-            //     if (Playhead >= firstItem.GetStart() && Playhead <= firstItem.GetEnd()) returnItem = firstItem;
+            //     if (Playhead <= firstItem.GetEnd()) returnItem = firstItem;
                 
             //     if (itemCallback === undefined) returnItems.push(returnItem);
             //     else {
@@ -691,6 +692,7 @@ export class ResolveFunctions {
      * @returns If its inside or not
      */
     private static CheckIfFrameIsOnItem(frame: number, item: TimelineItem): boolean {
+        if (!item) return false;
         return frame >= item.GetStart() && frame <= item.GetEnd();
     }
 

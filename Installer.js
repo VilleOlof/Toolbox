@@ -6,9 +6,6 @@ const { clearInterval } = require('timers');
 // Change this to the URL of the repo zip file when its public
 const RepoZipURL = 'https://github.com/VilleOlof/Toolbox/archive/refs/heads/main.zip';
 
-//DEV URL
-//const RepoZipURL = 'https://cdn.discordapp.com/attachments/365772775832420353/1100879494681743380/Toolbox-main_1.zip'
-
 function Install(path) {
     //Update path to new workflow folder
     path = CreateWorkflowFolder(path);

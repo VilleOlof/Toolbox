@@ -780,8 +780,8 @@
             ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, trackNumbers, currentTimeline, (item) => {
                 item.SetProperty("Pan", Pan);
                 item.SetProperty("Tilt", Tilt);
-                item.SetProperty("AnchorPointX", AnchorX);
-                item.SetProperty("AnchorPointY", AnchorY);
+                if (AnchorX != 0) item.SetProperty("AnchorPointX", AnchorX);
+                if (AnchorY != 0) item.SetProperty("AnchorPointY", AnchorY);
             });
         },
         "Clip Zoom": (ZoomX: number, ZoomY: number, Pitch: number, Yaw: number, tracks: string) => {
@@ -1002,7 +1002,7 @@
         <div id=topButtons>
             <div>
                 <button class=buttonStyle on:click={AddNewProfile}>Add New</button>
-                <button class=buttonStyle on:click={RemoveProfile}>Remove</button>
+                <button class=buttonStyle on:click={RemoveProfile}>Remove Profile</button>
             </div>
         
             <div>

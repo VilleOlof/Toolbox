@@ -103,6 +103,15 @@ export namespace Common {
         }
 
         /**
+         * Deletes a file.
+         * 
+         * @param path the path to the file
+         */
+        export function DeleteFile(path: string): void {
+            fs.unlinkSync(path);
+        }
+
+        /**
          * Reads a directory from the file system.
          * 
          * @param path the path to the directory

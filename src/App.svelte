@@ -7,6 +7,7 @@
     import Settings from "./Components/Settings.svelte";
     import { GlobalSettings } from "./Lib/Settings";
     import { AppSettings } from "./Lib/AppSettings";
+    import Update from "./Components/Update.svelte";
 
     let settingComponent;
     let moduleViewComponent;
@@ -41,6 +42,8 @@
 {:else}
     <ModuleView bind:this={moduleViewComponent} />
 {/if}
+
+<Update />
 
 <style lang="scss">
 </style>
