@@ -20,10 +20,23 @@ export namespace Updater {
         const localVersion: string = AppSettings.GetSetting("Version");
 
         return {
-            updateAvailable: githubVersion !== localVersion,
+            updateAvailable: CheckVersionNumbers(githubVersion, localVersion),
             remoteVersion: githubVersion,
             localVersion: localVersion
         };
+    }
+
+    function CheckVersionNumbers(newVersion: string, oldVersion: string): boolean {
+        const newVersionNumbers: string[] = newVersion.split('.');
+        const oldVersionNumbers: string[] = oldVersion.split('.');
+
+        for (let i = 0; i < newVersionNumbers.length; i++) {
+            if (parseInt(newVersionNumbers[i]) > parseInt(oldVersionNumbers[i])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     export function DownloadUpdate(): void {

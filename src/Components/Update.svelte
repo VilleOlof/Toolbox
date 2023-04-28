@@ -4,7 +4,7 @@
 
     let showPopup: boolean = false;
     let updateInfo: Updater.UpdateReturn;
-    
+
     onMount(async () => {
         updateInfo = await Updater.CheckForUpdate();
         showPopup = updateInfo.updateAvailable;
@@ -52,8 +52,8 @@
     }
 
     .popup-content {
-        width: 35%;
-        height: 35%;
+        width: 30rem;
+        height: 20rem;
 
         display: flex;
         flex-direction: column;
