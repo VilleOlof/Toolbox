@@ -193,6 +193,8 @@
 
                 inPoint += currentTimeline.GetStartFrame();
                 outPoint += currentTimeline.GetStartFrame();
+
+                inPoint += 1 //marker Duration frame
             }
         }
 
