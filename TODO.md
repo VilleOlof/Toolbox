@@ -23,3 +23,4 @@ And list of priorities.
 ## Bugs
 
 - Modules get stuck when dragging a module into a different sized containers drag corner
+- Things get a bit weird when switching projects while having the moduleView open (or even just switching timeline in some cases)

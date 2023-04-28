@@ -149,8 +149,8 @@
                 {
                     name: "Clip Color",
                     type: "dropdown",
-                    value: "Blue",
-                    dropdownOptions: Object.keys(ResolveEnums.ClipColor),
+                    value: "None",
+                    dropdownOptions: Object.keys(ResolveEnums.ClipColor).concat("None"),
                 },
                 {
                     name: "Track (If Timeline)",
@@ -161,7 +161,41 @@
                     name: "Media Bin Name |?",
                     type: "string",
                     value: "Content",
-                }
+                },
+            ],
+            Minimized: false,
+            UUID: ""
+        },
+        {
+            name: "From Mediapool",
+            function: "Import From Mediapool",
+            values: [
+                {
+                    name: "Clip Name (Incl. Ext)",
+                    type: "string",
+                    value: "New Clip.mp4",
+                },
+                {
+                    name: "Bin Name",
+                    type: "string",
+                    value: "Content",
+                },
+                {
+                    name: "Track",
+                    type: "number",
+                    value: 1,
+                },
+                {
+                    name: "Start Frame",
+                    type: "number",
+                    value: 0,
+                },
+                {
+                    name: "Origin Frame",
+                    type: "dropdown",
+                    value: "Relative",
+                    dropdownOptions: ["Relative", "Start"]
+                },
             ],
             Minimized: false,
             UUID: ""
@@ -187,6 +221,19 @@
         {
             name: "Add Bin",
             function: "Add Bin",
+            values: [
+                {
+                    name: "Name",
+                    type: "string",
+                    value: "New Bin",
+                }
+            ],
+            Minimized: false,
+            UUID: ""
+        },
+        {
+            name: "Goto Bin",
+            function: "Goto Bin",
             values: [
                 {
                     name: "Name",
@@ -296,6 +343,30 @@
                     name: "Lock",
                     type: "boolean",
                     value: true,
+                }
+            ],
+            Minimized: false,
+            UUID: ""
+        },
+        {
+            name: "Rename Track",
+            function: "Rename Track",
+            values: [
+                {
+                    name: "Track",
+                    type: "number",
+                    value: 1,
+                },
+                {
+                    name: "Type",
+                    type: "dropdown",
+                    value: "Video",
+                    dropdownOptions: Object.keys(ResolveEnums.TrackType),
+                },
+                {
+                    name: "New Name",
+                    type: "string",
+                    value: "New Track"
                 }
             ],
             Minimized: false,
@@ -630,7 +701,8 @@
             }
 
             const importedItem = currentMediapool.ImportMedia([defaultPath])[0];
-            importedItem.SetClipColor(clipColor);
+            /* @ts-ignore //'None' is added */
+            if (clipColor != 'None') importedItem.SetClipColor(clipColor);
 
             if (importType == "Timeline") {
                 let recordFrame: number;
@@ -654,6 +726,57 @@
 
                 currentMediapool.AppendToTimeline([clipInfo]);
             }
+        },
+        //Maybe make better? carries a lot of similar code to 'Import Media' above
+        "Import From Mediapool": (clipName: string, binName: string, track: number, startFrame: number, originFrame: 'Relative' | 'Start') => {
+            const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+            const currentMediapool = ResolveFunctions.GetCurrentProject().GetMediaPool();
+
+            if (binName != "") {
+                let bin = ResolveFunctions.GetMediaFolder(binName);
+                if (bin == null) {
+                    bin = currentMediapool.AddSubFolder(currentMediapool.GetRootFolder(), binName);
+                }
+                currentMediapool.SetCurrentFolder(bin);
+            }
+            else {
+                currentMediapool.SetCurrentFolder(currentMediapool.GetRootFolder());
+            }
+
+            const currentItems = currentMediapool.GetCurrentFolder().GetClipList();
+            let importedItem: MediaPoolItem;
+
+            for (let i = 0; i < currentItems.length; i++) {
+                if (currentItems[i].GetName() == clipName) {
+                    importedItem = currentItems[i];
+                    break;
+                }
+            }
+            if (!importedItem) {
+                console.warn("No clip with name " + clipName + " found in bin " + binName);
+                return;
+            }
+
+            let recordFrame: number;
+            if (originFrame == "Relative") {
+                const playhead = ResolveFunctions.ConvertTimecodeToFrames(currentTimeline.GetCurrentTimecode());
+                recordFrame = playhead + startFrame;
+                console.log(recordFrame, playhead, startFrame);
+            }
+            else {
+                recordFrame = currentTimeline.GetStartFrame() + startFrame;
+            }
+
+            const clipInfo: ClipInfo = {
+                mediaPoolItem: importedItem,
+                startFrame: parseInt(importedItem.GetClipProperty("Start") as string),
+                endFrame: parseInt(importedItem.GetClipProperty("End") as string),
+
+                trackIndex: track,
+                recordFrame: recordFrame
+            }
+
+            currentMediapool.AppendToTimeline([clipInfo]);
         },
         "Duplicate Clip": (originTrack: number, destTrack: number, frameOffset: number) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
@@ -698,6 +821,20 @@
             const ParentFolder = mediapool.GetRootFolder();
 
             mediapool.AddSubFolder(ParentFolder, binName);
+        },
+        "Goto Bin": (binName: string) => {
+            const currentMediapool = ResolveFunctions.GetCurrentProject().GetMediaPool();
+
+            if (binName != "") {
+                let bin = ResolveFunctions.GetMediaFolder(binName);
+                if (bin == null) {
+                    bin = currentMediapool.AddSubFolder(currentMediapool.GetRootFolder(), binName);
+                }
+                currentMediapool.SetCurrentFolder(bin);
+            }
+            else {
+                currentMediapool.SetCurrentFolder(currentMediapool.GetRootFolder());
+            }
         },
         "Add Marker": (markerName: string, markerColor: ResolveEnums.MarkerColor, markerDuration: number, markerPosition: number, usePlayhead: boolean) => { // Works but only with certain colors, only (Blue, Green, Pink, Purple, Yellow), The rest 11 wont appear
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
@@ -759,6 +896,15 @@
                     currentTimeline.SetTrackLock(trackType, i, Lock);
                 }
             }
+        },
+        "Rename Track": (track: number, trackType: ResolveEnums.TrackType, newName: string) => {
+            const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+            if (!currentTimeline) {
+                console.warn("No timeline selected");
+                return;
+            }
+
+            currentTimeline.SetTrackName(trackType, track, newName);
         },
         "Delay": (seconds: number) => {
             const start = Date.now();
