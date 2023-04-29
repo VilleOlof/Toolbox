@@ -576,11 +576,7 @@ export class ResolveFunctions {
 
         //check if tracks is an array, if not, make it an array
         let userInputTracks: number[] = []
-        if (!Array.isArray(tracks)) {
-            for (let i = 0; i < tracks; i++) {
-                userInputTracks.push(i + 1);
-            }
-        }
+        if (!Array.isArray(tracks)) userInputTracks = [tracks];
         else userInputTracks = tracks;
 
         const StartFrame = 0;
