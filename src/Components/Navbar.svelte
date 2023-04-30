@@ -139,7 +139,6 @@
 
 <style lang="scss">
     @use '../scss/Flex';
-    @use '../scss/Variables' as vars;
     @use '../scss/Animation';
     @use '../scss/Colors';
 

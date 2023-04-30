@@ -1,7 +1,6 @@
 import { AppSettings } from "./AppSettings";
 import { Common } from "./Common";
 import { ResolveEnums } from "./ResolveEnums";
-import { ResolveWorkerHandler } from "./ResolveWorkerHandler";
 
 let PluginID: string;
 //const WorkflowIntegration = require('../src/Lib/WorkflowIntegration.node'); //Runs from the /dist directory

@@ -26,3 +26,4 @@ And list of priorities.
 - Things get a bit weird when switching projects while having the moduleView open (or even just switching timeline in some cases)
     - Reload window upon project switch?
 - Update not overwriting Appsettings in some scenario? (Maybe just a one time thing)
+- Update isnt deleting "deleted" when updating (probably?)

@@ -3,6 +3,9 @@ import { Common } from "./Common"
 import { Resolve } from "./DavinciResolve"
 import { ModuleHandler } from "./ModuleHandler"
 
+/**
+ * Used to send statistics to the backend.
+ */
 export namespace Statistics {
     const backendAdress: string = "https://api.olofspelar.se/toolboxStatistics"
 
@@ -15,6 +18,9 @@ export namespace Statistics {
         CountryCode: string,
     }
 
+    /**
+     * Sends statistics to the backend.
+     */
     export function SendStatisticsOnStartup(): void {
         if (!AppSettings.GetSetting("DataCollection", true)) return;
 

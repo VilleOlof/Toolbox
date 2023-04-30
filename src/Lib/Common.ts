@@ -252,6 +252,12 @@ export namespace Common {
          * Gets the home directory of the user.
          * 
          * @returns the home directory
+         * 
+         * @example
+         * ```typescript
+         * // Getting the home directory
+         * let homeDirectory: string = Common.IO.GetHomeDirectory();
+         * ```
          */
         export function GetHomeDirectory(): string {
             return os.homedir();
@@ -262,6 +268,12 @@ export namespace Common {
          * 
          * @param paths the paths to combine
          * @returns the combined path
+         * 
+         * @example
+         * ```typescript
+         * // Combining paths
+         * let path: string = Common.IO.CombinePaths("path", "to", "file");
+         * ```
          */
         export function CombinePaths(...paths: string[]): string {
             return path.join(...paths);
@@ -324,6 +336,12 @@ export namespace Common {
          * Gets the current electron shell.
          * 
          * @returns the current electron shell
+         * 
+         * @example
+         * ```typescript
+         * // Getting the current electron shell
+         * let shell: Electron.Shell = Common.Electron.GetShell();
+         * ```
          */
         export function GetShell(): Shell {
             return electron.shell;
@@ -333,6 +351,12 @@ export namespace Common {
          * Gets Electron
          * 
          * @returns Electron
+         * 
+         * @example
+         * ```typescript
+         * // Getting Electron
+         * let electron: typeof globalThis.Electron.CrossProcessExports = Common.Electron.GetElectron();
+         * ```
          */
         export function GetElectron(): typeof globalThis.Electron.CrossProcessExports {
             return electron;
@@ -342,6 +366,12 @@ export namespace Common {
          * Gets the current electron clipboard.
          * 
          * @returns the current electron clipboard
+         * 
+         * @example
+         * ```typescript
+         * // Getting the current electron clipboard
+         * let clipboard: Electron.Clipboard = Common.Electron.GetClipboard();
+         * ```
          */
         export function GetClipboard(): globalThis.Electron.Clipboard {
             return electron.clipboard;
@@ -353,6 +383,14 @@ export namespace Common {
          * 
          * @param key the key to register
          * @param callback the callback to execute when the key is pressed
+         * 
+         * @example
+         * ```typescript
+         * // Registering a shortcut
+         * Common.Electron.RegisterShortcut("F1", () => {
+         *    console.log("F1 was pressed!");
+         * });
+         * ```
          */
         export function RegisterShortcut(key: globalThis.Electron.Accelerator, callback: () => void): void {
             if (AppSettings.GetSetting("DisabledShortcuts", false) && key.toString() !== AppSettings.GetSetting("DisableShortcut-Keybind", "F1")) {
@@ -370,6 +408,12 @@ export namespace Common {
          * Unregisters a shortcut.
          * 
          * @param key the key to unregister
+         * 
+         * @example
+         * ```typescript
+         * // Unregistering a shortcut
+         * Common.Electron.UnregisterShortcut("F1");
+         * ```
          */
         export function UnregisterShortcut(key: globalThis.Electron.Accelerator): void {
             electron.ipcRenderer.invoke('keybind:unset', key);
@@ -379,6 +423,12 @@ export namespace Common {
 
         /**
          * Unregisters all shortcuts.
+         * 
+         * @example
+         * ```typescript
+         * // Unregistering all shortcuts
+         * Common.Electron.UnregisterAllShortcuts();
+         * ```
          */
         export function UnregisterAllShortcuts(): void {
             electron.ipcRenderer.invoke('keybind:unsetAll');
@@ -389,6 +439,12 @@ export namespace Common {
 
         /**
          * Registers all callback saved shortcuts.
+         * 
+         * @example
+         * ```typescript
+         * // Registering all saved shortcuts
+         * Common.Electron.RegisterAllShortcuts();
+         * ```
          */
         export function RegisterAllShortcuts(): void {
             for (const key in Callbacks) {
@@ -404,6 +460,12 @@ export namespace Common {
          * @param modifierTwo Modifier two
          * @param key Key
          * @returns the accelerator
+         * 
+         * @example
+         * ```typescript
+         * // Getting a shortcut accelerator
+         * let accelerator: globalThis.Electron.Accelerator = Common.Electron.GetShortCutAccelerator("Ctrl", "Shift", "F1");
+         * ```
          */
         export function GetShortCutAccelerator(modifierOne: string, modifierTwo: string, key: string): globalThis.Electron.Accelerator {
             return `${modifierOne}${modifierOne ? "+" : ""}${modifierTwo}${modifierTwo ? "+" : ""}${key}`;
@@ -414,6 +476,12 @@ export namespace Common {
          * 
          * @param accelerator the accelerator string
          * @returns the accelerator
+         * 
+         * @example
+         * ```typescript
+         * // Getting a shortcut accelerator from a string
+         * let accelerator: globalThis.Electron.Accelerator = Common.Electron.GetShortCutAcceleratorFromString("Ctrl+Shift+F1");
+         * ```
          */
         export function GetShortCutAcceleratorFromString(accelerator: string): globalThis.Electron.Accelerator {
             return accelerator as globalThis.Electron.Accelerator;
@@ -424,6 +492,12 @@ export namespace Common {
          * 
          * @param accelerator the accelerator to deconstruct
          * @returns the deconstructed accelerator
+         * 
+         * @example
+         * ```typescript
+         * // Deconstructing an accelerator
+         * let deconstructedAccelerator: { modifierOne: string, modifierTwo: string, key: string } = Common.Electron.DeconstructAccelerator("Ctrl+Shift+F1");
+         * ```
          */
         // Not good but works.
         export function DeconstructAccelerator(accelerator: globalThis.Electron.Accelerator): { modifierOne: string, modifierTwo: string, key: string } {
@@ -455,6 +529,14 @@ export namespace Common {
         /**
          * Disables all shortcuts.
          * This function is mostly used just by the plugin but can be used if so wished.
+         * 
+         * @returns the action that was performed
+         * 
+         * @example
+         * ```typescript
+         * // Disabling all shortcuts
+         * let action: string = Common.Electron.DisableAllShortcutsAction();
+         * ```
          */
         export function DisableAllShortcutsAction(): string {
             let disabled: boolean = !AppSettings.GetSetting("DisabledShortcuts", false);
@@ -462,6 +544,12 @@ export namespace Common {
             return disabled ? "Enable" : "Disable";
         }
 
+        /**
+         * The function that is called when the disable all shortcuts button is pressed.
+         * Or when the keyboard icon is pressed.
+         * 
+         * @param UnregisterAllKeybind the keybind that was pressed (optional)
+         */
         export function RegisterShortCutKeybindFunction(UnregisterAllKeybind?: string): void {
             if (AppSettings.GetSetting('Debug')) console.log(`Pressed ${UnregisterAllKeybind ?? 'undefined (called from button)'}: ${AppSettings.GetSetting('DisabledShortcuts')}`);
             DisableAllShortcutsAction();
@@ -482,6 +570,15 @@ export namespace Common {
             if (indicationElement) location.reload();
         }
 
+        /**
+         * Registers the shortcut to disable all shortcuts.
+         * 
+         * @example
+         * ```typescript
+         * // Registering the shortcut to disable all shortcuts
+         * Common.Electron.RegisterUnregisterShortcut();
+         * ```
+         */
         export function RegisterUnregisterShortcut(): void {
             const UnregisterAllKeybind = AppSettings.GetSetting("DisableShortcut-Keybind", "F1");
 
@@ -544,6 +641,12 @@ export namespace Common {
      * @param string the string to format
      * @param values the values to format the string with
      * @returns the formatted string
+     * 
+     * @example
+     * ```typescript
+     * // Formatting a string
+     * let formattedString: string = Common.FormatString("Hello {0}", "World");
+     * ```
      */
     export function FormatString(string: string, ...values: string[]) {
         for (let index: number = 0; index < values.length; index++) {
@@ -556,6 +659,12 @@ export namespace Common {
      * Gets the OS node module.
      * 
      * @returns the OS node module
+     * 
+     * @example
+     * ```typescript
+     * // Getting the OS node module
+     * let os: typeof os = Common.GetOSModule();
+     * ```
      */
     export function GetOSModule(): typeof os {
         return os;
@@ -565,6 +674,12 @@ export namespace Common {
      * Gets the adm-zip node module.
      * 
      * @returns the adm-zip node module
+     * 
+     * @example
+     * ```typescript
+     * // Getting the adm-zip node module
+     * let admZip: typeof AdmZip = Common.GetAdmZipModule();
+     * ```
      */
     export function GetAdmZipModule() {
         return require('adm-zip');
@@ -574,6 +689,12 @@ export namespace Common {
      * Pings the life cycle in the main electron process.
      * 
      * @param onlyClear If it should only clear a timeOut and not set a new one
+     * 
+     * @example
+     * ```typescript
+     * // Pinging the life cycle
+     * Common.LifeCyclePing(false);
+     * ```
      */
     export function LifeCyclePing(onlyClear: boolean): void {
         Common.Electron.GetElectron().ipcRenderer.invoke('lifeCycle:ping', onlyClear);

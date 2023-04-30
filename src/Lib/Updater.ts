@@ -4,6 +4,9 @@ import { Common } from "./Common";
 
 const AdmZip = require("adm-zip");
 
+/**
+ * Used to update the plugin.
+ */
 export namespace Updater {
 
     const RepoZIPUrl: string = 'https://github.com/VilleOlof/Toolbox/archive/refs/heads/main.zip';
@@ -15,6 +18,11 @@ export namespace Updater {
         localVersion: string
     }
 
+    /**
+     * Checks if there is an update available.
+     * 
+     * @returns {Promise<UpdateReturn>} Returns an object with information about the update.
+     */
     export async function CheckForUpdate(): Promise<UpdateReturn> {
         const githubVersion: string = (await (await fetch('https://raw.githubusercontent.com/VilleOlof/Toolbox/main/AppSettings.json')).json()).Version;
         const localVersion: string = AppSettings.GetSetting("Version");
@@ -26,6 +34,13 @@ export namespace Updater {
         };
     }
 
+    /**
+     * Checks if the new version is higher than the old version.
+     * 
+     * @param newVersion The new version.
+     * @param oldVersion The old version.
+     * @returns {boolean} Returns true if the new version is higher than the old version.
+     */
     function CheckVersionNumbers(newVersion: string, oldVersion: string): boolean {
         const newVersionNumbers: string[] = newVersion.split('.');
         const oldVersionNumbers: string[] = oldVersion.split('.');
@@ -39,6 +54,9 @@ export namespace Updater {
         return false;
     }
 
+    /**
+     * Downloads and unzips the update.
+     */
     export function DownloadUpdate(): void {
         const curlCommand: ChildProcess = Common.ExecuteCommand(`curl.exe -L ${RepoZIPUrl} -o "${root}../Toolbox.zip"`, `${root}../`);
         curlCommand.stdout.on('data', (data) => {
@@ -51,6 +69,11 @@ export namespace Updater {
         });
     }
 
+    /**
+     * Unzips the update.  
+     * Deletes the zip file after unzipping.
+     * Builds the plugin.
+     */
     function UnzipUpdate(): void {
         const zipFile: string = `${root}../Toolbox.zip`
 
@@ -63,6 +86,10 @@ export namespace Updater {
         BuildPlugin();
     }
 
+    /**
+     * Builds the plugin.  
+     * Relaunches the plugin.
+     */
     function BuildPlugin(): void {
         const buildCommand: ChildProcess = Common.ExecuteCommand(`npm run build`, root);
         buildCommand.stdout.on('data', (data) => {
@@ -75,6 +102,9 @@ export namespace Updater {
         });
     }
 
+    /**
+     * Relaunches the plugin.
+     */
     function RelaunchPlugin(): void {
         AppSettings.SetSetting('WindowSize', {
             width: window.innerWidth,
