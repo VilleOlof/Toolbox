@@ -4,7 +4,7 @@ const path = require('path')
 const os = require('os')
 const fs = require('fs')
 
-const AppSettings = require('../AppSettings.json')
+const AppSettings = JSON.parse(fs.readFileSync(__dirname + '/../AppSettings.json'));
 AppSettings.WindowSize = AppSettings.WindowSize || {width: 900, height: 825};
 AppSettings.WindowPosition = AppSettings.WindowPosition || {x: 250, y: 250};
 fs.writeFileSync(path.join(__dirname, '../AppSettings.json'), JSON.stringify(AppSettings, null, 4))

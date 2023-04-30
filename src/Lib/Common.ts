@@ -224,7 +224,7 @@ export namespace Common {
          * ```
          */
         export function Dialog(options: FileDialogOptions): string[] { 
-            Common.LifeCyclePing(true);
+            Common.LifeCyclePing(true); // Prevents the application from auto-closing
             /* @ts-ignore */
             const result = electron.remote.dialog.showOpenDialogSync(options);
             if (!result) return [];

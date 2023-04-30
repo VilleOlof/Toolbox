@@ -78,7 +78,6 @@ export namespace Updater {
         const zipFile: string = `${root}../Toolbox.zip`
 
         const zip = new AdmZip(zipFile);
-        //const entryFolder = zip.getEntries()[0];
         zip.extractAllTo(`${root}../`, true);
 
         Common.IO.DeleteFile(zipFile);
@@ -106,17 +105,6 @@ export namespace Updater {
      * Relaunches the plugin.
      */
     function RelaunchPlugin(): void {
-        AppSettings.SetSetting('WindowSize', {
-            width: window.innerWidth,
-            height: window.innerHeight
-        })
-
-        const position = Common.Electron.GetCurrentWindow().getPosition();
-        AppSettings.SetSetting('WindowPosition', {
-            x: position[0],
-            y: position[1]
-        });
-
         const app = Common.Electron.GetApp();
 
         app.relaunch();
