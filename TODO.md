@@ -8,7 +8,6 @@ And list of priorities.
 - Improve Dev Version (And make it public)  
 - Export/Import AppSettings/Data/Settings *(Move to own folder?)*  
 - Updater.js (Check for updates, and update source files)  
-- Shutdown Plugin if Davinci Is closed (If possible, BG thread, ping pong?)  
 - Update DataStore to be more like Settings in terms of data loading.  
 - Add an indicator in moduleView that shortcuts are enabled/disabled.
 
@@ -26,5 +25,5 @@ And list of priorities.
 
 - Modules get stuck when dragging a module into a different sized containers drag corner
 - Things get a bit weird when switching projects while having the moduleView open (or even just switching timeline in some cases)
+    - Reload window upon project switch?
 - Update not overwriting Appsettings in some scenario? (Maybe just a one time thing)
-- VideoProgress and the bottom bar is not working correctly with markers?
