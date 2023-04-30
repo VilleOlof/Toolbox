@@ -28,12 +28,26 @@
         Notes = "";
     }
 
+    function HandleKeypress(event: KeyboardEvent): void {
+        if (event.key === "Tab") {
+            event.preventDefault();
+
+            const target = event.target as HTMLTextAreaElement;
+            const start = target.selectionStart;
+            const end = target.selectionEnd;
+
+            target.value = target.value.substring(0, start) + "\t" + target.value.substring(end);
+
+            target.selectionStart = target.selectionEnd = start + 1;
+        }
+    }
+
 </script>
 
 
 <main id={componentID}>
     <p>Notes</p>
-    <textarea name="Notes" id="Notes" cols="15" rows={_Height} bind:value={Notes}></textarea>
+    <textarea name="Notes" id="Notes" cols="15" rows={_Height} bind:value={Notes} on:keydown={HandleKeypress}></textarea>
 </main>
 
 

@@ -58,7 +58,7 @@
             const startMarker: ResolveFunctions.CheckMarker = ResolveFunctions.CheckIfMarkerExists(markerData, true);
             if (!startMarker.Exists) return startFrame;
 
-            return startMarker.MarkerData.frameId;
+            return startMarker.MarkerData.frameId + currentTimeline.GetStartFrame();
         }
 
         return startFrame;
@@ -75,7 +75,7 @@
             const endMarker: ResolveFunctions.CheckMarker = ResolveFunctions.CheckIfMarkerExists(markerData, true);
             if (!endMarker.Exists) return endFrame;
 
-            return endMarker.MarkerData.frameId;
+            return endMarker.MarkerData.frameId + currentTimeline.GetStartFrame();
         }
 
         return endFrame;
@@ -91,7 +91,8 @@
         const startFrame: number = GetStartFrame();
         const endFrame: number = GetEndFrame();
 
-        const currentFrame: number = ResolveFunctions.ConvertTimecodeToFrames(currentTimecode) - currentTimeline.GetStartFrame();
+        let currentFrame: number = ResolveFunctions.ConvertTimecodeToFrames(currentTimecode)
+        currentFrame -= (startFrame != 0 ? startFrame : currentTimeline.GetStartFrame());
 
         const totalFrames: number = endFrame - startFrame;
 
@@ -124,9 +125,10 @@
 
         let framerate = ResolveFunctions.GetTimelineFramerate(currentTimeline);
         const startFrame: number = GetStartFrame();
-        const endFrame: number = VideoProgressTargetMinutes * 60 * framerate;
+        const endFrame: number = ((VideoProgressTargetMinutes * 60) * framerate) + startFrame;
 
-        const currentFrame: number = ResolveFunctions.ConvertTimecodeToFrames(currentTimecode) - currentTimeline.GetStartFrame();
+        let currentFrame: number = ResolveFunctions.ConvertTimecodeToFrames(currentTimecode)
+        currentFrame -= (startFrame != 0 ? startFrame : currentTimeline.GetStartFrame());
 
         const totalFrames: number = endFrame - startFrame;
 
