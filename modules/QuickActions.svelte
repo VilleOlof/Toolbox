@@ -82,6 +82,11 @@
                     type: "dropdown",
                     value: "Video",
                     dropdownOptions: Object.keys(ResolveEnums.TrackType),
+                },
+                {
+                    name: "Add Until X",
+                    type: "number",
+                    value: -1
                 }
             ],
             Minimized: false,
@@ -735,15 +740,26 @@
     ]
 
     let ActionFunctions = {
-        "Add Track": (trackName: string, trackType: ResolveEnums.TrackType) => {
+        "Add Track": (trackName: string, trackType: ResolveEnums.TrackType, addUntilX: number) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
                 return;
             }
 
-            if (trackType.toLowerCase() == ResolveEnums.TrackType.Audio) currentTimeline.AddTrack(trackType.toLowerCase(), "stereo")
-            else currentTimeline.AddTrack(trackType.toLowerCase());
+            if (addUntilX != -1) {
+                for (let i = 0; i < addUntilX; i++) {
+                    const trackCount = currentTimeline.GetTrackCount(trackType);
+                    if (trackCount <= i) {
+                        if (trackType.toLowerCase() == ResolveEnums.TrackType.Audio) currentTimeline.AddTrack(trackType.toLowerCase(), "stereo")
+                        else currentTimeline.AddTrack(trackType.toLowerCase());
+                    }
+                }
+            }
+            else {
+                if (trackType.toLowerCase() == ResolveEnums.TrackType.Audio) currentTimeline.AddTrack(trackType.toLowerCase(), "stereo")
+                else currentTimeline.AddTrack(trackType.toLowerCase());
+            }
 
             const trackCount = currentTimeline.GetTrackCount(trackType);
             currentTimeline.SetTrackName(trackType, trackCount, trackName);
