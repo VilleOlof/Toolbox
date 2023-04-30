@@ -236,6 +236,11 @@
             AppQuit();
         }
     }
+
+    function OpenFilePath(): void {
+        if (!CurrentProfile.FilePath) return;
+        Common.IO.OpenFolder(CurrentProfile.FilePath);
+    }
 </script>
 
 
@@ -270,7 +275,7 @@
         </div>
 
         <div id="folder" class=renderOption>
-            <label for="filePathInput">Folder</label>
+            <label for="filePathInput" on:click={OpenFilePath} on:keydown={OpenFilePath}>Folder</label>
             <div>
                 <input type="text" id="folderInput" class=inputTextStyle bind:value={CurrentProfile.FilePath}>
                 <button id="folderLocationButton" class=buttonStyle on:click={ChangeFolder}>.../</button>
@@ -472,6 +477,16 @@
         background-color: Colors.$BackgroundColor;
 
         margin: 0.5rem auto;
+    }
+
+    #folder > label {
+        &:hover {
+            cursor: pointer;
+
+            color: darken(Colors.$TextColor, 25%)
+        }
+
+        transition: color 0.2s;
     }
 
 </style>

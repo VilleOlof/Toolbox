@@ -8,7 +8,6 @@ And list of priorities.
 - Improve Dev Version (And make it public)  
 - Import AppSettings/Data/Settings *(Move to own folder?)*  
 - Update DataStore to be more like Settings in terms of data loading.  
-- Fix lifeCycle / Electron ping pong to make it not close on dialogs and such.
 
 ## Other Stuff  
 
