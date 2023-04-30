@@ -6,10 +6,9 @@ And list of priorities.
 ## High Priority  
 
 - Improve Dev Version (And make it public)  
-- Export/Import AppSettings/Data/Settings *(Move to own folder?)*  
-- Updater.js (Check for updates, and update source files)  
+- Import AppSettings/Data/Settings *(Move to own folder?)*  
 - Update DataStore to be more like Settings in terms of data loading.  
-- Add an indicator in moduleView that shortcuts are enabled/disabled.
+- Fix lifeCycle / Electron ping pong to make it not close on dialogs and such.
 
 ## Other Stuff  
 

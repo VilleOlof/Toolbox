@@ -13,9 +13,9 @@ import { GlobalSettings } from './Lib/Settings'
 GlobalSettings.LoadGlobalSettings();
 
 //Keeping the plugin, otherwise we close the plugin.
-setInterval(async () => {
-  await Common.Electron.GetElectron().ipcRenderer.invoke('lifeCycle:ping');
-}, 1000);
+// setInterval(async () => {
+//   await Common.Electron.GetElectron().ipcRenderer.invoke('lifeCycle:ping');
+// }, 1000);
 
 //This specific line is somehow always complaining.
 //but it still works and its the default svelte app template.

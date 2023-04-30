@@ -559,4 +559,13 @@ export namespace Common {
     export function GetOSModule(): typeof os {
         return os;
     }
+
+    /**
+     * Gets the adm-zip node module.
+     * 
+     * @returns the adm-zip node module
+     */
+    export function GetAdmZipModule() {
+        return require('adm-zip');
+    }
 }

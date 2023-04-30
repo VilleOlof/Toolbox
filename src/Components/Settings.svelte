@@ -271,6 +271,33 @@
         AppSettings.SetSetting('MirrorFlipped', !MirrorFlipped);
     }
     let DisableKeybindTextPrefix = AppSettings.GetSetting("DisabledShortcuts", false) ? "Enable" : "Disable";
+
+    const ExportDataToZIP = () => {
+        const filesToZIP = ["Data.json", "Settings.json"];
+
+        const AdmZip = Common.GetAdmZipModule();
+        const zip = new AdmZip();
+
+        //prompt user for save location
+        const saveLocation = Common.IO.Dialog({
+            title: "Save Location",
+            defaultPath: `${__dirname}../`,
+            buttonLabel: "Save",
+            properties: ['openDirectory']
+        })[0];
+        if (!saveLocation) return;
+
+        //add files to zip
+        for (const file of filesToZIP) {
+            const filePath = path.join(__dirname, '..', file);
+            zip.addLocalFile(filePath);
+        }
+
+        //write zip to disk
+        if (AppSettings.GetSetting('Debug')) console.log(`Writing zip to ${saveLocation}`);
+        zip.writeZip(path.join(saveLocation, 'ToolboxData.zip'));
+    }
+
     // ------------
     function GetSettingInstances(): {[key: string]: Settings} {
         const settingInstances: {[key: string]: Settings} = {};
@@ -305,6 +332,7 @@
             <button class="btnStyle" on:click={ClearColumns}>Clear All Columns</button>
             <button class="btnStyle" on:click={OpenModuleFolder}>Open Modules Folder</button>
             <button class="btnStyle" on:click={() => { DisableKeybindTextPrefix = Common.Electron.DisableAllShortcutsAction() }}>{DisableKeybindTextPrefix} Shortcuts</button>
+            <button class="btnStyle" on:click={ExportDataToZIP}>Export Data</button>
         </div>
     </div>
     
