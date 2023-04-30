@@ -60,14 +60,16 @@ ipcMain.handle('keybind:unsetAll', (event) => {
     globalShortcut.unregisterAll();
 });
 
-// let oldTimeout = null;
-// ipcMain.handle('lifeCycle:ping', (event) => {
-//     clearTimeout(oldTimeout);
+let oldTimeout = null;
+ipcMain.handle('lifeCycle:ping', (event, onlyClear) => {
+    clearTimeout(oldTimeout);
+
+    if (onlyClear) return;
     
-//     oldTimeout = setTimeout(() => {
-//         app.quit();
-//     }, 7000);
-// });
+    oldTimeout = setTimeout(() => {
+        app.quit();
+    }, 7000);
+});
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

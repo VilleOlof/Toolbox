@@ -55,8 +55,8 @@ export namespace Updater {
         const zipFile: string = `${root}../Toolbox.zip`
 
         const zip = new AdmZip(zipFile);
-        const entryFolder = zip.getEntries()[0];
-        zip.extractEntryTo(entryFolder, `${root}../`, true, true);
+        //const entryFolder = zip.getEntries()[0];
+        zip.extractAllTo(`${root}../`, true);
 
         Common.IO.DeleteFile(zipFile);
 

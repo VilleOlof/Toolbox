@@ -224,6 +224,7 @@ export namespace Common {
          * ```
          */
         export function Dialog(options: FileDialogOptions): string[] { 
+            Common.LifeCyclePing(true);
             /* @ts-ignore */
             const result = electron.remote.dialog.showOpenDialogSync(options);
             if (!result) return [];
@@ -567,5 +568,14 @@ export namespace Common {
      */
     export function GetAdmZipModule() {
         return require('adm-zip');
+    }
+
+    /**
+     * Pings the life cycle in the main electron process.
+     * 
+     * @param onlyClear If it should only clear a timeOut and not set a new one
+     */
+    export function LifeCyclePing(onlyClear: boolean): void {
+        Common.Electron.GetElectron().ipcRenderer.invoke('lifeCycle:ping', onlyClear);
     }
 }
