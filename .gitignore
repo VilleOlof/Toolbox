@@ -3,4 +3,5 @@ dist/
 docs/
 /Data.json
 /Settings.json
+/AppSettings.json
 InstallerBuilds/

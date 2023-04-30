@@ -273,7 +273,7 @@
     let DisableKeybindTextPrefix = AppSettings.GetSetting("DisabledShortcuts", false) ? "Enable" : "Disable";
 
     const ExportDataToZIP = () => {
-        const filesToZIP = ["Data.json", "Settings.json"];
+        const filesToZIP = ["Data.json", "Settings.json", "AppSettings.json"];
 
         const AdmZip = Common.GetAdmZipModule();
         const zip = new AdmZip();
