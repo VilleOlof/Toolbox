@@ -17,7 +17,7 @@ export let Resolve: Resolve;
  * This should be called by the Plugin at startup
  */
 export function InitPlugin(): boolean {
-    PluginID = AppSettings.GetSetting("PluginID", "");
+    PluginID = AppSettings.GetMetadata().PluginID;
 
     const isInitialized = WorkflowIntegration.Initialize(PluginID);
     console.log(`Plugin initialized: ${isInitialized}`);
@@ -289,7 +289,7 @@ export class ResolveFunctions {
             ResolveFunctions.ForceUpdateCurrentProject();
             ResolveFunctions.ForceUpdateCurrentTimeline();
 
-            let DelaySeconds: number = AppSettings.GetNestedSetting(1, "ResolveFunctions", "UpdateLoop_DelaySeconds");
+            let DelaySeconds: number = AppSettings.GetSetting("UpdateLoop_DelaySeconds", 4);
             this._DataLoop = ResolveFunctions.UpdateDataLoop(DelaySeconds);
         }
 

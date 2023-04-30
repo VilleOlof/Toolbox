@@ -17,6 +17,7 @@ export class AppSettings {
      * The AppSettings.json file
      */
     private static AppSettingsJSON: any;
+    private static Metadata: AppSettings.Metadata;
 
     /**
      * Initialize the AppSettings class
@@ -31,6 +32,11 @@ export class AppSettings {
 
         this.AppSettingsJSON = Common.IO.ReadFile(
             Common.IO.GetRootFolder() + "/../AppSettings.json", 
+            true
+        );
+
+        this.Metadata = Common.IO.ReadFile(
+            Common.IO.GetRootFolder() + "/../Metadata.json",
             true
         );
 
@@ -54,6 +60,7 @@ export class AppSettings {
 
     /**
      * Get a setting
+     * Sets the value to the default value if the setting is not found
      * 
      * @param key The key of the setting
      * @param defaultValue The default value if the setting is not found
@@ -66,25 +73,8 @@ export class AppSettings {
      * ```
      */
     public static GetSetting<T>(key: string, defaultValue?: T): T {
+        if (!this.AppSettingsJSON[key]) this.SetSetting(key, defaultValue); 
         return this.AppSettingsJSON[key] ?? defaultValue;
-    }
-
-    /**
-     * Get a nested setting
-     * 
-     * @param defaultValue The default value if the setting is not found
-     * @param key The key(s) of the setting
-     * @returns {T} The setting
-     */
-    public static GetNestedSetting<T>(defaultValue?: T, ...key: string[]): T {
-        let value = this.AppSettingsJSON;
-        for (const k of key) {
-            value = value[k];
-            if (value === undefined) {
-                return defaultValue;
-            }
-        }
-        return <T>value;
     }
 
     /**
@@ -108,6 +98,29 @@ export class AppSettings {
             this.AppSettingsJSON, 
             true
         );
+    }
+
+    /**
+     * Get the metadata
+     * 
+     * @returns {this.Metadata} The metadata
+     */
+    public static GetMetadata(): any {
+        return this.Metadata;
+    }
+}
+
+/**
+ * AppSettings namespace
+ */
+export namespace AppSettings {
+
+    /**
+     * AppSettings metadata
+     */
+    export type Metadata = {
+        PluginID: string,
+        Version: string,
     }
 }
 

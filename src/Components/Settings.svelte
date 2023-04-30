@@ -294,7 +294,7 @@
         }
 
         //write zip to disk
-        if (AppSettings.GetSetting('Debug')) console.log(`Writing zip to ${saveLocation}`);
+        if (AppSettings.GetSetting('Debug', false)) console.log(`Writing zip to ${saveLocation}`);
         zip.writeZip(path.join(saveLocation, 'ToolboxData.zip'));
     }
 
@@ -378,7 +378,7 @@
 
 <div id="cornerText">
     <p>Made By: VilleOlof</p>
-    <p>Version: {AppSettings.GetSetting('Version')}</p>
+    <p>Version: {AppSettings.GetMetadata().Version}</p>
     <p id=cornerGithub on:click={GithubEvent} on:keydown={GithubEvent}>
         Found a bug? Have a suggestion? <br />
         Create an issue on the Github page!

@@ -251,7 +251,7 @@ npm run build
 This will install all the dependencies and build the project.  
 
 You will also need to create two files in the root directory of the project.  
-`./Data.json` and `./Settings.json`  
+`./Data.json`, `./AppSettings.json` and `./Settings.json`  
 And both should have the content `{}` inside them.  
 
 And then you can run the plugin inside Davinci Resolve:  

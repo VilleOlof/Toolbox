@@ -43,7 +43,7 @@
 </main>
 
 <div id=shortcutsEnabledIndicator transition:fade>
-    <img src={`../src/assets/Keyboard${AppSettings.GetSetting('DisabledShortcuts') ? 'Off' : 'On'}.svg`} alt="Shortcuts Enabled"
+    <img src={`../src/assets/Keyboard${AppSettings.GetSetting('DisabledShortcuts', true) ? 'Off' : 'On'}.svg`} alt="Shortcuts Enabled"
         on:click={KeyboardButton}
         on:keydown={KeyboardButton}
     >

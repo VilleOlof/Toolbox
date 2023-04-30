@@ -29,7 +29,7 @@ export namespace Statistics {
             Type: "startup",
             ModulesUsed: Object.keys(ModuleHandler.RegisteredModules),
             ResolveVersion: Resolve.GetVersionString(),
-            ToolboxVersion: AppSettings.GetSetting('Version', ""),
+            ToolboxVersion: AppSettings.GetMetadata().Version,
             OS: `${os.type()}-${os.platform()}`,
             CountryCode: Common.Electron.GetApp().getLocaleCountryCode(),
         }

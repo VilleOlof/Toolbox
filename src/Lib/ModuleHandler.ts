@@ -132,7 +132,7 @@ export namespace ModuleHandler {
     }
 
     export function RegisterModule(moduleName: string, componentSize: ComponentSize, description?: string): void {
-        if (AppSettings.GetSetting<boolean>('Debug')) console.log("Registering module: " + moduleName);
+        if (AppSettings.GetSetting<boolean>('Debug', false)) console.log("Registering module: " + moduleName);
 
         let moduleDiv = document.getElementById(moduleName);
         moduleDiv.classList.add("module");

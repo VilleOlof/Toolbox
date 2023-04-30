@@ -19,13 +19,13 @@
         if (ShowSettings) {
             if (!moduleViewComponent) return;
 
-            if (AppSettings.GetSetting('Debug')) console.log("destroying moduleView, Opening settings");
+            if (AppSettings.GetSetting('Debug', false)) console.log("destroying moduleView, Opening settings");
             moduleViewComponent.$destroy();
         }
         else {
             if (!settingComponent) return;
 
-            if (AppSettings.GetSetting('Debug')) console.log("destroying settings, Opening moduleView");
+            if (AppSettings.GetSetting('Debug', false)) console.log("destroying settings, Opening moduleView");
             settingComponent.$destroy();
         }
     });

@@ -25,7 +25,7 @@ export namespace Updater {
      */
     export async function CheckForUpdate(): Promise<UpdateReturn> {
         const githubVersion: string = (await (await fetch('https://raw.githubusercontent.com/VilleOlof/Toolbox/main/AppSettings.json')).json()).Version;
-        const localVersion: string = AppSettings.GetSetting("Version");
+        const localVersion: string = AppSettings.GetMetadata().Version;
 
         return {
             updateAvailable: CheckVersionNumbers(githubVersion, localVersion),

@@ -551,7 +551,7 @@ export namespace Common {
          * @param UnregisterAllKeybind the keybind that was pressed (optional)
          */
         export function RegisterShortCutKeybindFunction(UnregisterAllKeybind?: string): void {
-            if (AppSettings.GetSetting('Debug')) console.log(`Pressed ${UnregisterAllKeybind ?? 'undefined (called from button)'}: ${AppSettings.GetSetting('DisabledShortcuts')}`);
+            if (AppSettings.GetSetting('Debug', false)) console.log(`Pressed ${UnregisterAllKeybind ?? 'undefined (called from button)'}: ${AppSettings.GetSetting('DisabledShortcuts', true)}`);
             DisableAllShortcutsAction();
             
             UnregisterAllShortcuts();
