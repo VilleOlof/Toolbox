@@ -4,6 +4,7 @@
     import { AppSettings } from "../Lib/AppSettings";
     import { Common } from "../Lib/Common";
     import { GlobalSettings } from "../Lib/Settings";
+    import { fade } from "svelte/transition";
 
     onMount(async () => {
         GlobalSettings.DisableSettingButton = true; // prevents user from going to settings while modules load.
@@ -33,11 +34,20 @@
         Common.Electron.RegisterUnregisterShortcut();
     });
 
+    const KeyboardButton = () => Common.Electron.RegisterShortCutKeybindFunction()
+
 </script>
 
 <main id=mainColumnContainer>
     <div id="columnContainer"></div>
 </main>
+
+<div id=shortcutsEnabledIndicator transition:fade>
+    <img src={`../src/assets/Keyboard${AppSettings.GetSetting('DisabledShortcuts') ? 'Off' : 'On'}.svg`} alt="Shortcuts Enabled"
+        on:click={KeyboardButton}
+        on:keydown={KeyboardButton}
+    >
+</div>
 
 <style lang="scss">
     @use '../scss/Flex';
@@ -47,6 +57,33 @@
         transform: translateY(3rem);
 
         @include Flex.Container(flex-start, flex-start, column);
+    }
+
+    #shortcutsEnabledIndicator {
+        position: fixed;
+        bottom: 1.5rem;
+        left: 0.5rem;
+
+        width: 2rem;
+        height: 2rem;
+
+        z-index: 2;
+
+        img {
+            width: 100%;
+            height: 100%;
+
+            opacity: 0.5;
+
+            filter: invert(Colors.$IconInvertPercentage);
+
+            transition: filter 0.2s, transform 0.2s;
+
+            &:hover {
+                filter: invert(Colors.$IconInvertPercentage - 40%);
+                transform: scale(1.1);
+            }
+        }
     }
 
     :global(.module) {

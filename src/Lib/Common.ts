@@ -461,22 +461,30 @@ export namespace Common {
             return disabled ? "Enable" : "Disable";
         }
 
+        export function RegisterShortCutKeybindFunction(UnregisterAllKeybind?: string): void {
+            if (AppSettings.GetSetting('Debug')) console.log(`Pressed ${UnregisterAllKeybind ?? 'undefined (called from button)'}: ${AppSettings.GetSetting('DisabledShortcuts')}`);
+            DisableAllShortcutsAction();
+            
+            UnregisterAllShortcuts();
+            const indicationElement = document.querySelector('#shortcutsEnabledIndicator > img') as HTMLImageElement;
+
+            if (AppSettings.GetSetting('DisabledShortcuts', false)) {
+                RegisterUnregisterShortcut();
+                if (indicationElement) indicationElement.src = "../src/assets/KeyboardOff.svg";
+            }
+            else {
+                RegisterAllShortcuts();
+                if (indicationElement) indicationElement.src = "../src/assets/KeyboardOn.svg";
+            }
+
+            //reload if on the moduleView
+            if (indicationElement) location.reload();
+        }
+
         export function RegisterUnregisterShortcut(): void {
             const UnregisterAllKeybind = AppSettings.GetSetting("DisableShortcut-Keybind", "F1");
 
-            RegisterShortcut(UnregisterAllKeybind, () => {
-                if (AppSettings.GetSetting('Debug')) console.log(`Pressed ${UnregisterAllKeybind}: ${AppSettings.GetSetting('DisabledShortcuts')}`);
-                DisableAllShortcutsAction();
-                
-                UnregisterAllShortcuts();
-
-                if (AppSettings.GetSetting('DisabledShortcuts', false)) {
-                    RegisterUnregisterShortcut();
-                }
-                else {
-                    RegisterAllShortcuts();
-                }
-            });
+            RegisterShortcut(UnregisterAllKeybind, () => RegisterShortCutKeybindFunction(UnregisterAllKeybind));
         }
     }
 

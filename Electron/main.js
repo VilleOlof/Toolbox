@@ -66,7 +66,7 @@ ipcMain.handle('lifeCycle:ping', (event) => {
     
     oldTimeout = setTimeout(() => {
         app.quit();
-    }, 3000);
+    }, 7000);
 });
 
 // This method will be called when Electron has finished
