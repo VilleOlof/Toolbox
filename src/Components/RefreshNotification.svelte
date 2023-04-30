@@ -44,9 +44,10 @@
         // @ts-ignore // it thinks that 'remote' is not a property of 'electron'
         const remote = require('electron').remote;
 
+        const bounds = Common.Electron.GetCurrentWindow().getBounds();
         AppSettings.SetSetting('WindowSize', {
-            width: window.innerWidth,
-            height: window.innerHeight
+            width: bounds.width,
+            height: bounds.height
         })
 
         const position = Common.Electron.GetCurrentWindow().getPosition();

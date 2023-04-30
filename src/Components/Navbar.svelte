@@ -12,9 +12,10 @@
     }
 
     const Close = () => {
+        const bounds = Common.Electron.GetCurrentWindow().getBounds();
         AppSettings.SetSetting('WindowSize', {
-            width: window.innerWidth,
-            height: window.innerHeight
+            width: bounds.width,
+            height: bounds.height
         })
 
         const position = Common.Electron.GetCurrentWindow().getPosition();

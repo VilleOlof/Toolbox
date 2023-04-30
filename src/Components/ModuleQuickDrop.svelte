@@ -1,5 +1,6 @@
 <script lang="ts">
     import { AppSettings } from '../Lib/AppSettings';
+    import { Common } from '../Lib/Common';
 
     const fs = require("fs");
     const path = require("path");
@@ -73,9 +74,10 @@
         // @ts-ignore // it thinks that 'remote' is not a property of 'electron'
         const app = require('electron').remote.app;
 
+        const bounds = Common.Electron.GetCurrentWindow().getBounds();
         AppSettings.SetSetting('WindowSize', {
-            width: window.innerWidth,
-            height: window.innerHeight
+            width: bounds.width,
+            height: bounds.height
         })
 
         app.relaunch();

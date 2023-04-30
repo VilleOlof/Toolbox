@@ -5,6 +5,7 @@
     import { AppSettings } from "../Lib/AppSettings";
     import { ModuleHandler } from "../Lib/ModuleHandler";
     import { Common } from "../Lib/Common";
+    import { Updater } from "../Lib/Updater";
 
     const path = require('path');
 
@@ -57,7 +58,7 @@
                 componentSettings.style.display = 'none';
 
                 const arrowIcon = componentContainer.querySelector('.minimizeSettingsIcon') as HTMLImageElement;
-                arrowIcon.src = path.join(__dirname, '../src/assets/arrowUp.svg');
+                arrowIcon.src = path.join(__dirname, '../src/assets/arrowDown.svg');
             }
 
             settingsContainer.appendChild(componentContainer);
@@ -102,7 +103,7 @@
         }
 
         const minimizeSettingsIcon: HTMLImageElement = document.createElement('img');
-        minimizeSettingsIcon.src = path.join(__dirname, '../src/assets/arrowDown.svg');
+        minimizeSettingsIcon.src = path.join(__dirname, '../src/assets/arrowUp.svg');
         minimizeSettingsIcon.classList.add('minimizeSettingsIcon');
 
         let globalSettings = GlobalSettings.SettingsData;
@@ -115,13 +116,13 @@
 
             if (mainSettingsContainer.style.display === 'none') {
                 mainSettingsContainer.style.display = 'block';
-                minimizeSettingsIcon.src = path.join(__dirname, '../src/assets/arrowDown.svg');
+                minimizeSettingsIcon.src = path.join(__dirname, '../src/assets/arrowUp.svg');
 
                 minimizedSettings = minimizedSettings.filter((v) => v !== componentID);
                 globalSettings.Set('MinimizedSettings', minimizedSettings);
             } else {
                 mainSettingsContainer.style.display = 'none';
-                minimizeSettingsIcon.src = path.join(__dirname, '../src/assets/arrowUp.svg');
+                minimizeSettingsIcon.src = path.join(__dirname, '../src/assets/arrowDown.svg');
 ;
                 minimizedSettings.push(componentID);
                 globalSettings.Set('MinimizedSettings', minimizedSettings);
@@ -271,10 +272,9 @@
         AppSettings.SetSetting('MirrorFlipped', !MirrorFlipped);
     }
     let DisableKeybindTextPrefix = AppSettings.GetSetting("DisabledShortcuts", false) ? "Enable" : "Disable";
-
+    
+    const filesToZIP = ["Data.json", "Settings.json", "AppSettings.json"];
     const ExportDataToZIP = () => {
-        const filesToZIP = ["Data.json", "Settings.json", "AppSettings.json"];
-
         const AdmZip = Common.GetAdmZipModule();
         const zip = new AdmZip();
 
@@ -296,6 +296,31 @@
         //write zip to disk
         if (AppSettings.GetSetting('Debug', false)) console.log(`Writing zip to ${saveLocation}`);
         zip.writeZip(path.join(saveLocation, 'ToolboxData.zip'));
+    }
+
+    const ImportDataAsZIP = () => {
+        const AdmZip = Common.GetAdmZipModule();
+        const zip = new AdmZip();
+
+        //prompt user for save location
+        const zipLocation = Common.IO.Dialog({
+            title: "Save Location",
+            defaultPath: `${__dirname}../`,
+            buttonLabel: "Save",
+            filters: [{name: 'ZIP', extensions: ['zip']}],
+            properties: ['openFile']
+        })[0];
+        if (!zipLocation) return;
+
+        //read zip from disk
+        zip.extractAllTo(`${__dirname}../`, true);
+
+        //reload app to apply changes
+        Common.Electron.GetCurrentWindow().reload();
+    }
+
+    const ForceUpdate = () => {
+        Updater.DownloadUpdate();
     }
 
     // ------------
@@ -328,11 +353,17 @@
         </div>
 
         <div id="otherContentBottom">
-            <button class="btnStyle" on:click={MirrorFlipModules}>Mirror Flip Modules</button>
-            <button class="btnStyle" on:click={ClearColumns}>Clear All Columns</button>
-            <button class="btnStyle" on:click={OpenModuleFolder}>Open Modules Folder</button>
-            <button class="btnStyle" on:click={() => { DisableKeybindTextPrefix = Common.Electron.DisableAllShortcutsAction() }}>{DisableKeybindTextPrefix} Shortcuts</button>
-            <button class="btnStyle" on:click={ExportDataToZIP}>Export Data</button>
+            <div>
+                <button class="btnStyle" on:click={MirrorFlipModules}>Mirror Flip Modules</button>
+                <button class="btnStyle" on:click={ClearColumns}>Clear All Columns</button>
+                <button class="btnStyle" on:click={OpenModuleFolder}>Open Modules Folder</button>
+            </div>
+            <div>
+                <!-- <button class="btnStyle" on:click={() => { DisableKeybindTextPrefix = Common.Electron.DisableAllShortcutsAction() }}>{DisableKeybindTextPrefix} Shortcuts</button> -->
+                <button class="btnStyle" on:click={ForceUpdate}>Force Update</button>
+                <button class="btnStyle" on:click={ExportDataToZIP}>Export Data</button>
+                <button class="btnStyle" on:click={ImportDataAsZIP}>Import Data</button>
+            </div>
         </div>
     </div>
     
@@ -527,6 +558,8 @@
 
     #otherContentBottom {
         @extend #otherContentTop;
+
+        flex-direction: column;
     }
     
     #zoomButtons {

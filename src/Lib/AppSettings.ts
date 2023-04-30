@@ -73,7 +73,7 @@ export class AppSettings {
      * ```
      */
     public static GetSetting<T>(key: string, defaultValue?: T): T {
-        if (!this.AppSettingsJSON[key]) this.SetSetting(key, defaultValue); 
+        if (this.AppSettingsJSON[key] === undefined) this.SetSetting(key, defaultValue); 
         return this.AppSettingsJSON[key] ?? defaultValue;
     }
 

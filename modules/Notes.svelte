@@ -39,6 +39,8 @@
             target.value = target.value.substring(0, start) + "\t" + target.value.substring(end);
 
             target.selectionStart = target.selectionEnd = start + 1;
+
+            Notes = target.value;
         }
     }
 

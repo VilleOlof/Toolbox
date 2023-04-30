@@ -24,7 +24,7 @@ export namespace Updater {
      * @returns {Promise<UpdateReturn>} Returns an object with information about the update.
      */
     export async function CheckForUpdate(): Promise<UpdateReturn> {
-        const githubVersion: string = (await (await fetch('https://raw.githubusercontent.com/VilleOlof/Toolbox/main/AppSettings.json')).json()).Version;
+        const githubVersion: string = (await (await fetch('https://raw.githubusercontent.com/VilleOlof/Toolbox/main/Metadata.json')).json()).Version;
         const localVersion: string = AppSettings.GetMetadata().Version;
 
         return {

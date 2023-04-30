@@ -60,9 +60,10 @@ export function PluginCleanUp(): void {
  * @param quitResolve Whether or not to quit Resolve
  */
 export function AppQuit(quitResolve: boolean = false): void {
+    const bounds = Common.Electron.GetCurrentWindow().getBounds();
     AppSettings.SetSetting('WindowSize', {
-        width: window.innerWidth,
-        height: window.innerHeight
+        width: bounds.width,
+        height: bounds.height
     })
 
     const position = Common.Electron.GetCurrentWindow().getPosition();
