@@ -47,8 +47,13 @@
         if (!currentTimeline) return;
 
         const currentProject = ResolveFunctions.GetCurrentProject();
+
+        let tracks: number[] = [];
+        for (let i = 0; i < trackAmount; i++) {
+            tracks.push(i+1);
+        }
         
-        ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, trackAmount, currentTimeline, (item, trackIndex) => {
+        ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, tracks, currentTimeline, (item, trackIndex) => {
             const ZoomLevel = item.GetProperty("ZoomX") as number;
             const PanLevel = item.GetProperty("Pan") as number;
             const TiltLevel = item.GetProperty("Tilt") as number;

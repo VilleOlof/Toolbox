@@ -83,6 +83,10 @@ export namespace Common {
             fs.writeFileSync(path, content, { encoding: "utf8", flag: "w" });
         }
 
+        export function AppendToFile(path: string, content: any): void {
+            fs.appendFileSync(path, content, { encoding: "utf8", flag: "a" });
+        }
+
         /**
          * Creates a directory.
          * 

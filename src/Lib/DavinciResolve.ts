@@ -584,7 +584,8 @@ export class ResolveFunctions {
 
         const EndFrame = currentTimeline.GetEndFrame() - timelineStartFrame;
 
-        const Playhead = this.ConvertTimecodeToFrames(currentTimeline.GetCurrentTimecode()) - timelineStartFrame;
+        let Playhead = this.ConvertTimecodeToFrames(currentTimeline.GetCurrentTimecode()) - timelineStartFrame;
+        Playhead += 1;
 
         const timelineTracks = currentTimeline.GetTrackCount(trackType);
         //Take the lowest number of tracks between the tracks array and the timeline tracks
