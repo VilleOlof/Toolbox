@@ -1,5 +1,6 @@
 import { AppSettings } from "./AppSettings";
 import { Common } from "./Common";
+import { Logger } from "./Logger";
 import { ResolveEnums } from "./ResolveEnums";
 
 let PluginID: string;
@@ -24,6 +25,8 @@ export function InitPlugin(): boolean {
 
     Resolve = WorkflowIntegration.GetResolve();
     //ResolveWorkerHandler.Init();
+
+    Logger.Log(`Plugin initialized: [${PluginID}, ${AppSettings.GetMetadata().Version}]`, 'info', 'file')
 
     return isInitialized;
 }
@@ -345,7 +348,7 @@ export class ResolveFunctions {
             }
 
         }, delaySeconds * 1000);
-
+        
         return dataLoop;
     }
 
@@ -445,6 +448,7 @@ export class ResolveFunctions {
      * ```
      */
     private static NotifySubscribers<T>(SubscribeType: any, object: T): void {
+        Logger.Log(`ResolveFunctions [${SubscribeType}] Changed`, 'info', 'file');
         if (!this.CheckIfSubscribeTypeExists(SubscribeType)) return;
         ResolveFunctions._ChangeCallbacks[SubscribeType].forEach(callback => callback(object));
     }

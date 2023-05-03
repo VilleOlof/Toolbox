@@ -80,6 +80,13 @@ export namespace Common {
         export function WriteFile(path: string, content: any, json?:boolean, stringifyContentDefault: boolean = true): void {
             if ((json || typeof content != "string") && stringifyContentDefault) content = JSON.stringify(content, null, 4);
 
+            //Check if the directory exists
+            let dir: string = path.substring(0, path.lastIndexOf("/"));
+            if (!fs.existsSync(dir)) {   
+                //Create the directory
+                CreateDirectory(dir);
+            }
+
             fs.writeFileSync(path, content, { encoding: "utf8", flag: "w" });
         }
 
@@ -94,6 +101,33 @@ export namespace Common {
          */
         export function CreateDirectory(path: string): void {
             fs.mkdirSync(path);
+        }
+
+        /**
+         * Gets all files in a directory.
+         * 
+         * @param path the path to the directory
+         * @param fileExt the file extension to filter by
+         * @returns an array of files
+         */
+        export function GetFiles(path: string, fileExt?: string): string[] {
+            let files: string[] = [];
+            let dir: string[] = fs.readdirSync(path);
+
+            for (let i = 0; i < dir.length; i++) {
+                let filePath: string = path + "/" + dir[i];
+                let stat = fs.statSync(filePath);
+
+                if (stat.isDirectory()) {
+                    files = files.concat(GetFiles(filePath, fileExt));
+                } else {
+                    if (fileExt && filePath.endsWith(fileExt)) {
+                        files.push(filePath);
+                    }
+                }
+            }
+
+            return files;
         }
 
         /**

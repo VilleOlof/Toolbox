@@ -1,5 +1,6 @@
 import { DataStore } from "../Stores/DataStore";
 import { Common } from "./Common";
+import { Logger } from "./Logger";
 
 /**
  * The global settings namespace.
@@ -45,6 +46,8 @@ namespace GlobalSettings {
         }
 
         SettingsData.Set("ShowSettingsMenu", false);
+
+        Logger.Log("GlobalSettings loaded", "info", "file");
     }
 
     export let DisableSettingButton: boolean = true;

@@ -1,6 +1,7 @@
 import { AppSettings } from "./AppSettings"
 import { Common } from "./Common"
 import { Resolve } from "./DavinciResolve"
+import { Logger } from "./Logger"
 import { ModuleHandler } from "./ModuleHandler"
 
 /**
@@ -23,6 +24,7 @@ export namespace Statistics {
      */
     export function SendStatisticsOnStartup(): void {
         if (!AppSettings.GetSetting("DataCollection", true)) return;
+        Logger.Log('Sent Statistics To Backend [startup]', 'info', 'file');
 
         const os = Common.GetOSModule();
         const request: StatRequest = {

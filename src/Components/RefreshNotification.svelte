@@ -1,6 +1,7 @@
 <script lang="ts">
     import { AppSettings } from '../Lib/AppSettings';
     import { Common } from '../Lib/Common';
+    import { Logger } from '../Lib/Logger';
 
     const NPM_Command: string = 'npm run build';
     const moduleListPath: string = '/../module_list.json';
@@ -40,6 +41,7 @@
     }
 
     function RelaunchApp(): void {
+        Logger.Log('Relaunching App From RefreshNotification', 'info', 'file');
 
         // @ts-ignore // it thinks that 'remote' is not a property of 'electron'
         const remote = require('electron').remote;

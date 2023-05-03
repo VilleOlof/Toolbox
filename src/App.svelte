@@ -8,6 +8,7 @@
     import { GlobalSettings } from "./Lib/Settings";
     import { AppSettings } from "./Lib/AppSettings";
     import Update from "./Components/Update.svelte";
+    import { Logger } from "./Lib/Logger";
 
     let settingComponent;
     let moduleViewComponent;
@@ -15,6 +16,7 @@
     let ShowSettings: boolean = GlobalSettings.SettingsData.Get("ShowSettingsMenu", false);
     GlobalSettings.SettingsData.Subscribe("ShowSettingsMenu", (value: boolean) => {
         ShowSettings = value;
+        Logger.Log(`Switched Page To: ${ShowSettings ? "Settings" : "ModuleView"}`, 'info', 'file');
 
         if (ShowSettings) {
             if (!moduleViewComponent) return;

@@ -8,6 +8,7 @@ import { Common } from './Common';
 import { AppSettings } from './AppSettings';
 
 import { Statistics } from './Statistics';
+import { Logger } from './Logger';
 
 export namespace ModuleHandler {
 
@@ -43,6 +44,7 @@ export namespace ModuleHandler {
         ColumnContainer = ColumnContainerDiv;
 
         if (_FirstLoad) {
+            Logger.Log('FirstLoad In ModuleHandler', 'info', 'file');
 
             await LoadLayout();
             DragHandler.Init();

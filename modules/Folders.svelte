@@ -210,7 +210,7 @@
         </div>
 
         <div class="folderPath" id={folder.Hash} style="--popupside: {PopupSideChoiceToRem(PopupSide)}">
-            <input type="text" id={`folderInput-${folder.Hash}`} bind:value={folder.Path} placeholder="Use the 'Set Path' Button">
+            <input type="text" id={`folderInput-${folder.Hash}`} bind:value={folder.Path} on:change={UpdateEmptyFolderCSS} placeholder="Use the 'Set Path' Button">
             <div class=folderPathBottom>
                 <button on:click={SetFolder}>Set Path</button>
                 <button on:click={RemoveFolder}>Remove</button>

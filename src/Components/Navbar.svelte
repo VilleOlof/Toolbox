@@ -6,6 +6,7 @@
     import { AppSettings } from "../Lib/AppSettings";
     import { Common } from "../Lib/Common";
     import RefreshNotification from "./RefreshNotification.svelte";
+  import { Logger } from "../Lib/Logger";
 
     const GithubEvent = () => {
         Common.Electron.OpenExternalLink('https://github.com/VilleOlof/Toolbox');
@@ -47,6 +48,7 @@
         const editDisplay = editBG.style.display;
 
         editBG.style.display = editDisplay == "block" ? "none" : "block";
+        Logger.Log(`Edit Mode: ${editDisplay == "block" ? "Enabled" : "Disabled"}`, 'info', 'file');
     }
 
     const ModuleEntryName = (moduleName: string) => {

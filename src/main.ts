@@ -2,13 +2,18 @@ import './App.scss'
 import App from './App.svelte'
 import { AppSettings } from './Lib/AppSettings';
 import { Common } from './Lib/Common';
+import { InitPlugin, ResolveFunctions } from './Lib/DavinciResolve'
+import { Logger } from './Lib/Logger';
 
+//Initialize the logger and app settings
+Logger.Initialize();
 AppSettings.Init();
 
-import { InitPlugin, ResolveFunctions } from './Lib/DavinciResolve'
+//Plugin initialization & Resolve functions
 InitPlugin();
 ResolveFunctions.Initialize();
 
+//Load the global settings
 import { GlobalSettings } from './Lib/Settings'
 GlobalSettings.LoadGlobalSettings();
 

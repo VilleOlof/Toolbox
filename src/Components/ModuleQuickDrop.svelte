@@ -1,6 +1,7 @@
 <script lang="ts">
     import { AppSettings } from '../Lib/AppSettings';
     import { Common } from '../Lib/Common';
+  import { Logger } from '../Lib/Logger';
 
     const fs = require("fs");
     const path = require("path");
@@ -57,6 +58,8 @@
     //Stolen from RefreshNotification.svelte
     //TODO: Make these functions that can be used in both places
     function RefreshAppWithNewModules(): void {
+        Logger.Log('Refreshing App With New Modules (Via QuickDrop)', 'info', 'file');
+
         const { exec } = require('child_process');
 
         const NPM_Command: string = 'npm run build';

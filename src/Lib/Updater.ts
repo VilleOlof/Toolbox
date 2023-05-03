@@ -1,6 +1,7 @@
 import { ChildProcess } from "child_process";
 import { AppSettings } from "./AppSettings";
 import { Common } from "./Common";
+import { Logger } from "./Logger";
 
 const AdmZip = require("adm-zip");
 
@@ -58,6 +59,8 @@ export namespace Updater {
      * Downloads and unzips the update.
      */
     export function DownloadUpdate(): void {
+        Logger.Log('Downloading New Update...', 'info', 'file');
+
         const curlCommand: ChildProcess = Common.ExecuteCommand(`curl.exe -L ${RepoZIPUrl} -o "${root}../Toolbox.zip"`, `${root}../`);
         curlCommand.stdout.on('data', (data) => {
             console.error(`curl stdout: ${data}`);

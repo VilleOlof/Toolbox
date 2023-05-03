@@ -6,6 +6,7 @@
     import { ModuleHandler } from "../Lib/ModuleHandler";
     import { Common } from "../Lib/Common";
     import { Updater } from "../Lib/Updater";
+  import { Logger } from "../Lib/Logger";
 
     const path = require('path');
 
@@ -275,6 +276,8 @@
     
     const filesToZIP = ["Data.json", "Settings.json", "AppSettings.json"];
     const ExportDataToZIP = () => {
+        Logger.Log('Exporting Data', 'info', 'file');
+
         const AdmZip = Common.GetAdmZipModule();
         const zip = new AdmZip();
 
@@ -299,6 +302,8 @@
     }
 
     const ImportDataAsZIP = () => {
+        Logger.Log('Importing Data', 'info', 'file');
+
         const AdmZip = Common.GetAdmZipModule();
         const zip = new AdmZip();
 
@@ -320,6 +325,7 @@
     }
 
     const ForceUpdate = () => {
+        Logger.Log('Force Updating...', 'info', 'file');
         Updater.DownloadUpdate();
     }
 

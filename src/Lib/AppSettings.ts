@@ -1,4 +1,5 @@
 import { Common } from "./Common";
+import { Logger } from "./Logger";
 
 /**
  * AppSettings class
@@ -39,6 +40,8 @@ export class AppSettings {
             Common.IO.GetRootFolder() + "/../Metadata.json",
             true
         );
+
+        Logger.Log("AppSettings initialized", 'info', 'file');
 
         return this._Init;
     }
