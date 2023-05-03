@@ -701,6 +701,6 @@ export namespace Common {
      * ```
      */
     export function LifeCyclePing(onlyClear: boolean): void {
-        Common.Electron.GetElectron().ipcRenderer.invoke('lifeCycle:ping', onlyClear);
+        //Common.Electron.GetElectron().ipcRenderer.invoke('lifeCycle:ping', onlyClear);
     }
 }
