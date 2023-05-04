@@ -6,7 +6,7 @@
     import { AppSettings } from "../Lib/AppSettings";
     import { Common } from "../Lib/Common";
     import RefreshNotification from "./RefreshNotification.svelte";
-  import { Logger } from "../Lib/Logger";
+    import { Logger } from "../Lib/Logger";
 
     const GithubEvent = () => {
         Common.Electron.OpenExternalLink('https://github.com/VilleOlof/Toolbox');

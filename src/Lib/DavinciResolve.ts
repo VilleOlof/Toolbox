@@ -85,6 +85,25 @@ export function AppQuit(quitResolve: boolean = false): void {
     Common.Electron.GetCurrentWindow().close();
 }
 
+const MarkerHexLookup: {[key: string]: string} = {
+    'Blue': "007FE3",
+    "Cocoa": "C4915E",
+    "Cream": "F5EBE1",
+    "Cyan": "00CED0",
+    "Fushsia": "C02E6F",
+    "Green": "00AD00",
+    "Lavender": "A193C8",
+    "Lemon": "DCE95A",
+    "Mint": "72DB00",
+    "Pink": "FF44C8",
+    "Purple": "9013FE",
+    "Red": "E12401",
+    "Rose": "FFA1B9",
+    "Sand": "C4915E",
+    "Sky": "92E2FD",
+    "Yellow": "F09D00"
+}
+
 /**
  * A collection of useful functions for interacting with the Resolve API  
  * This is the preferred way to interact with the Resolve API if you can.  
@@ -714,6 +733,82 @@ export class ResolveFunctions {
             if (folder.GetName() == folderName) return folder;
         }
     }
+
+    /**
+     * Gets the HEX color of a marker
+     */
+    public static GetMarkerColorInHex(marker: Marker | ResolveEnums.MarkerColor): string {
+        const color = typeof marker == "string" ? marker : marker.color;
+        return MarkerHexLookup[color];
+    }
+
+    /**
+     * Cuts the timelineItem at the given frames
+     * And imports it into the timeline
+     * 
+     * @param CutItems The items to cut
+     * @param framesToCut The frames to cut at (Relative to the timelineItem)
+     * @returns The cut items
+     */
+    public static CutTimelineItem(CutItems: ResolveFunctions.CutItems | undefined, framesToCut: number[]): TimelineItem[] {
+        const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+        const mediaPool = ResolveFunctions.GetCurrentProject().GetMediaPool();
+        if (!currentTimeline || !mediaPool) return [];
+
+        //If we don't have the cut items, we need to get them, so we assume its video track 1 and all audio tracks beneath
+        if (CutItems === undefined) {
+            CutItems = {
+                video: undefined,
+                audio: [],
+            };
+
+            CutItems.video = ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, 1, currentTimeline) as TimelineItem;
+
+            const timelineAudioTrackCount = currentTimeline.GetTrackCount(ResolveEnums.TrackType.Audio);
+            for (let i = 1; i <= timelineAudioTrackCount; i++) {
+                const audioItem = ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Audio, i, currentTimeline) as TimelineItem;
+                if (audioItem) CutItems.audio.push(audioItem);
+            }
+        }
+
+        const videoMediaPoolReference = CutItems.video.GetMediaPoolItem();
+        if (!videoMediaPoolReference) return [];
+
+        const CutStart = CutItems.video.GetStart();
+        const CutEnd = CutItems.video.GetEnd();
+
+        const videoClipInfo: ClipInfo[] = [];
+
+        for (let i = 0; i <= framesToCut.length; i++) {
+            let cutFrame = framesToCut[i];
+
+            let previousFrame = framesToCut[i - 1];
+            if (!previousFrame) previousFrame = 0;
+
+            if (i == framesToCut.length) {
+                cutFrame = CutEnd - CutStart;
+            }
+            
+            if (cutFrame > CutEnd - CutStart) break;
+
+            const clipInfo: ClipInfo = {
+                mediaPoolItem: videoMediaPoolReference, //The media pool reference
+                startFrame: previousFrame, //The start frame of the clip
+                endFrame: cutFrame, //The end frame of the clip
+                recordFrame: CutStart + previousFrame, //Where in the timeline to put the clip
+            }
+
+            videoClipInfo.push(clipInfo);
+        }
+
+        //delete the old clips
+        currentTimeline.DeleteClips([CutItems.video, ...CutItems.audio]);
+
+        //Add the new 'cut' clips
+        const videoTimelineItems = mediaPool.AppendToTimeline(videoClipInfo);
+
+        return videoTimelineItems;
+    }
 }
 
 /**
@@ -742,4 +837,12 @@ export module ResolveFunctions {
      * The callback for the GetTimelineItem function
      */
     export type TimelineItemCallback = (item: TimelineItem, trackIndex: number) => void;
+
+    /**
+     * Parameter for CutTimelineItem
+     */
+    export type CutItems = {
+        video: TimelineItem,
+        audio: TimelineItem[],
+    }
 }

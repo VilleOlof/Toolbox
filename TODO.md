@@ -14,7 +14,6 @@ And list of priorities.
 - Quickly change themes?  
 - Convert to SvelteKit? (Tauri would be best but doubt that will work with resolve)  
 - Remake settings in more svelte like way?  
-- Find a way to save window size, position and such but not in AppSettings? (or have critical constant information in another file)
 - Click and remove in the "Add Module" dropdown, when a module is placed already it becomes a "- ModuleName"
 - Switch Reload Plugin next to github icon.
 
