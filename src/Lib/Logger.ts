@@ -25,6 +25,8 @@ export namespace Logger {
         if (Init) return;
         LogFile = `${Common.IO.GetRootFolder()}/../Logs/Toolbox-${GetDate()}.log`
 
+        if (!Common.IO.FileExists(`${Common.IO.GetRootFolder()}/../Logs/`)) Common.IO.CreateDirectory(`${Common.IO.GetRootFolder()}/../Logs/`);
+
         DeleteOldZips(7); // Delete all logs older than 7 days
         CompressLogs(20); // Compress all logs if there are more than 20
 
