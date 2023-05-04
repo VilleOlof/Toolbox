@@ -604,7 +604,7 @@
             }
         },
         //Maybe make better? carries a lot of similar code to 'Import Media' above
-        "Import From Mediapool": (clipName: string, binName: string, track: number, startFrame: number, originFrame: 'Relative' | 'Start') => {
+        "From Mediapool": (clipName: string, binName: string, track: number, startFrame: number, originFrame: 'Relative' | 'Start') => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             const currentMediapool = ResolveFunctions.GetCurrentProject().GetMediaPool();
 
@@ -1071,12 +1071,9 @@
         
         for (const [UUID, action] of Object.entries(_profiles[CurrentProfile])) {
             const actionFunction = ActionFunctions[action.Name];
-            let actionValues: any[] = [];
-            for (const [valueName, actionInput] of Object.entries(ActionValueLookup[action.Name])) {
-                actionValues.push(actionInput.value);
-            }
-            console.log(action.Name, actionValues);
-            actionFunction(...actionValues);
+            const params = Object.values(action.Parameters);
+            console.log(action.Name, params);
+            actionFunction(...params);
         }
     }
 
@@ -1107,12 +1104,12 @@
     }
     
     function ChooseFileButton(file: boolean, folder: boolean, valueName: string, actionValue: string, parameters: {[key: string]: any}): void {
-        let importMediaCaseValue = (valueName == "File Or Folder");
-        if (actionValue == "File" && importMediaCaseValue) {
+        const mediaImportCase: string = parameters["File Or Folder"] ?? undefined;
+        if (mediaImportCase == "File") {
             file = true;
             folder = false;
         }
-        else if (actionValue == "Folder" && importMediaCaseValue) {
+        else if (mediaImportCase == "Folder") {
             file = false;
             folder = true;
         }
@@ -1155,12 +1152,9 @@
         }
 
         const actionFunction = ActionFunctions[actionName];
-        let actionValues: any[] = [];
-        for (const [valueName, actionInput] of Object.entries(ActionValueLookup[actionName])) {
-            actionValues.push(actionInput.value);
-        }
-        console.log(actionName, actionValues);
-        actionFunction(...actionValues);
+        const params = Object.values(_profiles[CurrentProfile][actionName].Parameters);
+        console.log(actionName, params);
+        actionFunction(...params);
     }
 </script>
 

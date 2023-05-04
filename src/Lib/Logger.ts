@@ -25,7 +25,8 @@ export namespace Logger {
         if (Init) return;
         LogFile = `${Common.IO.GetRootFolder()}/../Logs/Toolbox-${GetDate()}.log`
 
-        CompressLogs();
+        DeleteOldZips(7); // Delete all logs older than 7 days
+        CompressLogs(20); // Compress all logs if there are more than 20
 
         if (!Common.IO.FileExists(LogFile)) Common.IO.WriteFile(LogFile, `[LOG INIT: ${GetDate(undefined, false)}]\n\n`);
 
@@ -37,7 +38,7 @@ export namespace Logger {
         Init = true;
     }
 
-    function CompressLogs(latestX: number = 10) {
+    function CompressLogs(latestX: number) {
         const logs = Common.IO.GetFiles(`${Common.IO.GetRootFolder()}/../Logs/`, ".log");
         if (logs.length <= latestX) return;
         
@@ -52,6 +53,19 @@ export namespace Logger {
 
         for (const log of logs) {
             Common.IO.DeleteFile(log);
+        }
+    }
+
+    function DeleteOldZips(days: number) {
+        const zips = Common.IO.GetFiles(`${Common.IO.GetRootFolder()}/../Logs/`, ".zip");
+        const now = new Date().getTime();
+        const daysInMS = days * 24 * 60 * 60 * 1000;
+
+        for (const zip of zips) {
+            const zipDate = new Date(Common.IO.GetFileLastModified(zip)).getTime();
+            if (now - zipDate > daysInMS) {
+                Common.IO.DeleteFile(zip);
+            }
         }
     }
 

@@ -141,6 +141,16 @@ export namespace Common {
         }
 
         /**
+         * Gets the last modified date of a file.
+         * 
+         * @param path the path to the file
+         * @returns the last modified date
+         */
+        export function GetFileLastModified(path: string): Date {
+            return fs.statSync(path).mtime;
+        }
+
+        /**
          * Deletes a file.
          * 
          * @param path the path to the file
