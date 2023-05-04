@@ -19,12 +19,11 @@
             "An advanced module for doing mundane tasks quickly\n" +
             "Import Media, Add Tracks, Apply LUT and more by clicking one button!"
         );
+
+        profileNameChangeInput.value = CurrentProfile;
     });
 
-    let defaultProfile = {
-        name: "New Profile",
-        actions: [],
-    }
+    let defaultProfile = {}
 
     let _Settings = GlobalSettings.GetInstance(componentID);
 
@@ -32,7 +31,7 @@
 
     let _Datastore = new DataStore(componentID);
 
-    let _profiles = _Datastore.Get<ProfileObject>("Profiles", { "New Profile": defaultProfile});
+    let _profiles = _Datastore.Get<Profiles>("Profiles", { "New Profile": defaultProfile});
     if (Object.keys(_profiles).length == 0) _profiles["New Profile"] = defaultProfile; //ensures that there is always at least one profile.
 
     $: _Datastore.Set("Profiles", _profiles); //ensures that the datastore is updated when the profiles are updated
@@ -45,699 +44,448 @@
     let originPlayheadFrame: number;
 
     type Profile = {
-        name: string,
-        actions: Array<Action>,
+        //Action UUID
+        [key: string]: Action,
     }
-    type ProfileObject = {
-        [key: string]: Profile,
+
+    type Profiles = {
+        //Profile Name
+        [key: string]: Profile
     }
 
     type Action = {
-        name: string,
-        function: string,
-        values: Array<ActionInput>,
         Minimized: boolean,
-        UUID: string,
+        Name: string,
+        // Action name, action value
+        Parameters: {[key: string]: any}
     }
 
     type ActionInput = {
-        name: string,
         type: "string" | "number" | "boolean" | "dropdown" | "file",
         value: any //string | number | boolean,
         dropdownOptions?: Array<string>,
     }
 
-    const Actions: Action[] = [
-        {
-            name: "Add Track",
-            function: "Add Track",
-            values: [
-                {
-                    name: "Name",
-                    type: "string",
-                    value: "New Track",
-                },
-                {
-                    name: "Type",
-                    type: "dropdown",
-                    value: "Video",
-                    dropdownOptions: Object.keys(ResolveEnums.TrackType),
-                },
-                {
-                    name: "Add Until X",
-                    type: "number",
-                    value: -1
-                }
-            ],
-            Minimized: false,
-            UUID: "",
+    type ActionName = string;
+    type ValueName = string;
+    const ActionValueLookup: {[key: ActionName]: {[key: ValueName]: ActionInput}} = {
+        "Add Track": {
+            "Name": {
+                type: "string",
+                value: "New Track",
+            },
+            "Type": {
+                type: "dropdown",
+                value: "Video",
+                dropdownOptions: Object.keys(ResolveEnums.TrackType),
+            },
+            "Add Until X": {
+                type: "number",
+                value: -1
+            }
         },
-        {
-            name: "Delete Tracks",
-            function: "Delete Tracks",
-            values: [
-                {
-                    name: "Tracks (1,2,3)",
-                    type: "string",
-                    value: "1"
-                },
-                {
-                    name: "Type",
-                    type: "dropdown",
-                    value: "Video",
-                    dropdownOptions: Object.keys(ResolveEnums.TrackType),
-                },
-                {
-                    name: "Name",
-                    type: "string",
-                    value: "",
-                },
-            ],
-            Minimized: false,
-            UUID: "",
+        "Delete Tracks": {
+            "Tracks (1,2,3)": {
+                type: "string",
+                value: "1"
+            },
+            "Type": {
+                type: "dropdown",
+                value: "Video",
+                dropdownOptions: Object.keys(ResolveEnums.TrackType),
+            },
+            "Name": {
+                type: "string",
+                value: "",
+            },
         },
-        {
-            name: "Create Timeline",
-            function: "Create Timeline",
-            values: [
-                {
-                    name: "Name",
-                    type: "string",
-                    value: "New Timeline",
-                },
-            ],
-            Minimized: false,
-            UUID: "",
+        "Create Timeline": {
+            "Name": {
+                type: "string",
+                value: "New Timeline",
+            },
         },
-        {
-            name: "Import Media",
-            function: "Import Media",
-            values: [
-                {
-                    name: "Timeline Or Mediapool",
-                    type: "dropdown",
-                    value: "Mediapool",
-                    dropdownOptions: ["Timeline", "Mediapool"],
-                },
-                {
-                    name: "Default Path",
-                    type: "file",
-                    value: "",
-                },
-                {
-                    name: "File Or Folder",
-                    type: "dropdown",
-                    value: "File",
-                    dropdownOptions: ["File", "Folder"],
-                },
-                {
-                    name: "Start Frame",
-                    type: "number",
-                    value: 0,
-                },
-                {
-                    name: "Origin Frame",
-                    type: "dropdown",
-                    value: "Relative",
-                    dropdownOptions: ["Relative", "Start"]
-                },
-                {
-                    name: "Clip Color",
-                    type: "dropdown",
-                    value: "None",
-                    dropdownOptions: Object.keys(ResolveEnums.ClipColor).concat("None"),
-                },
-                {
-                    name: "Track (If Timeline)",
-                    type: "number",
-                    value: 1,
-                },
-                {
-                    name: "Media Bin Name |?",
-                    type: "string",
-                    value: "Content",
-                },
-            ],
-            Minimized: false,
-            UUID: ""
+        "Import Media": {
+            "Timeline Or Mediapool": {
+                type: "dropdown",
+                value: "Mediapool",
+                dropdownOptions: ["Timeline", "Mediapool"],
+            },
+            "Default Path": {
+                type: "file",
+                value: "",
+            },
+            "File Or Folder": {
+                type: "dropdown",
+                value: "File",
+                dropdownOptions: ["File", "Folder"],
+            },
+            "Start Frame": {
+                type: "number",
+                value: 0,
+            },
+            "Origin Frame": {
+                type: "dropdown",
+                value: "Relative",
+                dropdownOptions: ["Relative", "Start"]
+            },
+            "Clip Color": {
+                type: "dropdown",
+                value: "None",
+                dropdownOptions: Object.keys(ResolveEnums.ClipColor).concat("None"),
+            },
+            "Track (If Timeline)": {
+                type: "number",
+                value: 1,
+            },
+            "Media Bin Name |?": {
+                type: "string",
+                value: "Content",
+            },
         },
-        {
-            name: "From Mediapool",
-            function: "Import From Mediapool",
-            values: [
-                {
-                    name: "Clip Name (Incl. Ext)",
-                    type: "string",
-                    value: "New Clip.mp4",
-                },
-                {
-                    name: "Bin Name",
-                    type: "string",
-                    value: "Content",
-                },
-                {
-                    name: "Track",
-                    type: "number",
-                    value: 1,
-                },
-                {
-                    name: "Start Frame",
-                    type: "number",
-                    value: 0,
-                },
-                {
-                    name: "Origin Frame",
-                    type: "dropdown",
-                    value: "Relative",
-                    dropdownOptions: ["Relative", "Start"]
-                },
-            ],
-            Minimized: false,
-            UUID: ""
+        "From Mediapool": {
+            "Clip Name (Incl. Ext)": {
+                type: "string",
+                value: "New Clip.mp4",
+            },
+            "Bin Name": {
+                type: "string",
+                value: "Content",
+            },
+            "Track": {
+                type: "number",
+                value: 1,
+            },
+            "Start Frame": {
+                type: "number",
+                value: 0,
+            },
+            "Origin Frame": {
+                type: "dropdown",
+                value: "Relative",
+                dropdownOptions: ["Relative", "Start"]
+            },
         },
-        {
-            name: "Apply LUT",
-            function: "Apply LUT",
-            values: [
-                {
-                    name: "File Path",
-                    type: "file",
-                    value: "",
-                },
-                {
-                    name: "File Or Folder",
-                    type: "dropdown",
-                    value: "File",
-                    dropdownOptions: ["File", "Folder"],
-                },
-                {
-                    name: "Tracks (1,2,3)",
-                    type: "string",
-                    value: "1",
-                }
-            ],
-            Minimized: false,
-            UUID: ""
+        "Apply LUT": {
+            "File Path": {
+                type: "file",
+                value: "",
+            },
+            "File Or Folder": {
+                type: "dropdown",
+                value: "File",
+                dropdownOptions: ["File", "Folder"],
+            },
+            "Tracks (1,2,3)": {
+                type: "string",
+                value: "1",
+            }
         },
-        {
-            name: "Add Bin",
-            function: "Add Bin",
-            values: [
-                {
-                    name: "Name",
-                    type: "string",
-                    value: "New Bin",
-                }
-            ],
-            Minimized: false,
-            UUID: ""
+        "Add Bin": {
+            "Name": {
+                type: "string",
+                value: "New Bin",
+            }
         },
-        {
-            name: "Goto Bin",
-            function: "Goto Bin",
-            values: [
-                {
-                    name: "Name",
-                    type: "string",
-                    value: "New Bin",
-                }
-            ],
-            Minimized: false,
-            UUID: ""
+        "Goto Bin": {
+            "Name": {
+                type: "string",
+                value: "New Bin",
+            }
         },
-        {
-            name: "Add Marker",
-            function: "Add Marker",
-            values: [
-                {
-                    name: "Name",
-                    type: "string",
-                    value: "New Marker",
-                },
-                {
-                    name: "Color",
-                    type: "dropdown",
-                    value: "Blue",
-                    dropdownOptions: Object.keys(ResolveEnums.ClipColor),
-                },
-                {
-                    name: "Duration (Frames)",
-                    type: "number",
-                    value: 1,
-                },
-                {
-                    name: "Position (Frames) |?",
-                    type: "number",
-                    value: 0,
-                },
-                {
-                    name: "Use Playhead",
-                    type: "boolean",
-                    value: true,
-                }
-            ],
-            Minimized: false,
-            UUID: ""
+        "Add Marker": {
+            "Name": {
+                type: "string",
+                value: "New Marker",
+            },
+            "Color": {
+                type: "dropdown",
+                value: "Blue",
+                dropdownOptions: Object.keys(ResolveEnums.ClipColor),
+            },
+            "Duration (Frames)": {
+                type: "number",
+                value: 1,
+            },
+            "Position (Frames) |?": {
+                type: "number",
+                value: 0,
+            },
+            "Use Playhead": {
+                type: "boolean",
+                value: true,
+            }
         },
-        {
-            name: "New Compound",
-            function: "New Compound",
-            values: [
-                {
-                    name: "Tracks: (1,2,3)",
-                    type: "string",
-                    value: "1",
-                },
-                {
-                    name: "Name",
-                    type: "string",
-                    value: "New Compound Clip",
-                }
-            ],
-            Minimized: false,
-            UUID: ""
+        "New Compound": {
+            "Tracks: (1,2,3)": {
+                type: "string",
+                value: "1",
+            },
+            "Name": {
+                type: "string",
+                value: "New Compound Clip",
+            }
         },
-        {
-            name: "Insert Generator",
-            function: "Insert Generator",
-            values: [
-                {
-                    name: "Generator",
-                    type: "dropdown",
-                    value: "Solid Color",
-                    dropdownOptions: Object.values(ResolveEnums.TimelineGenerator),
-                }
-            ],
-            Minimized: false,
-            UUID: ""
+        "Insert Generator": {
+            "Generator": {
+                type: "dropdown",
+                value: "Solid Color",
+                dropdownOptions: Object.values(ResolveEnums.TimelineGenerator),
+            }
         },
-        {
-            name: "Insert Title",
-            function: "Insert Title",
-            values: [
-                {
-                    name: "Title",
-                    type: "dropdown",
-                    value: "Text",
-                    dropdownOptions: Object.values(ResolveEnums.TitleNames),
-                }
-            ],
-            Minimized: false,
-            UUID: ""
+        "Insert Title": {
+            "Title": {
+                type: "dropdown",
+                value: "Text",
+                dropdownOptions: Object.values(ResolveEnums.TitleNames),
+            }
         },
-        {
-            name: "Move Playhead",
-            function: "Move Playhead",
-            values: [
-                {
-                    name: "Move To",
-                    type: "dropdown",
-                    value: "Origin",
-                    dropdownOptions: ["Relative", "Start", "Origin", "Start Of Clip", "End Of Clip"]
-                },
-                {
-                    name: "Frame Offset",
-                    type: "number",
-                    value: 0,
-                },
-                {
-                    name: "Track",
-                    type: "number",
-                    value: 1,
-                }
-            ],
-            Minimized: false,
-            UUID: ""
+        "Move Playhead": {
+            "Move To": {
+                type: "dropdown",
+                value: "Origin",
+                dropdownOptions: ["Relative", "Start", "Origin", "Start Of Clip", "End Of Clip"]
+            },
+            "Frame Offset": {
+                type: "number",
+                value: 0,
+            },
+            "Track": {
+                type: "number",
+                value: 1,
+            }
         },
-        {
-            name: "Switch Page",
-            function: "Switch Page",
-            values: [
-                {
-                    name: "Page",
-                    type: "dropdown",
-                    value: "Edit",
-                    dropdownOptions: Object.keys(ResolveEnums.Pages)
-                }
-            ],
-            Minimized: false,
-            UUID: ""
+        "Switch Page": {
+            "Page": {
+                type: "dropdown",
+                value: "Edit",
+                dropdownOptions: Object.keys(ResolveEnums.Pages)
+            }
         },
-        {
-            name: "Lock Track",
-            function: "Lock Track",
-            values: [
-                {
-                    name: "Tracks (1,2,3)",
-                    type: "string",
-                    value: "1",
-                },
-                {
-                    name: "Type",
-                    type: "dropdown",
-                    value: "Video",
-                    dropdownOptions: Object.keys(ResolveEnums.TrackType),
-                },
-                {
-                    name: "Lock",
-                    type: "boolean",
-                    value: true,
-                }
-            ],
-            Minimized: false,
-            UUID: ""
+        "Lock Track": {
+            "Tracks (1,2,3)": {
+                type: "string",
+                value: "1",
+            },
+            "Type": {
+                type: "dropdown",
+                value: "Video",
+                dropdownOptions: Object.keys(ResolveEnums.TrackType),
+            },
+            "Lock": {
+                type: "boolean",
+                value: true,
+            }
         },
-        {
-            name: "Rename Track",
-            function: "Rename Track",
-            values: [
-                {
-                    name: "Track",
-                    type: "number",
-                    value: 1,
-                },
-                {
-                    name: "Type",
-                    type: "dropdown",
-                    value: "Video",
-                    dropdownOptions: Object.keys(ResolveEnums.TrackType),
-                },
-                {
-                    name: "New Name",
-                    type: "string",
-                    value: "New Track"
-                }
-            ],
-            Minimized: false,
-            UUID: ""
+        "Rename Track": {
+            "Track": {
+                type: "number",
+                value: 1,
+            },
+            "Type": {
+                type: "dropdown",
+                value: "Video",
+                dropdownOptions: Object.keys(ResolveEnums.TrackType),
+            },
+            "New Name": {
+                type: "string",
+                value: "New Track"
+            }
         },
-        {
-            name: "Delay",
-            function: "Delay",
-            values: [
-                {
-                    name: "Seconds",
-                    type: "number",
-                    value: 1,
-                }
-            ],
-            Minimized: false,
-            UUID: ""
+        "Delay": {
+            "Seconds": {
+                type: "number",
+                value: 1,
+            }
         },
-        {
-            name: "Clip Position",
-            function: "Clip Position",
-            values: [
-                {
-                    name: "Pan",
-                    type: "number",
-                    value: 0,
-                },
-                {
-                    name: "Tilt",
-                    type: "number",
-                    value: 0,
-                },
-                {
-                    name: "Anchor X",
-                    type: "number",
-                    value: 0,
-                },
-                {
-                    name: "Anchor Y",
-                    type: "number",
-                    value: 0,
-                },
-                {
-                    name: "Tracks (1,2,3)",
-                    type: "string",
-                    value: "1"
-                }
-            ],
-            Minimized: false,
-            UUID: ""
+        "Clip Position": {
+            "Pan": {
+                type: "number",
+                value: 0,
+            },
+            "Tilt": {
+                type: "number",
+                value: 0,
+            },
+            "Anchor X": {
+                type: "number",
+                value: 0,
+            },
+            "Anchor Y": {
+                type: "number",
+                value: 0,
+            },
+            "Tracks (1,2,3)": {
+                type: "string",
+                value: "1"
+            }
         },
-        {
-            name: "Clip Zoom",
-            function: "Clip Zoom",
-            values: [
-                {
-                    name: "Zoom X",
-                    type: "number",
-                    value: 1,
-                },
-                {
-                    name: "Zoom Y",
-                    type: "number",
-                    value: 1,
-                },
-                {
-                    name: "Pitch",
-                    type: "number",
-                    value: 0,
-                },
-                {
-                    name: "Yaw",
-                    type: "number",
-                    value: 0,
-                },
-                {
-                    name: "Tracks (1,2,3)",
-                    type: "string",
-                    value: "1"
-                }
-            ],
-            Minimized: false,
-            UUID: ""
+        "Clip Zoom": {
+            "Zoom X": {
+                type: "number",
+                value: 1,
+            },
+            "Zoom Y": {
+                type: "number",
+                value: 1,
+            },
+            "Pitch": {
+                type: "number",
+                value: 0,
+            },
+            "Yaw": {
+                type: "number",
+                value: 0,
+            },
+            "Tracks (1,2,3)": {
+                type: "string",
+                value: "1"
+            }
         },
-        {
-            name: "Clip Rotation",
-            function: "Clip Rotation",
-            values: [
-                {
-                    name: "Rotation",
-                    type: "number",
-                    value: 0,
-                },
-                {
-                    name: "Flip X",
-                    type: "boolean",
-                    value: false,
-                },
-                {
-                    name: "Flip Y",
-                    type: "boolean",
-                    value: false,
-                },
-                {
-                    name: "Tracks (1,2,3)",
-                    type: "string",
-                    value: "1"
-                }
-            ],
-            Minimized: false,
-            UUID: ""
+        "Clip Rotation": {
+            "Rotation": {
+                type: "number",
+                value: 0,
+            },
+            "Flip X": {
+                type: "boolean",
+                value: false,
+            },
+            "Flip Y": {
+                type: "boolean",
+                value: false,
+            },
+            "Tracks (1,2,3)": {
+                type: "string",
+                value: "1"
+            }
         },
-        {
-            name: "Clip Crop",
-            function: "Clip Crop",
-            values: [
-                {
-                    name: "Crop Left",
-                    type: "number",
-                    value: 0,
-                },
-                {
-                    name: "Crop Right",
-                    type: "number",
-                    value: 0,
-                },
-                {
-                    name: "Crop Top",
-                    type: "number",
-                    value: 0,
-                },
-                {
-                    name: "Crop Bottom",
-                    type: "number",
-                    value: 0,
-                },
-                {
-                    name: "Crop Softness",
-                    type: "number",
-                    value: 0,
-                },
-                {
-                    name: "Crop Retain",
-                    type: "boolean",
-                    value: false,
-                },
-                {
-                    name: "Tracks (1,2,3)",
-                    type: "string",
-                    value: "1"
-                }
-            ],
-            Minimized: false,
-            UUID: ""
+        "Clip Crop": {
+            "Crop Left": {
+                type: "number",
+                value: 0,
+            },
+            "Crop Right": {
+                type: "number",
+                value: 0,
+            },
+            "Crop Top": {
+                type: "number",
+                value: 0,
+            },
+            "Crop Bottom": {
+                type: "number",
+                value: 0,
+            },
+            "Crop Softness": {
+                type: "number",
+                value: 0,
+            },
+            "Crop Retain": {
+                type: "boolean",
+                value: false,
+            },
+            "Tracks (1,2,3)": {
+                type: "string",
+                value: "1"
+            }
         },
-        {
-            name: "Clip Opacity",
-            function: "Clip Opacity",
-            values: [
-                {
-                    name: "Opacity",
-                    type: "number",
-                    value: 100,
-                },
-                {
-                    name: "Tracks (1,2,3)",
-                    type: "string",
-                    value: "1"
-                }
-            ],
-            Minimized: false,
-            UUID: ""
+        "Clip Opacity": {
+            "Opacity": {
+                type: "number",
+                value: 100,
+            },
+            "Tracks (1,2,3)": {
+                type: "string",
+                value: "1"
+            }
         },
-        {
-            name: "Clip Color",
-            function: "Clip Color",
-            values: [
-                {
-                    name: "Color",
-                    type: "dropdown",
-                    value: "Blue",
-                    dropdownOptions: Object.values(ResolveEnums.ClipColor),
-                },
-                {
-                    name: "Tracks (1,2,3)",
-                    type: "string",
-                    value: "1"
-                },
-                {
-                    name: "Track Type",
-                    type: "dropdown",
-                    value: "Video",
-                    dropdownOptions: Object.keys(ResolveEnums.TrackType),
-                }
-            ],
-            Minimized: false,
-            UUID: ""
+        "Clip Color": {
+            "Color": {
+                type: "dropdown",
+                value: "Blue",
+                dropdownOptions: Object.values(ResolveEnums.ClipColor),
+            },
+            "Tracks (1,2,3)": {
+                type: "string",
+                value: "1"
+            },
+            "Track Type": {
+                type: "dropdown",
+                value: "Video",
+                dropdownOptions: Object.keys(ResolveEnums.TrackType),
+            }
         },
-        {
-            name: "Disable Clip",
-            function: "Disable Clip",
-            values: [
-                {
-                    name: "Disabled",
-                    type: "boolean",
-                    value: true,
-                },
-                {
-                    name: "Tracks (1,2,3)",
-                    type: "string",
-                    value: "1"
-                },
-                {
-                    name: "Track Type",
-                    type: "dropdown",
-                    value: "Video",
-                    dropdownOptions: Object.keys(ResolveEnums.TrackType),
-                }
-            ],
-            Minimized: false,
-            UUID: ""
+        "Disable Clip": {
+            "Disabled": {
+                type: "boolean",
+                value: true,
+            },
+            "Tracks (1,2,3)": {
+                type: "string",
+                value: "1"
+            },
+            "Track Type": {
+                type: "dropdown",
+                value: "Video",
+                dropdownOptions: Object.keys(ResolveEnums.TrackType),
+            }
         },
-        {
-            name: "Delete Clip",
-            function: "Delete Clip",
-            values: [
-                {
-                    name: "Tracks (1,2,3)",
-                    type: "string",
-                    value: "1"
-                },
-                {
-                    name: "Track Type",
-                    type: "dropdown",
-                    value: "Video",
-                    dropdownOptions: Object.keys(ResolveEnums.TrackType),
-                }
-            ],
-            Minimized: false,
-            UUID: ""
+        "Delete Clip": {
+            "Tracks (1,2,3)": {
+                type: "string",
+                value: "1"
+            },
+            "Track Type": {
+                type: "dropdown",
+                value: "Video",
+                dropdownOptions: Object.keys(ResolveEnums.TrackType),
+            }
         },
-        {
-            name: "Duplicate Clip",
-            function: "Duplicate Clip",
-            values: [
-                {
-                    name: "Origin Track",
-                    type: "number",
-                    value: 1,
-                },
-                {
-                    name: "Destination Track",
-                    type: "number",
-                    value: 2,
-                },
-                {
-                    name: "Frame Offset",
-                    type: "number",
-                    value: 0,
-                }
-            ],
-            Minimized: false,
-            UUID: ""
+        "Duplicate Clip": {
+            "Origin Track": {
+                type: "number",
+                value: 1,
+            },
+            "Destination Track": {
+                type: "number",
+                value: 2,
+            },
+            "Frame Offset": {
+                type: "number",
+                value: 0,
+            }
         },
-        {
-            name: "Rename Media Item",
-            function: "Rename Media Item",
-            values: [
-                {
-                    name: "Track",
-                    type: "number",
-                    value: 1
-                },
-                {
-                    name: "Track Type",
-                    type: "dropdown",
-                    value: "Video",
-                    dropdownOptions: Object.keys(ResolveEnums.TrackType),
-                },
-                {
-                    name: "New Name",
-                    type: "string",
-                    value: "Renamed Clip"
-                }
-            ],
-            Minimized: false,
-            UUID: ""
+        "Rename Media Item": {
+            "Track": {
+                type: "number",
+                value: 1
+            },
+            "Track Type": {
+                type: "dropdown",
+                value: "Video",
+                dropdownOptions: Object.keys(ResolveEnums.TrackType),
+            },
+            "New Name": {
+                type: "string",
+                value: "Renamed Clip"
+            }
         },
-        {
-            name: "Link Clips",
-            function: "Link Clips",
-            values: [
-                {
-                    name: "Video Tracks (1,2,3)",
-                    type: "string",
-                    value: "1"
-                },
-                {
-                    name: "Audio Tracks (1,2,3)",
-                    type: "string",
-                    value: "1"
-                },
-                {
-                    name: "Linked?",
-                    type: "boolean",
-                    value: true
-                }
-            ],
-            Minimized: false,
-            UUID: ""
+        "Link Clips": {
+            "Video Tracks (1,2,3)": {
+                type: "string",
+                value: "1"
+            },
+            "Audio Tracks (1,2,3)": {
+                type: "string",
+                value: "1"
+            },
+            "Linked?": {
+                type: "boolean",
+                value: true
+            }
         }
-    ]
+    }
 
     let ActionFunctions = {
         "Add Track": (trackName: string, trackType: ResolveEnums.TrackType, addUntilX: number) => {
@@ -1273,25 +1021,33 @@
 
     let NewActionDropdown: string;
     function AddNewAction(): void {
-        const newAction = Actions.find(action => action.name == NewActionDropdown);
-        const clonedAction = JSON.parse(JSON.stringify(newAction));
-        clonedAction.UUID = Common.GetRandomHash(8);
-        _profiles[CurrentProfile].actions.push(clonedAction);
+        let parameters: {[key: string]: any} = {};
+        for (const [actionName, actionInput] of Object.entries(ActionValueLookup[NewActionDropdown])) {
+            parameters[actionName] = actionInput.value;
+        }
+
+        const newAction: Action = {
+            Minimized: false,
+            Name: NewActionDropdown,
+            Parameters: parameters
+        }
+        _profiles[CurrentProfile][Common.GetRandomHash(8)] = newAction;
         UpdateDatastore();
     }
 
     function DeleteAction(actionUUID: string): void {
-        _profiles[CurrentProfile].actions = _profiles[CurrentProfile].actions.filter(action => action.UUID != actionUUID);
+        for (const [UUID, action] of Object.entries(_profiles[CurrentProfile])) {
+            if (UUID == actionUUID) {
+                delete _profiles[CurrentProfile][UUID];
+            }
+        }
         UpdateDatastore();
     }
 
     function AddNewProfile(): void {
         if (Object.keys(_profiles).includes("New Profile")) return;
 
-        _profiles["New Profile"] = {
-            name: "New Profile",
-            actions: []
-        }
+        _profiles["New Profile"] = {}
         UpdateDatastore();
     }
 
@@ -1313,19 +1069,25 @@
             originPlayheadFrame = ResolveFunctions.ConvertTimecodeToFrames(currentTimeline.GetCurrentTimecode());
         }
         
-        _profiles[CurrentProfile].actions.forEach(action => {
-            const actionFunction = ActionFunctions[action.function];
-            const actionValues = action.values.map(value => value.value);
-            console.log(action.function, actionValues);
+        for (const [UUID, action] of Object.entries(_profiles[CurrentProfile])) {
+            const actionFunction = ActionFunctions[action.Name];
+            let actionValues: any[] = [];
+            for (const [valueName, actionInput] of Object.entries(ActionValueLookup[action.Name])) {
+                actionValues.push(actionInput.value);
+            }
+            console.log(action.Name, actionValues);
             actionFunction(...actionValues);
-        });
+        }
     }
 
-    function UpdateProfileKeyName(): void {
-        _profiles[_profiles[CurrentProfile].name] = _profiles[CurrentProfile];
-        const oldProfileName = CurrentProfile;
-        CurrentProfile = _profiles[CurrentProfile].name;
-        delete _profiles[oldProfileName];
+    let profileNameChangeInput: HTMLInputElement;
+    function UpdateProfileKeyName(event: any): void {
+
+        _profiles[profileNameChangeInput.value] = _profiles[CurrentProfile];
+        delete _profiles[CurrentProfile];
+
+        CurrentProfile = profileNameChangeInput.value
+
         UpdateDatastore();
     }
 
@@ -1344,13 +1106,13 @@
         return dialogResult;
     }
     
-    function ChooseFileButton(file: boolean, folder: boolean, _action: Action, actionInput: ActionInput): void {
-        let importMediaCaseValue = _action.values.find(value => value.name == "File Or Folder");
-        if (importMediaCaseValue.value == "File") {
+    function ChooseFileButton(file: boolean, folder: boolean, valueName: string, actionValue: string, parameters: {[key: string]: any}): void {
+        let importMediaCaseValue = (valueName == "File Or Folder");
+        if (actionValue == "File" && importMediaCaseValue) {
             file = true;
             folder = false;
         }
-        else if (importMediaCaseValue.value = "Folder") {
+        else if (actionValue == "Folder" && importMediaCaseValue) {
             file = false;
             folder = true;
         }
@@ -1358,43 +1120,48 @@
         const result = ChooseFile(file, folder);
         if (result.length == 0) return;
 
-        // Really Ugly, but it works
-        _profiles[CurrentProfile].actions.find(action => action.UUID == _action.UUID).values.find(value => value.name == actionInput.name).value = result[0];
+        parameters[valueName] = result[0];
         UpdateDatastore();
     }
 
     function MoveActionInList(upOrDown: 'Back' | 'Forward', SelectedAction: string): void {
-        const actionList = _profiles[CurrentProfile].actions;
-        const actionIndex = actionList.findIndex(action => action.UUID == SelectedAction);
-        const action = actionList[actionIndex];
+        const action = _profiles[CurrentProfile][SelectedAction];
+        const actionKeys = Object.keys(_profiles[CurrentProfile]);
+        const actionIndex = actionKeys.indexOf(SelectedAction);
 
         if (upOrDown == 'Back') {
             if (actionIndex == 0) return;
-            actionList.splice(actionIndex, 1);
-            actionList.splice(actionIndex - 1, 0, action);
+
+            let actionToSwap = _profiles[CurrentProfile][actionKeys[actionIndex - 1]];
+            _profiles[CurrentProfile][actionKeys[actionIndex - 1]] = action;
+            _profiles[CurrentProfile][actionKeys[actionIndex]] = actionToSwap;
         }
         else if (upOrDown == 'Forward') {
-            if (actionIndex == actionList.length - 1) return;
-            actionList.splice(actionIndex, 1);
-            actionList.splice(actionIndex + 1, 0, action);
+            if (actionIndex == actionKeys.length - 1) return;
+
+            let actionToSwap = _profiles[CurrentProfile][actionKeys[actionIndex + 1]];
+            _profiles[CurrentProfile][actionKeys[actionIndex + 1]] = action;
+            _profiles[CurrentProfile][actionKeys[actionIndex]] = actionToSwap;
         }
 
         UpdateDatastore();
     }
 
-    function RunSpecificAction(action: Action): void {
+    function RunSpecificAction(actionName: string): void {
         const currentTimeline = ResolveFunctions.GetCurrentTimeline();
         originPlayheadFrame = undefined;
         if (currentTimeline) {
             originPlayheadFrame = ResolveFunctions.ConvertTimecodeToFrames(currentTimeline.GetCurrentTimecode());
         }
 
-        const actionFunction = ActionFunctions[action.function];
-        const actionValues = action.values.map(value => value.value);
-        console.log(action.function, actionValues);
+        const actionFunction = ActionFunctions[actionName];
+        let actionValues: any[] = [];
+        for (const [valueName, actionInput] of Object.entries(ActionValueLookup[actionName])) {
+            actionValues.push(actionInput.value);
+        }
+        console.log(actionName, actionValues);
         actionFunction(...actionValues);
     }
-
 </script>
 
 
@@ -1411,7 +1178,7 @@
 
         <div id=profileNameContainer>
             <p>Profile Name:</p>
-            <input type="text" bind:value={_profiles[CurrentProfile].name} on:change={UpdateProfileKeyName} />
+            <input type="text" bind:this={profileNameChangeInput} on:change={UpdateProfileKeyName} />
         </div>
 
         <div id=topButtons>
@@ -1429,48 +1196,49 @@
     <div id="actionList">
 
         <div id="autoGen">
-            {#each _profiles[CurrentProfile].actions as action}
+            {#each Object.entries(_profiles[CurrentProfile]) as [UUID, action]}
                 <div class="action" transition:slide|local>
                     <div class=actionHeader transition:fade>
                         <div id=actionHeaderLeft>
                             {#if showActionArrows}
                                 <div id="moveContainer">
                                     <!-- svelte-ignore a11y-click-events-have-key-events -->
-                                    <div id="arrowUpContainer" on:click={() => { MoveActionInList('Back', action.UUID) }} ><img src="../src/assets/arrowUp.svg" alt="Up"></div>
+                                    <div id="arrowUpContainer" on:click={() => { MoveActionInList('Back', UUID) }} ><img src="../src/assets/arrowUp.svg" alt="Up"></div>
                                     <!-- svelte-ignore a11y-click-events-have-key-events -->
-                                    <div id="arrowDownContainer" on:click={() => { MoveActionInList('Forward', action.UUID) }} ><img src="../src/assets/arrowDown.svg" alt="Up"></div>
+                                    <div id="arrowDownContainer" on:click={() => { MoveActionInList('Forward', UUID) }} ><img src="../src/assets/arrowDown.svg" alt="Up"></div>
                                 </div>
                             {/if}
                             <!-- svelte-ignore a11y-click-events-have-key-events -->
-                            <h2 on:click={() => { RunSpecificAction(action) }}>{action.name}</h2>
+                            <h2 on:click={() => { RunSpecificAction(action.Name) }}>{action.Name}</h2>
                         </div>
                         <div>
                             <button class="buttonStyle" on:click={() => { action.Minimized = !action.Minimized}}>{action.Minimized ? "Expand" : "Minimize"}</button>
-                            <button class=buttonStyle id=DeleteAction on:click={() => { DeleteAction(action.UUID)}}><b>-</b></button>
+                            <button class=buttonStyle id=DeleteAction on:click={() => { DeleteAction(UUID)}}><b>-</b></button>
                         </div>
                     </div>
 
                     {#if !action.Minimized}
                         <div class="actionInputs" transition:slide|local>
-                            {#each action.values as value}
+                            {#each Object.entries(ActionValueLookup[action.Name]) as [valueName, actionInput]}
+
                                 <div class="actionInput">
-                                    <label for={value.name}>{value.name}</label>
+                                    <label for={valueName}>{valueName}</label>
                                     <div>
-                                        {#if value.type == "string"}
-                                            <input type="text" bind:value={value.value} />
-                                        {:else if value.type == "number"}
-                                            <input type="number" bind:value={value.value} />
-                                        {:else if value.type == "boolean"}
-                                            <input type="checkbox" bind:checked={value.value} />
-                                        {:else if value.type == "dropdown"}
-                                            <select bind:value={value.value}>
-                                                {#each value.dropdownOptions as option}
+                                        {#if actionInput.type == "string"}
+                                            <input type="text" bind:value={action.Parameters[valueName]} />
+                                        {:else if actionInput.type == "number"}
+                                            <input type="number" bind:value={action.Parameters[valueName]} />
+                                        {:else if actionInput.type == "boolean"}
+                                            <input type="checkbox" bind:checked={action.Parameters[valueName]} />
+                                        {:else if actionInput.type == "dropdown"}
+                                            <select bind:value={action.Parameters[valueName]}>
+                                                {#each actionInput["dropdownOptions"] as option}
                                                     <option value={option}>{option}</option>
                                                 {/each}
                                             </select>
-                                        {:else if value.type == "file"}
-                                            <input type="text" bind:value={value.value}>
-                                            <button class=buttonStyle on:click={() => { ChooseFileButton(true, false, action, value) }}>.../</button>
+                                        {:else if actionInput.type == "file"}
+                                            <input type="text" bind:value={action.Parameters[valueName]}>
+                                            <button class=buttonStyle on:click={() => { ChooseFileButton(true, false, valueName, actionInput.value, action.Parameters) }}>.../</button>
                                         {/if}
                                     </div>
                                 </div>
@@ -1488,8 +1256,8 @@
 
         <div id="addAction">
             <select id="actionDropdown" bind:value={NewActionDropdown}>
-                {#each Actions as action}
-                    <option value={action.name}>{action.name}</option>
+                {#each Object.keys(ActionValueLookup) as actionKey}
+                    <option value={actionKey}>{actionKey}</option>
                 {/each}
             </select>
             <button class=buttonStyle on:click={AddNewAction}>Add New Action</button>
