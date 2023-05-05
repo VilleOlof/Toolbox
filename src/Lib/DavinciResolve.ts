@@ -24,6 +24,7 @@ export function InitPlugin(): boolean {
     console.log(`Plugin initialized: ${isInitialized}`);
 
     Resolve = WorkflowIntegration.GetResolve();
+    console.log(Resolve);
     //ResolveWorkerHandler.Init();
 
     Logger.Log(`Plugin initialized: [${PluginID}, ${AppSettings.GetMetadata().Version}]`, 'info', 'file')

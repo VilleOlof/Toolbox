@@ -1005,6 +1005,17 @@ declare type Resolve = {
      * @param enabled 
      */
     SetSourceViewerMode(mode: string): boolean;
+
+    /**
+     * **Undocumented**
+     * Does some kind of automated color page testing
+     */
+    TriggerCtrKTest(): boolean;
+
+    /**
+     * **Undocumented**
+     */
+    SetHighPriority(): any;
 };
 
 declare type ProjectManager = {
@@ -1132,6 +1143,12 @@ declare type ProjectManager = {
         See dbInfo type for more information.
      */
     SetCurrentDatabase(dbInfo: dbInfo): boolean;
+
+    /**
+     * Undocumented
+     * Havent been able to call it with the right arguments.
+     */
+    GetProjectLastModifiedTime(): void;
 };
 
 declare type Project = {
@@ -1322,6 +1339,14 @@ declare type Project = {
      */
     GetTimelineFromUniqueID(uniqueID: string): Timeline;
 
+    /**
+     * **Undocumented**
+     * 
+     * @param filePath
+     * @param frameOffset 
+     * @param duration 
+     */
+    InsertAudioToCurrentTrackAtPlayhead(filePath: string, frameOffset: any, duration: any): boolean;
 };
 declare type MediaStorage = {
 
