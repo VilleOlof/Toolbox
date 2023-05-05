@@ -77,17 +77,17 @@ export namespace Common {
          * Common.IO.WriteFile("path/to/file", { "key": "value" }, true);
          * ```
          */
-        export function WriteFile(path: string, content: any, json?:boolean, stringifyContentDefault: boolean = true): void {
+        export function WriteFile(_path: string, content: any, json?:boolean, stringifyContentDefault: boolean = true): void {
             if ((json || typeof content != "string") && stringifyContentDefault) content = JSON.stringify(content, null, 4);
 
             //Check if the directory exists
-            let dir: string = path.substring(0, path.lastIndexOf("/"));
+            let dir: string = _path.substring(0, _path.lastIndexOf(path.sep));
             if (!fs.existsSync(dir)) {   
                 //Create the directory
                 CreateDirectory(dir);
             }
 
-            fs.writeFileSync(path, content, { encoding: "utf8", flag: "w" });
+            fs.writeFileSync(_path, content, { encoding: "utf8", flag: "w" });
         }
 
         export function AppendToFile(path: string, content: any): void {

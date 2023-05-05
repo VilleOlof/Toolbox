@@ -1041,7 +1041,7 @@
             }
 
             const trackNumbers = audioTracks.split(",").map(Number);
-            
+            console.log(trackNumbers);
 
             const videoItem = ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, [videoTrack], currentTimeline) as TimelineItem;
             const audioItems = trackNumbers[0] != 0 ? ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Audio, trackNumbers, currentTimeline) as TimelineItem[] : [];
@@ -1051,13 +1051,17 @@
                 audio: audioItems ?? [],
                 trackToAppend: videoTrack
             }
-
             let playhead = ResolveFunctions.ConvertTimecodeToFrames(currentTimeline.GetCurrentTimecode());
             let currentFrame = playhead;
 
             currentFrame += frameOffset;
             currentFrame -= videoItem.GetStart();
 
+            // const timelineFrameRate = ResolveFunctions.GetTimelineFramerate(currentTimeline);
+            // const mediaFPS = parseInt(videoItem.GetMediaPoolItem().GetClipProperty('FPS') as string);
+            // currentFrame = currentFrame / (timelineFrameRate / mediaFPS);
+
+            //console.log(cutItems, [currentFrame]);
             ResolveFunctions.CutTimelineItem(cutItems, [currentFrame]);
 
             currentTimeline.SetCurrentTimecode(ResolveFunctions.ConvertFramesToTimecode(playhead));

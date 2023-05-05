@@ -807,7 +807,8 @@ export class ResolveFunctions {
         }
 
         //delete the old clips
-        currentTimeline.DeleteClips([CutItems.video, ...CutItems.audio]);
+        if (CutItems.audio.length == 0) currentTimeline.DeleteClips([CutItems.video]);
+        else currentTimeline.DeleteClips([CutItems.video, ...CutItems.audio]);
 
         //Add the new 'cut' clips
         const videoTimelineItems = mediaPool.AppendToTimeline(videoClipInfo);
