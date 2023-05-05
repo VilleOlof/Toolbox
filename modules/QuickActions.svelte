@@ -454,6 +454,11 @@
             "Frame Offset": {
                 type: "number",
                 value: 0,
+            },
+            "Origin Track Type": {
+                type: "dropdown",
+                value: "Video",
+                dropdownOptions: Object.keys(ResolveEnums.TrackType),
             }
         },
         "Rename Media Item": {
@@ -674,11 +679,11 @@
 
             currentMediapool.AppendToTimeline([clipInfo]);
         },
-        "Duplicate Clip": (originTrack: number, destTrack: number, frameOffset: number) => {
+        "Duplicate Clip": (originTrack: number, destTrack: number, frameOffset: number, originTrackType: ResolveEnums.TrackType) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             const currentMediapool = ResolveFunctions.GetCurrentProject().GetMediaPool();
 
-            const selectedItem = ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, originTrack, currentTimeline) as TimelineItem;
+            const selectedItem = ResolveFunctions.GetTimelineItem(originTrackType, originTrack, currentTimeline) as TimelineItem;
             if (!selectedItem) return;
             const mediaReference = selectedItem.GetMediaPoolItem();
 
