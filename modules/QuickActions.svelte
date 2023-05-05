@@ -1041,13 +1041,14 @@
             }
 
             const trackNumbers = audioTracks.split(",").map(Number);
+            
 
             const videoItem = ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, [videoTrack], currentTimeline) as TimelineItem;
-            const audioItems = ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Audio, trackNumbers, currentTimeline) as TimelineItem[];
+            const audioItems = trackNumbers[0] != 0 ? ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Audio, trackNumbers, currentTimeline) as TimelineItem[] : [];
 
             const cutItems: ResolveFunctions.CutItems = {
                 video: videoItem,
-                audio: audioItems,
+                audio: audioItems ?? [],
                 trackToAppend: videoTrack
             }
 
