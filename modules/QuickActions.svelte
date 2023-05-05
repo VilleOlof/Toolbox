@@ -685,7 +685,7 @@
             const clipInfo: ClipInfo = {
                 mediaPoolItem: mediaReference,
                 startFrame: selectedItem.GetLeftOffset(),
-                endFrame: selectedItem.GetRightOffset(),
+                endFrame: selectedItem.GetRightOffset() - 1,
 
                 trackIndex: destTrack,
                 recordFrame: (selectedItem.GetStart() + frameOffset)
@@ -985,6 +985,7 @@
             if (!Array.isArray(items)) {
                 items = [items];
             }
+            if (items.length == 0 || items === undefined) return;
 
             currentTimeline.DeleteClips(items);
         },
@@ -1200,7 +1201,7 @@
         UpdateDatastore();
     }
 
-    function RunSpecificAction(actionName: string): void {
+    function RunSpecificAction(actionName: string, UUID: string): void {
         const currentTimeline = ResolveFunctions.GetCurrentTimeline();
         originPlayheadFrame = undefined;
         if (currentTimeline) {
@@ -1208,7 +1209,7 @@
         }
 
         const actionFunction = ActionFunctions[actionName];
-        const params = Object.values(_profiles[CurrentProfile][actionName].Parameters);
+        const params = Object.values(_profiles[CurrentProfile][UUID].Parameters);
         console.log(actionName, params);
         actionFunction(...params);
     }
@@ -1259,7 +1260,7 @@
                                 </div>
                             {/if}
                             <!-- svelte-ignore a11y-click-events-have-key-events -->
-                            <h2 on:click={() => { RunSpecificAction(action.Name) }}>{action.Name}</h2>
+                            <h2 on:click={() => { RunSpecificAction(action.Name, UUID) }}>{action.Name}</h2>
                         </div>
                         <div>
                             <button class="buttonStyle" on:click={() => { action.Minimized = !action.Minimized}}>{action.Minimized ? "Expand" : "Minimize"}</button>
