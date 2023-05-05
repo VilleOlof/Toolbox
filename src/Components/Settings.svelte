@@ -298,7 +298,7 @@
 
         //write zip to disk
         if (AppSettings.GetSetting('Debug', false)) console.log(`Writing zip to ${saveLocation}`);
-        zip.writeZip(path.join(saveLocation, 'ToolboxData.zip'));
+        zip.writeZip(path.join(saveLocation, `ToolboxData-${Date.now()}.zip`));
     }
 
     const ImportDataAsZIP = () => {

@@ -14,7 +14,7 @@
 
     onMount(() => {
         ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Large,
-            "Create Youtube chapter text based on markers duration in the timeline.",
+            "Create Youtube chapter text based on markers in the timeline.",
         );
     });
 

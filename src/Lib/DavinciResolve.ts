@@ -760,6 +760,7 @@ export class ResolveFunctions {
             CutItems = {
                 video: undefined,
                 audio: [],
+                trackToAppend: 1
             };
 
             CutItems.video = ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, 1, currentTimeline) as TimelineItem;
@@ -777,15 +778,18 @@ export class ResolveFunctions {
         const CutStart = CutItems.video.GetStart();
         const CutEnd = CutItems.video.GetEnd();
 
+        const CutLeftOffset = CutItems.video.GetLeftOffset();
+
         const videoClipInfo: ClipInfo[] = [];
 
-        for (let i = 0; i <= framesToCut.length; i++) {
+        framesToCut.push(CutEnd - CutStart);
+        for (let i = 0; i < framesToCut.length; i++) {
             let cutFrame = framesToCut[i];
 
             let previousFrame = framesToCut[i - 1];
             if (!previousFrame) previousFrame = 0;
 
-            if (i == framesToCut.length) {
+            if (i+1 == framesToCut.length) {
                 cutFrame = CutEnd - CutStart;
             }
             
@@ -793,9 +797,10 @@ export class ResolveFunctions {
 
             const clipInfo: ClipInfo = {
                 mediaPoolItem: videoMediaPoolReference, //The media pool reference
-                startFrame: previousFrame, //The start frame of the clip
-                endFrame: cutFrame, //The end frame of the clip
+                startFrame: previousFrame + CutLeftOffset, //The start frame of the clip
+                endFrame: cutFrame + CutLeftOffset, //The end frame of the clip
                 recordFrame: CutStart + previousFrame, //Where in the timeline to put the clip
+                trackIndex: CutItems.trackToAppend, //The track to put the clip on
             }
 
             videoClipInfo.push(clipInfo);
@@ -844,5 +849,6 @@ export module ResolveFunctions {
     export type CutItems = {
         video: TimelineItem,
         audio: TimelineItem[],
+        trackToAppend: number,
     }
 }

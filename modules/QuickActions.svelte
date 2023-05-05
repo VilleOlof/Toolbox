@@ -484,6 +484,26 @@
                 type: "boolean",
                 value: true
             }
+        },
+        "Cut Item": {
+            "Video Track": {
+                type: "number",
+                value: 1
+            },
+            "Audio Tracks (1,2,3)": {
+                type: "string",
+                value: "1"
+            },
+            "Frame Offset": {
+                type: "number",
+                value: 0,
+            }
+        },
+        "Run Profile": {
+            "Profile Name": {
+                type: "string",
+                value: "New Profile"
+            }
         }
     }
 
@@ -664,15 +684,14 @@
 
             const clipInfo: ClipInfo = {
                 mediaPoolItem: mediaReference,
-                startFrame: parseInt(mediaReference.GetClipProperty("Start") as string),
-                endFrame: parseInt(mediaReference.GetClipProperty("End") as string),
+                startFrame: selectedItem.GetLeftOffset(),
+                endFrame: selectedItem.GetRightOffset(),
 
                 trackIndex: destTrack,
                 recordFrame: (selectedItem.GetStart() + frameOffset)
             }
 
             currentMediapool.AppendToTimeline([clipInfo]);
-
         },
         "Apply LUT": (filePath: string, fileOrFolder: "File" | "Folder", tracks: string) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
@@ -1012,6 +1031,40 @@
             }
 
             currentTimeline.SetClipsLinked(TotalItems, linked);
+        },
+        "Cut Item": (videoTrack: number, audioTracks: string, frameOffset: number) => {
+            const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+            if (!currentTimeline) {
+                console.warn("No timeline selected");
+                return;
+            }
+
+            const trackNumbers = audioTracks.split(",").map(Number);
+
+            const videoItem = ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, [videoTrack], currentTimeline) as TimelineItem;
+            const audioItems = ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Audio, trackNumbers, currentTimeline) as TimelineItem[];
+
+            const cutItems: ResolveFunctions.CutItems = {
+                video: videoItem,
+                audio: audioItems,
+                trackToAppend: videoTrack
+            }
+
+            let playhead = ResolveFunctions.ConvertTimecodeToFrames(currentTimeline.GetCurrentTimecode());
+            let currentFrame = playhead;
+
+            currentFrame += frameOffset;
+            currentFrame -= videoItem.GetStart();
+
+            ResolveFunctions.CutTimelineItem(cutItems, [currentFrame]);
+
+            currentTimeline.SetCurrentTimecode(ResolveFunctions.ConvertFramesToTimecode(playhead));
+        },
+        "Run Profile": (profileName: string) => {
+            const profileActions = _profiles[profileName];
+            if (!profileActions) return;
+
+            RunActions(profileName);
         }
     }
 
@@ -1059,17 +1112,19 @@
         }
 
         CurrentProfile = Object.keys(_profiles)[0];
+        profileNameChangeInput.value = CurrentProfile
         UpdateDatastore();
     }
 
-    function RunActions(): void {
+    function RunActions(profileName?: string): void {
         const currentTimeline = ResolveFunctions.GetCurrentTimeline();
         originPlayheadFrame = undefined;
         if (currentTimeline) {
             originPlayheadFrame = ResolveFunctions.ConvertTimecodeToFrames(currentTimeline.GetCurrentTimecode());
         }
+        profileName = profileName ?? CurrentProfile;
         
-        for (const [UUID, action] of Object.entries(_profiles[CurrentProfile])) {
+        for (const [UUID, action] of Object.entries(_profiles[profileName])) {
             const actionFunction = ActionFunctions[action.Name];
             const params = Object.values(action.Parameters);
             console.log(action.Name, params);
@@ -1078,7 +1133,8 @@
     }
 
     let profileNameChangeInput: HTMLInputElement;
-    function UpdateProfileKeyName(event: any): void {
+    function UpdateProfileKeyName(): void {
+        if (!profileNameChangeInput) return;
 
         _profiles[profileNameChangeInput.value] = _profiles[CurrentProfile];
         delete _profiles[CurrentProfile];
@@ -1163,7 +1219,7 @@
     <div id="top">
         <div id=topTitle>
             <h1>Quick Actions</h1>
-            <select id="actionProfiles" bind:value={CurrentProfile}>
+            <select id="actionProfiles" bind:value={CurrentProfile} on:change={() => {profileNameChangeInput.value = CurrentProfile}}>
                 {#each Object.keys(_profiles) as profile}
                     <option value={profile}>{profile}</option>
                 {/each}
@@ -1172,7 +1228,7 @@
 
         <div id=profileNameContainer>
             <p>Profile Name:</p>
-            <input type="text" bind:this={profileNameChangeInput} on:change={UpdateProfileKeyName} />
+            <input type="text" bind:this={profileNameChangeInput} on:input={UpdateProfileKeyName} />
         </div>
 
         <div id=topButtons>
@@ -1182,7 +1238,7 @@
             </div>
         
             <div>
-                <button class=buttonStyle on:click={RunActions}>Run Actions</button>
+                <button class=buttonStyle on:click={() => { RunActions() }}>Run Actions</button>
             </div>
         </div>
     </div>
@@ -1191,7 +1247,7 @@
 
         <div id="autoGen">
             {#each Object.entries(_profiles[CurrentProfile]) as [UUID, action]}
-                <div class="action" transition:slide|local>
+                <div class="action" id={`action-${UUID}`} transition:slide|local>
                     <div class=actionHeader transition:fade>
                         <div id=actionHeaderLeft>
                             {#if showActionArrows}
@@ -1300,6 +1356,8 @@
 
         border-radius: 0.25rem;
         padding: 0.25rem;
+
+        transition: background-color 0.2s ease-in-out;
     }
 
     .actionHeader {
@@ -1535,7 +1593,7 @@
     .lineBreak {
         width: 90%;
         height: 0.2rem;
-
+        
         background-color: Colors.$ColumnColor;
         opacity: 0.75;
 
