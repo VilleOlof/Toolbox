@@ -1115,6 +1115,7 @@
         UpdateDatastore();
     }
 
+    let showConfirm = false;
     function RemoveProfile(): void {
         delete _profiles[CurrentProfile];
 
@@ -1245,7 +1246,7 @@
         <div id=topButtons>
             <div>
                 <button class=buttonStyle on:click={AddNewProfile}>Add New</button>
-                <button class=buttonStyle on:click={RemoveProfile}>Remove Profile</button>
+                <button class=buttonStyle on:click={() => { showConfirm = true }}>Remove Profile</button>
             </div>
         
             <div>
@@ -1325,6 +1326,18 @@
         </div>
 
     </div>
+
+    {#if showConfirm}
+        <div class="confirmContainer">
+            <div class="confirmBox">
+                <h1>Are you sure you want to delete this profile?</h1>
+                <div>
+                    <button class=buttonStyle on:click={() => { showConfirm = false }}>Cancel</button>
+                    <button class=buttonStyle on:click={() => { RemoveProfile(); showConfirm = false }}>Delete</button>
+                </div>
+            </div>
+        </div>
+    {/if}
 
 </main>
 
@@ -1617,6 +1630,58 @@
     #DeleteAction {
         padding: 0.2rem 0;
         min-width: 2rem;
+    }
+
+    .confirmContainer {
+        position: fixed;
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        height: 100%;
+
+        background-color: rgba(0, 0, 0, 0.5);
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        z-index: 100;
+    }
+
+    .confirmBox {
+        background-color: Colors.$ColumnColor;
+        color: Colors.$TextColor;
+
+        border-radius: 0.25rem;
+        border-color: Colors.$BackgroundColor;
+
+        outline: none;
+
+        font-size: 0.75rem;
+
+        padding: 0.5rem;
+
+        max-width: 17rem;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        text-align: center;
+
+        & > div {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
+            & > button {
+                margin-left: 0.5rem;
+            }
+        }
     }
 
 </style>

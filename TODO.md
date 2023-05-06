@@ -5,7 +5,6 @@ And list of priorities.
 
 ## High Priority  
 
-- Improve Dev Version (And make it public)  
 - Update DataStore to be more like Settings in terms of data loading.  
 
 ## Other Stuff  
