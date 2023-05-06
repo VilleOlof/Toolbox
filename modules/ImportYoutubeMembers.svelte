@@ -13,7 +13,10 @@
     const componentID: string = "ImportYoutubeMembers";
 
     onMount(() => {
-        ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Large);
+        ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Large,
+            "Import Youtube Members with a CSV file\n" +
+            "Create Templates For Each Teir"
+        );
 
         UpdateInputsLookups();
     });

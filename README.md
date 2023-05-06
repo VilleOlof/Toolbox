@@ -62,6 +62,11 @@ If you find any, please report them in the [Issues](https://github.com/VilleOlof
     Allows you to write notes and save them between sessions (Or not!).  
 - **[Timer](./modules/Timer.svelte)**  
     A simple module to keep track of time or a countdown.  
+- **[Youtube Chapters](./modules/YoutubeChapters.svelte)**  
+    Create Youtube chapter text based on markers in the timeline.  
+- **[Import Youtube Members](./modules/ImportYoutubeMembers.svelte)**  
+    Import Youtube Members with a CSV file.  
+    Create Templates For Each Teir
 
 ## **Installation**  
 
