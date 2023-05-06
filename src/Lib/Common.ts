@@ -110,18 +110,23 @@ export namespace Common {
          * @param fileExt the file extension to filter by
          * @returns an array of files
          */
-        export function GetFiles(path: string, fileExt?: string): string[] {
+        export function GetFiles(_path: string, fileExts?: string[], subDirs: boolean = false): string[] {
             let files: string[] = [];
-            let dir: string[] = fs.readdirSync(path);
+            let dir: string[] = fs.readdirSync(_path);
 
             for (let i = 0; i < dir.length; i++) {
-                let filePath: string = path + "/" + dir[i];
+                let filePath: string = _path + path.sep + dir[i];
                 let stat = fs.statSync(filePath);
 
-                if (stat.isDirectory()) {
-                    files = files.concat(GetFiles(filePath, fileExt));
-                } else {
-                    if (fileExt && filePath.endsWith(fileExt)) {
+                if (stat.isDirectory() && subDirs) {
+                    files = files.concat(GetFiles(filePath, fileExts));
+                } else if (!stat.isDirectory()) {
+                    let fileExt: string = path.extname(filePath);
+                    if (fileExts && fileExts.includes(fileExt)) {
+                        files.push(filePath);
+                    }
+
+                    if (!fileExts) {
                         files.push(filePath);
                     }
                 }
@@ -146,8 +151,8 @@ export namespace Common {
          * @param path the path to the file
          * @returns the last modified date
          */
-        export function GetFileLastModified(path: string): Date {
-            return fs.statSync(path).mtime;
+        export function GetFileLastModified(path: string): number {
+            return fs.statSync(path).mtime.getTime();
         }
 
         /**
@@ -731,6 +736,21 @@ export namespace Common {
      */
     export function GetAdmZipModule() {
         return require('adm-zip');
+    }
+
+    /**
+     * Gets the path node module.
+     * 
+     * @returns the path node module
+     * 
+     * @example
+     * ```typescript
+     * // Getting the path node module
+     * let path: typeof path = Common.GetPathModule();
+     * ```
+     */
+    export function GetPathModule() {
+        return require('path');
     }
 
     /**

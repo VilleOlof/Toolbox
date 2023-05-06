@@ -52,11 +52,12 @@
     }
 
     const ModuleEntryName = (moduleName: string) => {
-        if (moduleName.length > 15) {
-            return moduleName.substring(0, 15) + "...";
-        } else {
-            return moduleName;
-        }
+        // if (moduleName.length > 15) {
+        //     return moduleName.substring(0, 15) + "...";
+        // } else {
+        //     return moduleName;
+        // }
+        return moduleName;
     }
 
 </script>

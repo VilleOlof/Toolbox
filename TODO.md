@@ -22,3 +22,4 @@ And list of priorities.
 - Things get a bit weird when switching projects while having the moduleView open (or even just switching timeline in some cases)
     - Reload window upon project switch?
 - Update isnt deleting "deleted" when updating (probably?)
+- When module names are more than 15 characters and their name is cutoff in the add new list, it screws over the UpdateNav function in moduleHandler, (currently disabled the 15 char limit) (NavBar:59, ModuleHandler:248)
