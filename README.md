@@ -87,6 +87,8 @@ To create your own custom made modules.
 You can copy the template module in ./modules and rename the file to the name of your module.  
 This template module has most of the common in-house imports and code required for a module.  
 
+*Psst! A Dev Version For Creating Modules Easier Can Be Found [Here!](https://github.com/VilleOlof/ToolboxDev)*
+
 Every module consists of a componentID which the plugin uses to identify the module.  
 The component HTML should be wrapped in a main tag with the componentID as the id.  
 **Note: componentID must be the same as the filename (excluding extension), and can't contain spaces**
