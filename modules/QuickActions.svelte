@@ -142,6 +142,10 @@
                 type: "string",
                 value: "Content",
             },
+            "Return To Origin": {
+                type: "boolean",
+                value: true
+            }
         },
         "From Mediapool": {
             "Clip Name (Incl. Ext)": {
@@ -459,6 +463,10 @@
                 type: "dropdown",
                 value: "Video",
                 dropdownOptions: Object.keys(ResolveEnums.TrackType),
+            },
+            "Return To Origin": {
+                type: "boolean",
+                value: true
             }
         },
         "Rename Media Item": {
@@ -629,9 +637,11 @@
             }
         },
         //Maybe make better? carries a lot of similar code to 'Import Media' above
-        "From Mediapool": (clipName: string, binName: string, track: number, startFrame: number, originFrame: 'Relative' | 'Start') => {
+        "From Mediapool": (clipName: string, binName: string, track: number, startFrame: number, originFrame: 'Relative' | 'Start', returnToOrigin: boolean) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             const currentMediapool = ResolveFunctions.GetCurrentProject().GetMediaPool();
+
+            const playhead = currentTimeline.GetCurrentTimecode();
 
             if (binName != "") {
                 let bin = ResolveFunctions.GetMediaFolder(binName);
@@ -678,11 +688,14 @@
             }
 
             currentMediapool.AppendToTimeline([clipInfo]);
+
+            if (returnToOrigin) currentTimeline.SetCurrentTimecode(playhead);
         },
-        "Duplicate Clip": (originTrack: number, destTrack: number, frameOffset: number, originTrackType: ResolveEnums.TrackType) => {
+        "Duplicate Clip": (originTrack: number, destTrack: number, frameOffset: number, originTrackType: ResolveEnums.TrackType, returnToOrigin: boolean) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             const currentMediapool = ResolveFunctions.GetCurrentProject().GetMediaPool();
 
+            const playhead = currentTimeline.GetCurrentTimecode();
             const selectedItem = ResolveFunctions.GetTimelineItem(originTrackType, originTrack, currentTimeline) as TimelineItem;
             if (!selectedItem) return;
             const mediaReference = selectedItem.GetMediaPoolItem();
@@ -697,6 +710,8 @@
             }
 
             currentMediapool.AppendToTimeline([clipInfo]);
+
+            if (returnToOrigin) currentTimeline.SetCurrentTimecode(playhead);
         },
         "Apply LUT": (filePath: string, fileOrFolder: "File" | "Folder", tracks: string) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();

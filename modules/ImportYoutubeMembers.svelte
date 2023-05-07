@@ -45,6 +45,7 @@
         "Last update timestamp": string;
     }
 
+    //Dynamically change the text depending on the headers
     const InfoText: string =
 `How to format the incoming data:
 {Member}
@@ -58,11 +59,12 @@
 Example:
 {Member} Has been a member for {Total time as member (months)} months`;
 
+    let headers: string[] = []
     function ConvertCSVToObject(CSVInput: string): YoutubeMember[] {
         const Lines = CSVInput.split('\n');     
 
         let members: YoutubeMember[] = [];
-        const headers: string[] = Lines[0].split(',');
+        headers = Lines[0].split(',');
 
         for (var i = 1; i < Lines.length; i++) {
             const data = Lines[i].split(',');
@@ -73,7 +75,7 @@ Example:
                 member[headers[j].trim()] = data[j].trim();
             }
 
-            if (!member["Member"]) continue;
+            if (!member[headers[0]]) continue;
 
             members.push(member);
         }
@@ -117,7 +119,8 @@ Example:
 
         let output: string = "";
         CSVData.forEach((member: YoutubeMember) => {
-            const teir = TeirListData[member["Current level"]];
+            const teirHeader = headers[2];
+            const teir = TeirListData[member[teirHeader]];
             if (!teir) return;
 
             output += `${FormatString(teir, member)}\n`;
@@ -131,13 +134,14 @@ Example:
 
         let output: string = "";
         CSVData.forEach((member: YoutubeMember) => {
-            const teir = TeirListData[member["Current level"]];
+            const teirHeader = headers[2];
+            const teir = TeirListData[member[teirHeader]];
             if (!teir) return;
 
-            if (member["Current level"] == teirName) {
+            if (member[teirHeader] == teirName) {
                 output += `${FormatString(teir, member)}\n`;
             } else {
-                output += `${SpecificSeparator}\n`;
+                output += `${SpecificSeparator}`;
             }
         });
 
