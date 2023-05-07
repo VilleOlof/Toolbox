@@ -575,7 +575,7 @@
             const currentMediapool = ResolveFunctions.GetCurrentProject().GetMediaPool();
             currentMediapool.CreateEmptyTimeline(timelineName);
         },
-        "Import Media": (importType: "Timeline" | "Mediapool", defaultPath: string, fileOrFolder: "File" | "Folder", startFrame:number = 0, originFrame: "Relative" | "Start", clipColor: ResolveEnums.ClipColor = ResolveEnums.ClipColor.Blue, trackIndex?: number, mediapoolBinName?: string) => {
+        "Import Media": (importType: "Timeline" | "Mediapool", defaultPath: string, fileOrFolder: "File" | "Folder", startFrame:number = 0, originFrame: "Relative" | "Start", clipColor: ResolveEnums.ClipColor = ResolveEnums.ClipColor.Blue, trackIndex: number, mediapoolBinName: string, returnToOrigin: boolean) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
@@ -584,6 +584,8 @@
 
             const currentProject = ResolveFunctions.GetCurrentProject();
             const currentMediapool = currentProject.GetMediaPool();
+
+            const playheadTimecode = currentTimeline.GetCurrentTimecode();
 
             if (defaultPath == "") {
                 defaultPath = ChooseFile(true, false)[0];
@@ -634,14 +636,14 @@
                 }
 
                 currentMediapool.AppendToTimeline([clipInfo]);
+
+                if (returnToOrigin) currentTimeline.SetCurrentTimecode(playheadTimecode);
             }
         },
         //Maybe make better? carries a lot of similar code to 'Import Media' above
-        "From Mediapool": (clipName: string, binName: string, track: number, startFrame: number, originFrame: 'Relative' | 'Start', returnToOrigin: boolean) => {
+        "From Mediapool": (clipName: string, binName: string, track: number, startFrame: number, originFrame: 'Relative' | 'Start') => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             const currentMediapool = ResolveFunctions.GetCurrentProject().GetMediaPool();
-
-            const playhead = currentTimeline.GetCurrentTimecode();
 
             if (binName != "") {
                 let bin = ResolveFunctions.GetMediaFolder(binName);
@@ -688,8 +690,6 @@
             }
 
             currentMediapool.AppendToTimeline([clipInfo]);
-
-            if (returnToOrigin) currentTimeline.SetCurrentTimecode(playhead);
         },
         "Duplicate Clip": (originTrack: number, destTrack: number, frameOffset: number, originTrackType: ResolveEnums.TrackType, returnToOrigin: boolean) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
