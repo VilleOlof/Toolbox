@@ -22,7 +22,8 @@
     const _Datastore = new DataStore(componentID);
 
     const markerColor: ResolveEnums.MarkerColor = _Settings.RegisterSetting('Marker Color', 'What color to search for when looking for markers.', ResolveEnums.MarkerColor.Rose, SettingTypes.Type.Dropdown, <SettingTypes.Dropdown>{ Options: Object.keys(ResolveEnums.MarkerColor)});
-    
+    const UseMarkerTool: boolean = _Settings.RegisterSetting('Use Marker Tool', 'Use the marker tool to set the starting point using the "start marker"', false, SettingTypes.Type.Checkbox);
+
     let StartMarkerName = _Datastore.Get<string>('DefaultMarkerName', 'Start')
     $: _Datastore.Set('DefaultMarkerName', StartMarkerName);
 
@@ -43,12 +44,22 @@
             delete allMarkersInTimeline[-1];
         }
 
+        let frameOffset: number = 0;
+        if (UseMarkerTool) {
+            let markerDatastore = DataStore.GetDataStoreByID('MarkerTool')
+            if (!markerDatastore) return;
+            let startMarkerData = markerDatastore.Get<string>('StartMarker');
+
+            let Marker: ResolveFunctions.CheckMarker = ResolveFunctions.CheckIfMarkerExists(startMarkerData, true);
+            if (startMarkerData != null && Marker.Exists) frameOffset = Marker.MarkerData.frameId;
+        }
+
         for (const [frameId, markerData] of Object.entries(allMarkersInTimeline)) {
             if (markerData.color != markerColor) continue;
 
             markers.push({
                 name: markerData.name,
-                frameID: (parseInt(frameId)) + 1
+                frameID: ((parseInt(frameId)) + 1) - frameOffset
             });
         }
 
