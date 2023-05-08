@@ -88,8 +88,8 @@
         const videoTracks = profile.Video ? SplitTrackStrings(profile.Video) : [];
         const audioTracks = profile.Audio ? SplitTrackStrings(profile.Audio) : [];
 
-        const videoTracksDisable = SplitTrackStrings(profile.VideoDisabled);
-        const audioTracksDisable = SplitTrackStrings(profile.AudioDisabled);
+        const videoTracksDisable = profile.VideoDisabled ? SplitTrackStrings(profile.VideoDisabled) : [];
+        const audioTracksDisable = profile.AudioDisabled ? SplitTrackStrings(profile.AudioDisabled) : [];
 
         if (!isNaN(videoTracks[0])) {
             for (let i = 0; i < videoTracks.length; i++) {
