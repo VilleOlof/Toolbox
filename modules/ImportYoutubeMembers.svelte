@@ -28,11 +28,17 @@
     const UpdateDataStore = () => TeirListData = TeirListData;
 
     const _Settings = GlobalSettings.GetInstance(componentID);
-    const SpecificSeparator = _Settings.RegisterSetting(
+    const SpecificSeparator: string = _Settings.RegisterSetting(
         'Specific Separator',
         'The separator to use when copying a specific teir\nThe text where other teirs would be normally',
         '',
         SettingTypes.Type.Text
+    );
+    const SeperatorNewline: boolean = _Settings.RegisterSetting(
+        'Seperator Newline',
+        'Should the separator be a newline',
+        true,
+        SettingTypes.Type.Checkbox
     );
 
     type YoutubeMember = {
@@ -141,9 +147,10 @@ Example:
             if (member[teirHeader] == teirName) {
                 output += `${FormatString(teir, member)}\n`;
             } else {
-                output += `${SpecificSeparator}`;
+                output += SpecificSeparator + (SeperatorNewline ? "\n" : "");
             }
         });
+        console.log(output)
 
         CopyToClipboard(output)
     }
