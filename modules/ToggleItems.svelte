@@ -85,8 +85,8 @@
         if (!currentTimeline) return;
 
         const profile = Profiles[profileIndex];
-        const videoTracks = SplitTrackStrings(profile.Video);
-        const audioTracks = SplitTrackStrings(profile.Audio);
+        const videoTracks = profile.Video ? SplitTrackStrings(profile.Video) : [];
+        const audioTracks = profile.Audio ? SplitTrackStrings(profile.Audio) : [];
 
         const videoTracksDisable = SplitTrackStrings(profile.VideoDisabled);
         const audioTracksDisable = SplitTrackStrings(profile.AudioDisabled);
@@ -119,6 +119,12 @@
     }
 
     function AddNewProfile(): void {
+        //check if a profile with the same name already exists and if so return
+        for (let i = 0; i < Profiles.length; i++) {
+            const profile = Profiles[i];
+            if (profile.Name == "New Profile") return;
+        }
+        
         Profiles[Profiles.length] = defaultProfile;
         CurrentProfile = Profiles.length - 1;
     }
