@@ -28,6 +28,8 @@
 
     const _Settings = GlobalSettings.GetInstance(componentID);
 
+    const ActiveCurrentProfileKeybind = _Settings.RegisterSetting("Active Profile - Keybind", "The keybind used to toggle the active profile.", "", SettingTypes.Type.Keybind);
+
     const _Datastore = new DataStore(componentID);
 
     let CurrentProfile: number = _Datastore.Get("CurrentProfile", 0);
@@ -47,12 +49,14 @@
     const UpdateProfiles = () => Profiles = Profiles;
 
     function SetupSettingsAndKeybinds() {
+        if (ActiveCurrentProfileKeybind != "") Common.Electron.RegisterShortcut(ActiveCurrentProfileKeybind, () => MainToggle(CurrentProfile));
+
         for (let i = 0; i < Profiles.length; i++) {
             const profile = Profiles[i];
 
             profile.Keybind = _Settings.RegisterSetting(`${profile.Name} - Keybind`, "The keybind used to toggle this specific profile.", profile.Keybind, SettingTypes.Type.Keybind);
 
-            if (profile.Keybind != "") Common.Electron.RegisterShortcut(profile.Keybind, MainToggle);
+            if (profile.Keybind != "") Common.Electron.RegisterShortcut(profile.Keybind, () => MainToggle(i));
         }
     }
     SetupSettingsAndKeybinds();
@@ -73,22 +77,26 @@
 
     const SplitTrackStrings = (input: string) => input.split(",").map(x => parseInt(x));
 
-    function MainToggle(): void {
+    function MainToggle(profileIndex: number): void {
         const currentTimeline = ResolveFunctions.GetCurrentTimeline();
         if (!currentTimeline) return;
 
-        const profile = Profiles[CurrentProfile];
+        const profile = Profiles[profileIndex];
         const videoTracks = SplitTrackStrings(profile.Video);
         const audioTracks = SplitTrackStrings(profile.Audio);
 
-        for (let i = 0; i < videoTracks.length; i++) {
-            const trackIndex = videoTracks[i];
-            ToggleClip(ResolveEnums.TrackType.Video, trackIndex, currentTimeline);
+        if (!isNaN(videoTracks[0])) {
+            for (let i = 0; i < videoTracks.length; i++) {
+                const trackIndex = videoTracks[i];
+                ToggleClip(ResolveEnums.TrackType.Video, trackIndex, currentTimeline);
+            }
         }
 
-        for (let i = 0; i < audioTracks.length; i++) {
-            const trackIndex = audioTracks[i];
-            ToggleClip(ResolveEnums.TrackType.Audio, trackIndex, currentTimeline);
+        if (!isNaN(audioTracks[0])) {
+            for (let i = 0; i < audioTracks.length; i++) {
+                const trackIndex = audioTracks[i];
+                ToggleClip(ResolveEnums.TrackType.Audio, trackIndex, currentTimeline);
+            }
         }
     }
 
@@ -115,7 +123,7 @@
     <div class="header">
         <div class="main">
             <h1>Toggle Item</h1>
-            <button on:click={MainToggle}>Toggle</button>
+            <button on:click={() => MainToggle(CurrentProfile)}>Toggle</button>
         </div>
 
         <div class="profileHandling">
