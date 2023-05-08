@@ -22,8 +22,9 @@
         Video: string,
         Audio: string,
         ForceToggle: boolean,
-        ForceStatus: boolean,
         Keybind: string
+        VideoDisabled: string,
+        AudioDisabled: string
     }
 
     const _Settings = GlobalSettings.GetInstance(componentID);
@@ -41,7 +42,9 @@
         Audio: "",
         ForceToggle: false,
         ForceStatus: false,
-        Keybind: ""
+        Keybind: "",
+        VideoDisabled: "",
+        AudioDisabled: ""
     }
 
     let Profiles: Profile[] = _Datastore.Get("Profiles", [defaultProfile]);
@@ -61,14 +64,14 @@
     }
     SetupSettingsAndKeybinds();
 
-    function ToggleClip(trackType: ResolveEnums.TrackType, index: number, timeline?: Timeline): void {
+    function ToggleClip(trackType: ResolveEnums.TrackType, index: number, timeline?: Timeline, forceEnabled: boolean = false): void {
         timeline = timeline ?? ResolveFunctions.GetCurrentTimeline();
         const timelineItem = ResolveFunctions.GetTimelineItem(trackType, index, timeline) as TimelineItem;
         if (!timelineItem) return;
 
         const profile = Profiles[CurrentProfile];
         if (profile.ForceToggle) {
-            timelineItem.SetClipEnabled(profile.ForceStatus);
+            timelineItem.SetClipEnabled(forceEnabled);
             return;
         }
 
@@ -85,17 +88,32 @@
         const videoTracks = SplitTrackStrings(profile.Video);
         const audioTracks = SplitTrackStrings(profile.Audio);
 
+        const videoTracksDisable = SplitTrackStrings(profile.VideoDisabled);
+        const audioTracksDisable = SplitTrackStrings(profile.AudioDisabled);
+
         if (!isNaN(videoTracks[0])) {
             for (let i = 0; i < videoTracks.length; i++) {
                 const trackIndex = videoTracks[i];
-                ToggleClip(ResolveEnums.TrackType.Video, trackIndex, currentTimeline);
+                ToggleClip(ResolveEnums.TrackType.Video, trackIndex, currentTimeline, true);
+            }
+        }
+        if ((!isNaN(videoTracksDisable[0]) && profile.ForceToggle)) {
+            for (let i = 0; i < videoTracksDisable.length; i++) {
+                const trackIndex = videoTracksDisable[i];
+                ToggleClip(ResolveEnums.TrackType.Video, trackIndex, currentTimeline, false);
             }
         }
 
         if (!isNaN(audioTracks[0])) {
             for (let i = 0; i < audioTracks.length; i++) {
                 const trackIndex = audioTracks[i];
-                ToggleClip(ResolveEnums.TrackType.Audio, trackIndex, currentTimeline);
+                ToggleClip(ResolveEnums.TrackType.Audio, trackIndex, currentTimeline, true);
+            }
+        }
+        if ((!isNaN(audioTracksDisable[0]) && profile.ForceToggle)) {
+            for (let i = 0; i < audioTracksDisable.length; i++) {
+                const trackIndex = audioTracksDisable[i];
+                ToggleClip(ResolveEnums.TrackType.Audio, trackIndex, currentTimeline, false);
             }
         }
     }
@@ -113,6 +131,13 @@
 
         UpdateProfiles();
         CurrentProfile = 0;
+    }
+    let VideoLabel: string = "Video Tracks";
+    let AudioLabel: string = "Audio Tracks";
+    $: {
+        const profile = Profiles[CurrentProfile];
+        VideoLabel = profile.ForceToggle ? "Video Tracks (Enable)" : "Video Tracks";
+        AudioLabel = profile.ForceToggle ? "Audio Tracks (Enable)" : "Audio Tracks";
     }
 
 
@@ -160,25 +185,34 @@
                 Force Status is what state the 'Force Toggle' is on. <br>
             </p>
         </div>
-        
+
         <div>
-            <label for="profileVideo">Video Tracks</label>
+            <label for="profileVideo">{VideoLabel}</label>
             <input type="text" name="profileVideo" placeholder="Video Tracks" bind:value={Profiles[CurrentProfile].Video}>
         </div>
 
+        {#if Profiles[CurrentProfile].ForceToggle}
+            <div>
+                <label for="profileVideo">Video Tracks (Disable)</label>
+                <input type="text" name="profileVideo" placeholder="Video Tracks" bind:value={Profiles[CurrentProfile].VideoDisabled}>
+            </div>
+        {/if}
+
         <div>
-            <label for="profileAudio">Audio Tracks</label>
+            <label for="profileAudio">{AudioLabel}</label>
             <input type="text" name="profileAudio" placeholder="Audio Tracks" bind:value={Profiles[CurrentProfile].Audio}>
         </div>
+
+        {#if Profiles[CurrentProfile].ForceToggle}
+            <div>
+                <label for="profileAudio">Audio Tracks (Disable)</label>
+                <input type="text" name="profileAudio" placeholder="Audio Tracks" bind:value={Profiles[CurrentProfile].AudioDisabled}>
+            </div>
+        {/if}
         
         <div>
             <label for="profileForceToggle">Force Toggle</label>
             <input type="checkbox" name="profileForceToggle" bind:checked={Profiles[CurrentProfile].ForceToggle}>
-        </div>
-
-        <div>
-            <label for="profileForceStatus">Force Status</label>
-            <input type="checkbox" name="profileForceStatus" bind:checked={Profiles[CurrentProfile].ForceStatus}>
         </div>
     </div>
 </main>
