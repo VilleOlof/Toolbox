@@ -7,6 +7,8 @@ const { exec, execSync } = require('child_process');
 export namespace FFmpeg {
     let Initialized: boolean = false;
 
+    export let EnableDebug: boolean = false;
+
     let _FFmpegPath: string = '';
 
     export const RunType = {
@@ -61,6 +63,15 @@ export namespace FFmpeg {
         
         const command = `${_FFmpegPath}/${type}${ext}` + ' ' + args.join(' ');
         const FFprocess = exec(command);
+
+        if (EnableDebug) {
+            FFprocess.stdout.on('data', (data) => {
+                console.log(data);
+            });
+            FFprocess.stderr.on('data', (data) => {
+                console.log(data);
+            });
+        }
         
         return FFprocess;
     };
@@ -77,6 +88,10 @@ export namespace FFmpeg {
         
         const command = `${_FFmpegPath}/${type}${ext}` + ' ' + args.join(' ');
         const output = execSync(command);
+
+        if (EnableDebug) {
+            console.log(output.toString());
+        }
         
         return output;
     }
@@ -120,14 +135,15 @@ export namespace FFmpeg {
          * );
          * ```
          */
-        export function GetVideoThumbnail(videoPath: string, time: string, output?: string, overwrite: boolean = true): string {
-            const videoFileName = Common.GetPathModule().basename(videoPath);
+        export function GetVideoThumbnail(videoPath: string, frame: number, output?: string, overwrite: boolean = true): string {
+            const videoExt = Common.GetPathModule().extname(videoPath);
+            const videoFileName = Common.GetPathModule().basename(videoPath, videoExt);
             output = output ? output : Common.IO.GetTempDir() + `${videoFileName}.jpg`;
 
             RunSync(RunType.FFmpeg,
-                '-ss', time,
                 overwrite ? '-y' : '',
                 '-i', `"${videoPath}"`,
+                '-vf', `select=eq(n\\,${frame})`,
                 '-vframes', '1',
                 `"${output}"`
             );
