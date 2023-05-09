@@ -4,6 +4,7 @@ dist/
 docs/
 InstallerBuilds/
 Logs/
+temp/
 
 # Data files
 /Data.json

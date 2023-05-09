@@ -316,6 +316,10 @@ export namespace Common {
             return os.homedir();
         }
 
+        export function GetTempDir(): string {
+            return CombinePaths(__dirname, "../temp/");
+        }
+
         /**
          * Combines multiple paths into one.
          * 

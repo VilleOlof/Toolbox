@@ -17,6 +17,21 @@ ResolveFunctions.Initialize();
 import { GlobalSettings } from './Lib/Settings'
 GlobalSettings.LoadGlobalSettings();
 
+//Create the temp folder if it doesn't exist
+if (!Common.IO.FileExists(Common.IO.GetTempDir())) {
+  Common.IO.CreateDirectory(Common.IO.GetTempDir());
+}
+//Clean the temp dir on startup
+if (AppSettings.GetSetting('CleanTempOnStartup', true)) {
+  Common.IO.GetFiles(Common.IO.GetTempDir()).forEach(file => {
+    Common.IO.DeleteFile(file);
+  });
+}
+
+// Initialize the FFmpeg module
+import { FFmpeg } from './Lib/FFmpeg';
+FFmpeg.Init();
+
 //Keeping the plugin, otherwise we close the plugin.
 setInterval(async () => {
   Common.LifeCyclePing(false);
