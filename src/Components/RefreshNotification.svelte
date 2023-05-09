@@ -5,6 +5,7 @@
 
     const NPM_Command: string = 'npm run build';
     const moduleListPath: string = '/../module_list.json';
+    const moduleIgnorePath: string = '/../module_ignore.json'
     
     let ShowNotification: boolean = false;
     let NoNotification: boolean = false;
@@ -30,9 +31,22 @@
         return <string[]>Common.IO.ReadFile(__dirname + moduleListPath, true);
     }
 
+    function GetCurrentIgnored(): string[] {
+        return <string[]>Common.IO.ReadFile(__dirname + moduleIgnorePath, true);
+    }
+
     function CheckForNewModules(): void {
         const modules: string[] = GetModulesInDirectory();
         const currentModules: string[] = GetCurrentModules();
+        const ignoredModules: string[] = GetCurrentIgnored();
+
+        //remove all ignoredModules from currentModules
+        ignoredModules.forEach((ignoredModule: string) => {
+            const index = currentModules.indexOf(ignoredModule);
+            if (index > -1) {
+                currentModules.splice(index, 1);
+            }
+        });
 
         if (modules.length != currentModules.length) {
             ShowNotification = true;
