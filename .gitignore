@@ -1,8 +1,17 @@
+# Auto-generated directories
 node_modules/
 dist/
 docs/
+InstallerBuilds/
+Logs/
+
+# Data files
 /Data.json
 /Settings.json
 /AppSettings.json
-InstallerBuilds/
-Logs/
+#/module_list.json
+#/module_ignore.json
+
+# Personal modules, that i doubt anyone else will use
+# Should probably fix this scenario at some point
+/modules/ReplayHelper.svelte
