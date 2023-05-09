@@ -48,6 +48,9 @@
             }
         });
 
+        const skipChecking = AppSettings.GetSetting('SkipModuleCheck', false);
+        if (skipChecking) return;
+
         if (modules.length != currentModules.length) {
             ShowNotification = true;
         }
