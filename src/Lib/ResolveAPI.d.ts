@@ -3,15 +3,10 @@
 // Some undocumented detailed types were taken from: https://gist.github.com/bradcordeiro/2f00120fad252a1b2bffcb882c9c941b
 // **Undocumented** types were taken from: https://forum.blackmagicdesign.com/viewtopic.php?f=21&t=113040
 
-/**
- * Enum types for DaVinci Resolve related things.
- */
+/** Enum types for DaVinci Resolve related things. */
 declare namespace ResolveEnums {
 
-    /**
-     * All pages.
-     * @enum {string}
-     */
+    /** All pages. @enum {string} */
     declare enum Pages {
         Media = "media",
         Cut = "cut",
@@ -23,20 +18,14 @@ declare namespace ResolveEnums {
         None = "none",
     }
 
-    /**
-     * All track types.
-     * @enum {string}
-     */
+    /** All track types. @enum {string} */
     declare enum TrackType {
         Audio = "audio",
         Video = "video",
         Subtitle = "subtitle"
     }
 
-    /**
-     * All timeline generators.
-     * @enum {string}
-     */
+    /** All timeline generators. @enum {string} */
     declare enum TimelineGenerator {
         __10_Step = '10 Step',
         __100mV_Steps = '100mV Steps',
@@ -52,10 +41,7 @@ declare namespace ResolveEnums {
         __YCbCr_Ramp = 'YCbCr Ramp'
     }
     
-    /**
-     * All fusion generators.
-     * @enum {string}
-     */
+    /** All fusion generators. @enum {string} */
     declare enum FusionGenerator {
         __Contours = 'Contours',
         __Noise_Gradient = 'Noise Gradient',
@@ -63,10 +49,7 @@ declare namespace ResolveEnums {
         __Texture_Background = 'Texture Background',
     }
     
-    /**
-     * All title names.
-     * @enum {string}
-     */
+    /** All title names. @enum {string} */
     declare enum TitleNames {
         __Left_Lower_Third = 'Left Lower Third',
         __Middle_Lower_Third = 'Middle Lower Third',
@@ -75,29 +58,20 @@ declare namespace ResolveEnums {
         __Text = 'Text'
     }
     
-    /**
-     * All timeline item version types.
-     * @enum {number}
-     */
+    /** All timeline item version types. @enum {number} */
     declare enum TimelineItemVersionType {
         Local = 0,
         Remote = 1
     }
 
-    /**
-     * All grade modes.
-     * @enum {number}
-     */
+    /** All grade modes. @enum {number} */
     declare enum GradeMode {
         'No keyframes' = 0,
         'Source Timecode aligned' = 1,
         'Start Frames aligned' = 2
     }
     
-    /**
-     * All still export formats.
-     * @enum {string}
-     */
+    /** All still export formats. @enum {string} */
     declare enum StillExportFormat {
         DPX = 'dpx',
         CIN = 'cin',
@@ -109,10 +83,7 @@ declare namespace ResolveEnums {
         XPM = 'xpm',
     }
     
-    /**
-     * All clip colors.
-     * @enum {string}
-     */
+    /** All clip colors. @enum {string} */
     declare enum ClipColor {
         Apricot = "Apricot",
         Beige = "Beige",
@@ -132,10 +103,7 @@ declare namespace ResolveEnums {
         Yellow = "Yellow",
     }
     
-    /**
-     * All marker colors.
-     * @enum {string}
-     */
+    /** All marker colors. @enum {string} */
     declare enum MarkerColor {
         Blue = "Blue",
         Cocoa = "Cocoa",
@@ -155,10 +123,7 @@ declare namespace ResolveEnums {
         Yellow = "Yellow",
     }
     
-    /**
-     * All flag colors.
-     * @enum {string}
-     */
+    /** All flag colors. @enum {string} */
     declare enum FlagColor {
         Blue = "Blue",
         Cocoa = "Cocoa",
@@ -178,10 +143,7 @@ declare namespace ResolveEnums {
         Yellow = "Yellow",
     }
 
-    /**
-     * All Dynamic Zoom Ease Settings.
-     * @enum {number}
-     */
+    /** All Dynamic Zoom Ease Settings. @enum {number} */
     declare enum DynamicZoomEaseSetting {
         DYNAMIC_ZOOM_EASE_LINEAR = 0,
         DYNAMIC_ZOOM_EASE_IN,
@@ -189,10 +151,7 @@ declare namespace ResolveEnums {
         DYNAMIC_ZOOM_EASE_IN_AND_OUT,
     };
     
-    /**
-     * All Composite Mode Settings.
-     * @enum {number}
-     */
+    /** All Composite Mode Settings. @enum {number} */
     declare enum CompositeModeSetting {
         COMPOSITE_NORMAL = 0,
         COMPOSITE_ADD,
@@ -228,10 +187,7 @@ declare namespace ResolveEnums {
         COMPOSITE_INVERTED_LUM,
     };
     
-    /**
-     * All Retime Process Settings.
-     * @enum {number}
-     */
+    /** All Retime Process Settings. @enum {number} */
     declare enum RetimeProcessSetting {
         RETIME_USE_PROJECT = 0,
         RETIME_NEAREST,
@@ -239,10 +195,7 @@ declare namespace ResolveEnums {
         RETIME_OPTICAL_FLOW,
     };
     
-    /**
-     * All Motion Estimation Settings.
-     * @enum {number}
-     */
+    /** All Motion Estimation Settings. @enum {number} */
     declare enum MotionEstimationSetting {
         MOTION_EST_USE_PROJECT = 0,
         MOTION_EST_STANDARD_FASTER,
@@ -252,10 +205,7 @@ declare namespace ResolveEnums {
         MOTION_EST_SPEED_WRAP,
     };
     
-    /**
-     * All Scaling Settings.
-     * @enum {number}
-     */
+    /** All Scaling Settings.  @enum {number} */
     declare enum ScalingSetting {
         SCALE_USE_PROJECT = 0,
         SCALE_CROP,
@@ -264,10 +214,7 @@ declare namespace ResolveEnums {
         SCALE_STRETCH,
     };
     
-    /**
-     * All Resize Filter Settings.
-     * @enum {number}
-     */
+    /** All Resize Filter Settings. @enum {number} */
     declare enum ResizeFilterSetting {
         RESIZE_FILTER_USE_PROJECT = 0,
         RESIZE_FILTER_SHARPER,
@@ -287,10 +234,7 @@ declare namespace ResolveEnums {
         RESIZE_FILTER_LINEAR,
     };
     
-    /**
-     * All Timeline Export Types.
-     * @enum {number}
-     */
+    /** All Timeline Export Types. @enum {number} */
     declare enum TimelineExportType {
         EXPORT_AAF,
         EXPORT_DRT,
@@ -312,10 +256,7 @@ declare namespace ResolveEnums {
         EXPORT_DOLBY_VISION_VER_4_0,
     }
     
-    /**
-     * All Timeline Export Sub Types.
-     * @enum {number}
-     */
+    /** All Timeline Export Sub Types. @enum {number} */
     declare enum TimelineExportSubType {
         EXPORT_NONE,
         EXPORT_AAF_NEW,
@@ -326,9 +267,9 @@ declare namespace ResolveEnums {
     }
 }
 
-/**
+/** 
  * dbInfo is a type that is used to specify the database type and name.
- * and optionally the IP address of the database server.
+ * and optionally the IP address of the database server. 
  */
 declare type dbInfo = {
     DbType: 'Disk' | 'PostgreSQL';
@@ -336,14 +277,10 @@ declare type dbInfo = {
     IpAdress?: string = '127.0.0.1';
 }
 
-/**
- * A Render preset type.
- */
+/** A Render preset type. */
 declare type Preset = string;
 
-/**
- * A Render job.
- */
+/** A Render job. */
 declare type RenderJob = {
     AudioCodec: string
     AudioSampleRate: number
@@ -368,14 +305,10 @@ declare type RenderJob = {
     RenderJobName: string
 };
 
-/**
- * Settings for rendering.
- */
+/** Settings for rendering. */
 declare type RenderSettings = {
 
-    /**
-     * (when set True, the settings MarkIn and MarkOut are ignored)
-     */
+    /** (when set True, the settings MarkIn and MarkOut are ignored) */
     SelectAllFrames?: boolean;
 
     MarkIn?: number;
@@ -384,9 +317,7 @@ declare type RenderSettings = {
     TargetDir?: string;
     CustomName?: string;
 
-    /**
-     * 0 - Prefix, 1 - Suffix.
-     */
+    /** 0 - Prefix, 1 - Suffix. */
     UniqueFilenameStyle?: 0 | 1;
 
     ExportVideo?: boolean;
@@ -395,14 +326,10 @@ declare type RenderSettings = {
     FormatWidth?: number;
     FormatHeight?: number;
 
-    /**
-     * (examples: 23.976, 24)
-     */
+    /** (examples: 23.976, 24) */
     FrameRate?: number;
 
-    /**
-     * (for SD resolution: “16_9” or “4_3”) (other resolutions: “square” or “cinemascope”)
-     */
+    /** (for SD resolution: “16_9” or “4_3”) (other resolutions: “square” or “cinemascope”) */
     PixelAspectRatio?: string
 
     /**
@@ -413,66 +340,46 @@ declare type RenderSettings = {
      */
     VideoQuality?: 0 | 1 | Number.MAX_SAFE_INTEGER |"Least" | "Low" | "Medium" | "High" | "Best";
 
-    /**
-     * (example: “aac”)
-     */
+    /** (example: “aac”) */
     AudioCodec?: string;
 
     AudioBitDepth?: number;
     AudioSampleRate?: number;
 
-    /**
-     * (example: “Same as Project”, “AstroDesign”)
-     */
+    /** (example: “Same as Project”, “AstroDesign”) */
     ColorSpaceTag?: string;
 
-    /**
-     * (example: “Same as Project”, “ACEScct”)
-     */
+    /** (example: “Same as Project”, “ACEScct”) */
     GammaTag?: string;
 
     ExportAlpha?: boolean;
 
-    /**
-     *  (example: “Main10”). Can only be set for H.264 and H.265.
-     */
+    /** (example: “Main10”). Can only be set for H.264 and H.265. */
     EncodingProfile?: string;
 
-    /**
-     * Can only be set for H.264
-     */
+    /** Can only be set for H.264 */
     MultiPassEncode?: boolean;
 
-    /**
-     * 0 - Premultipled, 1 - Straight. Can only be set if “ExportAlpha” is true.
-     */
+    /** 0 - Premultipled, 1 - Straight. Can only be set if “ExportAlpha” is true. */
     AlphaMode?: 0 | 1;
 
-    /**
-     * Only supported by QuickTime and MP4 formats.
-     */
+    /** Only supported by QuickTime and MP4 formats. */
     NetworkOptimization?: boolean;
 };
 
-/**
- * A Render format.
- */
+/** A Render format. */
 declare type RenderFormat = {
     Format: string;
     FileExtension: string;
 };
 
-/**
- * A Render codec.
- */
+/** A Render codec. */
 declare type RenderCodec = {
     CodecDescription: string;
     CodecName: string;
 };
 
-/**
- * The status of a render job.
- */
+/** The status of a render job. */
 declare type RenderJobStatus = {
     CompletionPercentage: number
     JobStatus: 'Ready' | 'Rendering' | 'Cancelled' | 'Complete' | 'Failed',
@@ -481,17 +388,13 @@ declare type RenderJobStatus = {
     Error?: string
 };
 
-/**
- * Resolution type.
- */
+/** Resolution type. */
 declare type Resolution = {
     width: number;
     height: number;
 };
 
-/**
- * Clip Information
- */
+/** Clip Information */
 declare type ClipInfo = {
     mediaPoolItem?: MediaPoolItem;
     startFrame?: number;
@@ -503,9 +406,7 @@ declare type ClipInfo = {
     recordFrame?: number;
 }
 
-/**
- * Timeline Import Options
- */
+/** Timeline Import Options */
 declare type TimelineImportOptions = {
     timelineName: string;
     importSourceClips: boolean;
@@ -514,9 +415,7 @@ declare type TimelineImportOptions = {
     interlaceProcessing: boolean;
 }
 
-/**
- * Type for a marker.
- */
+/** Type for a marker. */
 declare type Marker = {
     frameId: number;
     color: MarkerColor;
@@ -537,18 +436,14 @@ declare type CDL = {
     Saturation: string;
 }
 
-/**
- * A Take.
- */
+/** A Take. */
 declare type Take = {
     startFrame: number;
     endFrame: number;
     mediaPoolItem: MediaPoolItem;
 }
 
-/**
- * Properties for a timeline item.
- */
+/** Properties for a timeline item. */
 declare type TimelineItemProperties = {
     Pan: number;
     Tilt: number;
@@ -556,9 +451,7 @@ declare type TimelineItemProperties = {
     ZoomX: number;
     ZoomY: number;
 
-    /**
-     * If ZoomX and ZoomY are linked together.
-     */
+    /** If ZoomX and ZoomY are linked together. */
     ZoomGang: boolean;
 
     RotationAngle: number;
@@ -752,9 +645,7 @@ declare type ProjectProperties = {
     videoPlayoutShowSourceTimecode: string, 
 };
 
-/**
- * Properties of a media pool item
- */
+/** Properties of a media pool item */
 declare type MediaPoolItemProperties = {
     'Alpha mode': string
     'Audio Bit Depth': string
@@ -819,9 +710,7 @@ declare type MediaPoolItemProperties = {
     Usage: string
 };
 
-/**
- * The main Resolve object.
- */
+/** The main Resolve object. */
 declare type Resolve = {
 
     /**

@@ -53,31 +53,23 @@ export namespace FFmpeg {
      * ```
      */
     export function Run(type: RunType, ...args: string[]): ChildProcess {
-        if (!Initialized) throw new Error('FFmpeg module not initialized.');
-        if (_FFmpegPath === '') {
-            PromptUserForPath();
-            //Do a double check incase the user cancels the prompt.
-            if (_FFmpegPath === '') return;
-        }
-        const ext = process.platform === 'win32' ? '.exe' : '';
-        
-        const command = `${_FFmpegPath}/${type}${ext}` + ' ' + args.join(' ');
-        const FFprocess = exec(command);
-
-        if (EnableDebug) {
-            FFprocess.stdout.on('data', (data) => {
-                console.log(data);
-            });
-            FFprocess.stderr.on('data', (data) => {
-                console.log(data);
-            });
-        }
-        
-        return FFprocess;
+        return Internal_Run(type, args, false) as ChildProcess;
     };
 
     //Make both Run functions more 'general'.
+    /**
+     * Runs FFmpeg or FFprobe with the given arguments.  
+     * Look at Run() for more information and examples.
+     * 
+     * @param type The type of command to run. FFmpeg or FFprobe.
+     * @param args The arguments to pass to the command.
+     * @returns The output of the command.
+     */
     export function RunSync(type: RunType, ...args: string[]): string {
+        return Internal_Run(type, args, true) as string;
+    }
+
+    function Internal_Run(type: RunType, args: string[], sync: boolean): string | ChildProcess {
         if (!Initialized) throw new Error('FFmpeg module not initialized.');
         if (_FFmpegPath === '') {
             PromptUserForPath();
@@ -87,13 +79,30 @@ export namespace FFmpeg {
         const ext = process.platform === 'win32' ? '.exe' : '';
         
         const command = `${_FFmpegPath}/${type}${ext}` + ' ' + args.join(' ');
-        const output = execSync(command);
-
-        if (EnableDebug) {
-            console.log(output.toString());
-        }
         
-        return output;
+        if (sync) {
+            const output = execSync(command);
+
+            if (EnableDebug) {
+                console.log(output.toString());
+            }
+            
+            return output;
+        }
+        else {
+            const FFprocess = exec(command);
+
+            if (EnableDebug) {
+                FFprocess.stdout.on('data', (data: Buffer) => {
+                    console.log(data);
+                });
+                FFprocess.stderr.on('data', (data: Buffer) => {
+                    console.log(data);
+                });
+            }
+            
+            return FFprocess;
+        }
     }
 
     /**
