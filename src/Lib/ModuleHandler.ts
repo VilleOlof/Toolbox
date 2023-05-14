@@ -172,7 +172,7 @@ export namespace ModuleHandler {
         modules.forEach(module => {
             if (moduleIgnores.includes(module)) return;
 
-            const file = `${__dirname}/../modules/${module}.svelte`;
+            const file = Common.IO.CombinePaths(Common.IO.GetRootFolder(), `../modules/${module}.svelte`);
             if (!Common.IO.FileExists(file)) return;
             
             moduleImports[module] = (async function() {

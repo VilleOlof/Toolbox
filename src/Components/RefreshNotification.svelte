@@ -43,8 +43,12 @@
         //remove all ignoredModules from currentModules
         ignoredModules.forEach((ignoredModule: string) => {
             const index = currentModules.indexOf(ignoredModule);
+            const dirIndex = modules.indexOf(ignoredModule);
             if (index > -1) {
                 currentModules.splice(index, 1);
+            }
+            if (dirIndex > -1) {
+                modules.splice(dirIndex, 1);
             }
         });
 
