@@ -41,7 +41,7 @@ export namespace Logger {
     }
 
     function CompressLogs(latestX: number) {
-        const logs = Common.IO.GetFiles(`${Common.IO.GetRootFolder()}/../Logs/`, ".log");
+        const logs = Common.IO.GetFiles(`${Common.IO.GetRootFolder()}/../Logs/`, [".log"]);
         if (logs.length <= latestX) return;
         
         const AdmZip = Common.GetAdmZipModule();
@@ -59,7 +59,7 @@ export namespace Logger {
     }
 
     function DeleteOldZips(days: number) {
-        const zips = Common.IO.GetFiles(`${Common.IO.GetRootFolder()}/../Logs/`, ".zip");
+        const zips = Common.IO.GetFiles(`${Common.IO.GetRootFolder()}/../Logs/`, [".zip"]);
         const now = new Date().getTime();
         const daysInMS = days * 24 * 60 * 60 * 1000;
 

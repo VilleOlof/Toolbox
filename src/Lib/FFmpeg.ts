@@ -145,8 +145,9 @@ export namespace FFmpeg {
          * ```
          */
         export function GetVideoThumbnail(videoPath: string, frame: number, output?: string, overwrite: boolean = true): string {
-            const videoExt = Common.GetPathModule().extname(videoPath);
-            const videoFileName = Common.GetPathModule().basename(videoPath, videoExt);
+            const path = Common.GetPathModule();
+            const videoExt: string = path.extname(videoPath);
+            const videoFileName: string = path.basename(videoPath, videoExt);
             output = output ? output : Common.IO.GetTempDir() + `${videoFileName}.jpg`;
 
             RunSync(RunType.FFmpeg,

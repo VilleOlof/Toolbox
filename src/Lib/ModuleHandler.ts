@@ -1,5 +1,5 @@
-import modules from '../../module_list.json'
-import moduleIgnores from '../../module_ignore.json'
+const modules: string[] = Common.IO.ReadFile(Common.IO.CombinePaths(Common.IO.GetRootFolder(), '../module_list.json'), true);
+const moduleIgnores: string[] = Common.IO.ReadFile(Common.IO.CombinePaths(Common.IO.GetRootFolder(), '../module_ignore.json'), true);
 
 import { DataStore } from '../Stores/DataStore';
 import { DragHandler } from './DragHandler';
