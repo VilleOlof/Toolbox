@@ -80,6 +80,7 @@ function CheckForRepo(path) {
 function CreateJSONFiles(path) {
     fs.writeFileSync(`${path}/Data.json`, '{}');
     fs.writeFileSync(`${path}/Settings.json`, '{}');
+    fs.writeFileSync(`${path}/AppSettings.json`, '{}');
 }
 
 function NPMInstall(path) {
