@@ -1074,6 +1074,7 @@
             let playhead = ResolveFunctions.ConvertTimecodeToFrames(currentTimeline.GetCurrentTimecode());
             let currentFrame = playhead;
 
+            currentFrame -= 1; // CurrentFrame is one frame too high.
             currentFrame += frameOffset;
             currentFrame -= videoItem.GetStart();
 
