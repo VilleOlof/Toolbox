@@ -311,14 +311,15 @@
         const zipLocation = Common.IO.Dialog({
             title: "Save Location",
             defaultPath: `${__dirname}../`,
-            buttonLabel: "Save",
+            buttonLabel: "Load",
             filters: [{name: 'ZIP', extensions: ['zip']}],
             properties: ['openFile']
         })[0];
         if (!zipLocation) return;
 
         //read zip from disk
-        zip.extractAllTo(`${__dirname}../`, true);
+        const extractPath = Common.IO.CombinePaths(Common.IO.GetRootFolder(), '..');
+        zip.extractAllTo(extractPath, true);
 
         //reload app to apply changes
         Common.Electron.GetCurrentWindow().reload();

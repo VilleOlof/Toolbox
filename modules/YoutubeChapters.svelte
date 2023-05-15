@@ -57,6 +57,8 @@
         for (const [frameId, markerData] of Object.entries(allMarkersInTimeline)) {
             if (markerData.color != markerColor) continue;
 
+            if (parseInt(frameId) < frameOffset) continue;
+
             markers.push({
                 name: markerData.name,
                 frameID: ((parseInt(frameId)) + 1) - frameOffset
