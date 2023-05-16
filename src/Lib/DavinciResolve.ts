@@ -635,37 +635,38 @@ export class ResolveFunctions {
             }
 
             //special case where can we can find the item if the length is 2 or 3
-            //TODO: Some bugs with this, need to fix
-            // if (trackItems.length == 2) {
-            //     const firstItem = trackItems[0];
-            //     let returnItem = trackItems[1];
-            //     console.log(firstItem, returnItem, trackItems)
+            if (trackItems.length == 2) {
+                const first = trackItems[0];
+                const second = trackItems[1];
+                let returnItem = second;
 
-            //     if (Playhead <= firstItem.GetEnd()) returnItem = firstItem;
-                
-            //     if (itemCallback === undefined) returnItems.push(returnItem);
-            //     else {
-            //         itemCallback(returnItem, trackIndex);
-            //     }
-            //     continue;
-            // }
-            // else if (trackItems.length == 3) {
-            //     const middleItem = trackItems[1];
+                if ((Playhead+timelineStartFrame) <= first.GetEnd()) returnItem = first;
+                else if ((Playhead+timelineStartFrame) >= second.GetStart()) returnItem = second;
 
-            //     const middleStart = middleItem.GetStart();
-            //     const middleEnd = middleItem.GetEnd();
+                if (itemCallback === undefined) returnItems.push(returnItem);
+                else {
+                    itemCallback(returnItem, trackIndex);
+                }
+                continue;
+            }
+            else if (trackItems.length == 3) {
+                const middleItem = trackItems[1];
 
-            //     if (Playhead >= middleStart && Playhead <= middleEnd) {
-            //         if (itemCallback === undefined) returnItems.push(middleItem);
-            //         else {
-            //             itemCallback(middleItem, trackIndex);
-            //         }
-            //         continue;
-            //     }
+                const middleStart = middleItem.GetStart();
+                const middleEnd = middleItem.GetEnd();
+                console.log(Playhead+timelineStartFrame, middleStart, middleEnd)
 
-            //     else if (Playhead < middleStart) return trackItems[0];
-            //     else if (Playhead > middleEnd) return trackItems[2];
-            // }
+                if ((Playhead+timelineStartFrame) >= middleStart && (Playhead+timelineStartFrame) <= middleEnd) {
+                    if (itemCallback === undefined) returnItems.push(middleItem);
+                    else {
+                        itemCallback(middleItem, trackIndex);
+                    }
+                    continue;
+                }
+
+                else if ((Playhead+timelineStartFrame) < middleStart) return trackItems[0];
+                else if ((Playhead+timelineStartFrame) > middleEnd) return trackItems[2];
+            }
             
             //then we do a binary search to find the item
             let left = 0;
