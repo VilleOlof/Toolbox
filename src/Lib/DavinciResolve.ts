@@ -627,13 +627,14 @@ export class ResolveFunctions {
             const educatedGuessItem = trackItems[Math.floor(Playhead / averageFramesPerItem)];
 
             //found the item directly
-            if (this.CheckIfFrameIsOnItem(Playhead, educatedGuessItem)) {
-                if (itemCallback === undefined) returnItems.push(educatedGuessItem);
-                else {
-                    itemCallback(educatedGuessItem, trackIndex);
-                }
-                continue;
-            }
+            //Sometimes can be innacurate? maybe having to do with a low amount of items in the track?
+            // if (this.CheckIfFrameIsOnItem(Playhead, educatedGuessItem)) {
+            //     if (itemCallback === undefined) returnItems.push(educatedGuessItem);
+            //     else {
+            //         itemCallback(educatedGuessItem, trackIndex);
+            //     }
+            //     continue;
+            // }
 
             //special case where can we can find the item if the length is 2 or 3
             if (trackItems.length == 2) {
