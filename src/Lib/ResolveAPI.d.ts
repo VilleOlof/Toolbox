@@ -1229,13 +1229,23 @@ declare type Project = {
     GetTimelineFromUniqueID(uniqueID: string): Timeline;
 
     /**
-     * **Undocumented**
+     * Inserts the media specified by mediaPath (string) with startOffsetInSamples (int) and durationInSamples (int) at the playhead on a selected track on the Fairlight page. Returns True if successful, otherwise False.
      * 
      * @param filePath
      * @param frameOffset 
      * @param duration 
      */
-    InsertAudioToCurrentTrackAtPlayhead(filePath: string, frameOffset: any, duration: any): boolean;
+    InsertAudioToCurrentTrackAtPlayhead(mediaPath: string, startOffsetInSamples: number, durationInSamples: number): boolean;
+
+    /**
+     * Loads user defined data burn in preset for project when supplied presetName (string). Returns true if successful.
+     */
+    LoadBurnInPreset(presetName: string): boolean;
+
+    /**
+     * Exports current frame as still to supplied filePath. filePath must end in valid export file format. Returns True if succssful, False otherwise.
+     */
+    ExportCurrentFrameAsStill(filePath: string): boolean
 };
 declare type MediaStorage = {
 
@@ -1437,6 +1447,31 @@ declare type Folder = {
      * Returns a list of subfolders in the folder.
      */
     GetSubFolderList(): Folder[];
+
+    /**
+     * Returns true if export of DRB folder to filePath is successful, false otherwise
+     */
+    Export(): boolean;
+
+    /**
+     * Returns a unique ID for the media pool folder
+     */
+    GetUniqueID(): unknown;
+
+    /**
+     * Returns true if folder is stale in collaboration mode, false otherwise
+     */
+    GetIsFolderStale(): boolean;
+
+    /**
+     * Undocumented
+     */
+    GetClips(): MediaPoolItem[];
+
+    /**
+     * Undocumented
+     */
+    GetSubFolders(): Folder[];
 };
 
 declare type MediaPoolItem = {
@@ -1563,6 +1598,21 @@ declare type MediaPoolItem = {
      * Replaces the underlying asset and metadata of MediaPoolItem with the specified absolute clip path.
      */
     ReplaceClip(filePath: string): boolean;
+
+    /**
+     * Returns a unique ID for the media pool item
+     */
+    GetUniqueId(): string
+
+    /**
+     * Transcribes audio of the MediaPoolItem. Returns True if successful; False otherwise
+     */
+    TranscribeAudio(): boolean;
+
+    /**
+     * Clears audio transcription of the MediaPoolItem. Returns True if successful; False otherwise.
+     */
+    ClearTranscription(): boolean;
 };
 
 declare type Timeline = {
@@ -1835,6 +1885,12 @@ declare type Timeline = {
      * @param items 
      */
     DeleteClips(items: TimelineItem[]): boolean;
+
+    CreateSubtitlesFromAudioSpeed(): boolean;
+
+    DetectSceneCuts(): unknown;
+
+    GetLastSceneCutsDetectionSpeed(): unknown;
 };
 
 declare type TimelineItem = {
@@ -2161,6 +2217,23 @@ declare type TimelineItem = {
      * @param nodeIndex 
      */
     SetNodeActive(nodeIndex: number): boolean;
+
+    /**
+     * Returns True if magic mask was created successfully, False otherwise. mode can "F" (forward), "B" (backward), or "BI" (bidirection)
+     */
+    CreateMagicMask(mode: 'F' | 'B' | 'BI'): boolean;
+
+    RegenerateMagicMask(): boolean;
+
+    GetLastMagicMaskFPS(): unknown;
+
+    Stabilize(): boolean;
+
+    GetLastStabilizeFPS(): unknown;
+
+    SmartReframe(): boolean;
+
+    GetLastSmartReframeSpeed(): unknown;
 };
 
 declare type Gallery = {

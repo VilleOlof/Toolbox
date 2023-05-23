@@ -612,6 +612,7 @@ export class ResolveFunctions {
 
         const timelineTracks = currentTimeline.GetTrackCount(trackType);
         //Take the lowest number of tracks between the tracks array and the timeline tracks
+        //!! convert timelineTracks to an array of numbers (1,2,3...) and compare the highest number or length?
         let tracksToLoop = userInputTracks.length //> timelineTracks ? timelineTracks : userInputTracks.length;
         if (userInputTracks.length > timelineTracks) {
             tracksToLoop = timelineTracks;

@@ -1001,10 +1001,18 @@
 
             const trackNumbers = tracks.split(",").map(Number);
 
-            let items = ResolveFunctions.GetTimelineItem(trackType, trackNumbers, currentTimeline) as TimelineItem[];
-            if (!Array.isArray(items)) {
-                items = [items];
+            let items: TimelineItem[] = []
+
+            for (let i = 0; i < trackNumbers.length; i++) {
+                const track = trackNumbers[i];
+                const item = ResolveFunctions.GetTimelineItem(trackType, [track], currentTimeline) as TimelineItem;
+                items.push(item);
             }
+
+            // let items = ResolveFunctions.GetTimelineItem(trackType, trackNumbers, currentTimeline) as TimelineItem[];
+            // if (!Array.isArray(items)) {
+            //     items = [items];
+            // }
             if (items.length == 0 || items === undefined) return;
 
             currentTimeline.DeleteClips(items);
