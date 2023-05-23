@@ -70,6 +70,9 @@ If you find any, please report them in the [Issues](https://github.com/VilleOlof
 
 ## **Installation**  
 
+*Latest verified stable Davinci Resolve version this workflow integration works in: 18.5b Beta 1  
+Certain modules may not work has intended in other versions*
+
 **Requires: Node.js**  
 Windows: Go to [Node.js](https://nodejs.org/en/) and download the latest LTS version.  
 MacOS: You can install Node.js with [Homebrew](https://brew.sh/) by running `brew install node` in the terminal.  
