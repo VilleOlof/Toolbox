@@ -120,7 +120,9 @@
         let currentTimeline = ResolveFunctions.GetCurrentTimeline();
         if (!currentTimeline) return properties;
 
-        let currentVideoItem = currentTimeline.GetCurrentVideoItem();
+        let selectedTrack = properties.Tracks[0] ?? 1;
+
+        let currentVideoItem = ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, selectedTrack, currentTimeline) as TimelineItem;
         if (!currentVideoItem) return properties;
 
         let currentProperties: TimelineItemProperties = currentVideoItem.GetProperty() as TimelineItemProperties;
