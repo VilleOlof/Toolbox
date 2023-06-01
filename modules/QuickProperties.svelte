@@ -53,7 +53,7 @@
 
     type KeybindReturn = {
         Keybind: string,
-        Properties: Property
+        Key: string
     }
     function AddKeybindSettingsOnMount(): KeybindReturn[] {
         RemoveUnusedKeybinds(); //remove any keybinds that dont exist in _properties
@@ -64,7 +64,7 @@
 
             if (property.KeybindEnabled) {
                 let keybind = _Settings.RegisterSetting(`${property.Name}-Keybind`, `Generated Keybind for the ${property.Name} property`, 'F24', SettingTypes.Type.Keybind);
-                keybinds.push({Keybind: keybind, Properties: property});
+                keybinds.push({Keybind: keybind, Key: key});
             }
         }
 
@@ -75,7 +75,7 @@
         let keybindReturn = AddKeybindSettingsOnMount();
         for (let property of keybindReturn) {
             Common.Electron.RegisterShortcut(property.Keybind, () => {
-                ApplyProperties(property.Properties);
+                ApplyProperties(_Properties[property.Key]);
             });
         }
     }

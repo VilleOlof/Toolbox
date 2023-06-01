@@ -651,24 +651,25 @@ export class ResolveFunctions {
                 }
                 continue;
             }
-            else if (trackItems.length == 3) {
-                const middleItem = trackItems[1];
+            //!!
+            // else if (trackItems.length == 3) {
+            //     const middleItem = trackItems[1];
 
-                const middleStart = middleItem.GetStart();
-                const middleEnd = middleItem.GetEnd();
-                console.log(Playhead+timelineStartFrame, middleStart, middleEnd)
+            //     const middleStart = middleItem.GetStart();
+            //     const middleEnd = middleItem.GetEnd();
+            //     console.log(Playhead+timelineStartFrame, middleStart, middleEnd)
 
-                if ((Playhead+timelineStartFrame) >= middleStart && (Playhead+timelineStartFrame) <= middleEnd) {
-                    if (itemCallback === undefined) returnItems.push(middleItem);
-                    else {
-                        itemCallback(middleItem, trackIndex);
-                    }
-                    continue;
-                }
+            //     if ((Playhead+timelineStartFrame) >= middleStart && (Playhead+timelineStartFrame) <= middleEnd) {
+            //         if (itemCallback === undefined) returnItems.push(middleItem);
+            //         else {
+            //             itemCallback(middleItem, trackIndex);
+            //         }
+            //         continue;
+            //     }
 
-                else if ((Playhead+timelineStartFrame) < middleStart) return trackItems[0];
-                else if ((Playhead+timelineStartFrame) > middleEnd) return trackItems[2];
-            }
+            //     else if ((Playhead+timelineStartFrame) < middleStart) return trackItems[0];
+            //     else if ((Playhead+timelineStartFrame) > middleEnd) return trackItems[2];
+            // }
             
             //then we do a binary search to find the item
             let left = 0;
