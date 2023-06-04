@@ -1006,6 +1006,7 @@
             for (let i = 0; i < trackNumbers.length; i++) {
                 const track = trackNumbers[i];
                 const item = ResolveFunctions.GetTimelineItem(trackType, [track], currentTimeline) as TimelineItem;
+                if (item === undefined) continue;
                 items.push(item);
             }
 
