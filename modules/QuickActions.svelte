@@ -467,6 +467,10 @@
             "Return To Origin": {
                 type: "boolean",
                 value: true
+            },
+            "Don't Keep Length": {
+                type: "boolean",
+                value: false
             }
         },
         "Rename Media Item": {
@@ -691,7 +695,7 @@
 
             currentMediapool.AppendToTimeline([clipInfo]);
         },
-        "Duplicate Clip": (originTrack: number, destTrack: number, frameOffset: number, originTrackType: ResolveEnums.TrackType, returnToOrigin: boolean) => {
+        "Duplicate Clip": (originTrack: number, destTrack: number, frameOffset: number, originTrackType: ResolveEnums.TrackType, returnToOrigin: boolean, dontKeepLength: boolean) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             const currentMediapool = ResolveFunctions.GetCurrentProject().GetMediaPool();
 
@@ -700,13 +704,28 @@
             if (!selectedItem) return;
             const mediaReference = selectedItem.GetMediaPoolItem();
 
+            let endFrame = 0;
+            if (dontKeepLength) {
+                endFrame = parseInt(mediaReference.GetClipProperty("Frames") as string);
+            }
+            else {
+                endFrame = selectedItem.GetRightOffset() - 1;
+            }
+            let recordFrame = 0;
+            if (frameOffset != 0) {
+                recordFrame = selectedItem.GetEnd() + frameOffset;
+            }
+            else {
+                recordFrame = selectedItem.GetStart();
+            }
+
             const clipInfo: ClipInfo = {
                 mediaPoolItem: mediaReference,
-                startFrame: selectedItem.GetLeftOffset(),
-                endFrame: selectedItem.GetRightOffset() - 1,
+                startFrame: dontKeepLength ? 0 : selectedItem.GetLeftOffset(),
+                endFrame: endFrame,
 
                 trackIndex: destTrack,
-                recordFrame: (selectedItem.GetStart() + frameOffset)
+                recordFrame: recordFrame
             }
 
             currentMediapool.AppendToTimeline([clipInfo]);
