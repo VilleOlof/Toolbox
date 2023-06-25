@@ -1,8 +1,9 @@
+import { Common } from "./Common";
 import { ResolveFunctions } from "./DavinciResolve";
 import { GlobalSettings } from "./Settings";
 
 
-export module SharedModuleLogic {
+export module SML {
     export module MarkerTool {
 
         const _Settings = GlobalSettings.GetInstance("MarkerTool");
@@ -72,6 +73,58 @@ export module SharedModuleLogic {
                 1,
                 EndMarkerData
             );
+        }
+    }
+
+    export module Shared {
+        export module Function {
+            export const Subscription = {
+                "QuickActions.Run": "QuickActions.Run",
+                "QuickRender.Render": "QuickRender.Render",
+                "QuickRender.AddRenderJob": "QuickRender.AddRenderJob",
+                "ImageClipboard.Paste": "ImageClipboard.Paste",
+            } as const;
+            export type Subscription = typeof Subscription[keyof typeof Subscription];
+    
+            type CallbackData = {
+                function: Function,
+                type: string | Subscription
+            }
+            let Callbacks: { [key: string]: CallbackData } = {};
+    
+            export function Add(event: string | Subscription, callback: Function): void {
+                if (!Subscription[event]) return;
+                const eventID = `${event}-${Common.GetRandomHash(8, true)}`
+    
+                Callbacks[eventID] = {} as CallbackData;
+                Callbacks[eventID].function = callback;
+                Callbacks[eventID].type = event;
+            }
+    
+            export function Run(event: string | Subscription, ...args: any[]): void {
+                if (!Subscription[event]) return;
+                for (const [_, callbackData] of Object.entries(Callbacks)) {
+                    if (callbackData.type == event) callbackData.function(...args);
+                }
+            }
+        }
+
+        export module Data {
+            export const DataKeys = {
+                "QuickActions.Profiles": "QuickActions.Profiles",
+            } as const;
+            export type DataKeys = typeof DataKeys[keyof typeof DataKeys];
+
+            let _Data: { [key: string]: any } = {};
+
+            export function Set(key: string | DataKeys, data: any): void {
+                _Data[key] = data;
+            }
+
+            export function Get(key: string | DataKeys, defaultValue: any): any {
+                if (!_Data[key]) return defaultValue;
+                return _Data[key];
+            }
         }
     }
 }

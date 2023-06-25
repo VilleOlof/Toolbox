@@ -8,6 +8,7 @@
     import { Common } from '../src/Lib/Common';
 
     import { onMount } from 'svelte';
+    import { SML } from "../src/Lib/SharedModuleLogic";
 
     const componentID: string = "ImageClipboard";
 
@@ -15,6 +16,8 @@
         ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Small,
             "Saves the clipboard image to a folder and imports it into the media pool"
         );
+
+        SML.Shared.Function.Add("ImageClipboard.Paste", ClipboardToFile);
     });
 
     let _Settings = GlobalSettings.GetInstance(componentID);

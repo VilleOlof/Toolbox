@@ -3,13 +3,13 @@
     import { ResolveEnums } from "../src/Lib/ResolveEnums";
 
     import { DataStore } from "../src/Stores/DataStore";
-    import { Settings, GlobalSettings, SettingTypes } from '../src/Lib/Settings';
+    import { GlobalSettings, SettingTypes } from '../src/Lib/Settings';
     import { ModuleHandler } from '../src/Lib/ModuleHandler';
     import { Common } from '../src/Lib/Common';
 
-    import { getContext, onMount } from 'svelte';
+    import { onMount } from 'svelte';
     import { fade, slide } from "svelte/transition";
-    import { SharedModuleLogic } from "../src/Lib/SharedModuleLogic";
+    import { SML } from "../src/Lib/SharedModuleLogic";
 
     const path = require("path");
 
@@ -22,6 +22,8 @@
         );
 
         profileNameChangeInput.value = CurrentProfile;
+
+        SML.Shared.Function.Add("QuickActions.Run", RunActions);
     });
 
     let defaultProfile = {}
@@ -36,6 +38,7 @@
     if (Object.keys(_profiles).length == 0) _profiles["New Profile"] = defaultProfile; //ensures that there is always at least one profile.
 
     $: _Datastore.Set("Profiles", _profiles); //ensures that the datastore is updated when the profiles are updated
+    $: SML.Shared.Data.Set("QuickActions.Profiles", _profiles);
 
     let CurrentProfile: string = _Datastore.Get<string>("CurrentProfile", "Default");
     $: _Datastore.Set("CurrentProfile", CurrentProfile);
@@ -1135,8 +1138,8 @@
         "Marker Tool": (start: boolean, end: boolean) => {
             if (start && end) throw new Error("Cannot have both start and end markers enabled");
 
-            if (start) SharedModuleLogic.MarkerTool.CreateStartMarker();
-            if (end) SharedModuleLogic.MarkerTool.CreateEndMarker();
+            if (start) SML.MarkerTool.CreateStartMarker();
+            if (end) SML.MarkerTool.CreateEndMarker();
         }
     }
 

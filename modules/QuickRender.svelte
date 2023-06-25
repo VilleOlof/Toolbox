@@ -8,6 +8,7 @@
     import { Common } from '../src/Lib/Common';
 
     import { onMount } from 'svelte';
+    import { SML } from "../src/Lib/SharedModuleLogic";
 
     const componentID: string = "QuickRender";
 
@@ -15,6 +16,9 @@
         ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Large,
             "A module that makes it quick and easy to render your timeline with just a few clicks."
         );
+
+        SML.Shared.Function.Add("QuickRender.Render", Render);
+        SML.Shared.Function.Add("QuickRender.AddRenderJob", AddRenderJob);
     });
 
     type Profile = {

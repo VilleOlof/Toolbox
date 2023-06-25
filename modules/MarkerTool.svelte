@@ -7,7 +7,7 @@
     import { ModuleHandler } from '../src/Lib/ModuleHandler';
     import { Common } from '../src/Lib/Common';
 
-    import { SharedModuleLogic } from "../src/Lib/SharedModuleLogic";
+    import { SML } from "../src/Lib/SharedModuleLogic";
 
     import { onDestroy, onMount, setContext } from 'svelte';
 
@@ -20,11 +20,11 @@
         );
 
         Common.Electron.RegisterShortcut(StartMarkerShortcut, function StartMarkerKey() {
-            SharedModuleLogic.MarkerTool.CreateStartMarker();
+            SML.MarkerTool.CreateStartMarker();
         });
 
         Common.Electron.RegisterShortcut(EndMarkerShortcut, () => {
-            SharedModuleLogic.MarkerTool.CreateEndMarker();
+            SML.MarkerTool.CreateEndMarker();
         });
     });
 
@@ -59,12 +59,12 @@
         let timeline: Timeline = ResolveFunctions.GetCurrentTimeline();
         if (!timeline) return;
 
-        if (SharedModuleLogic.MarkerTool.CheckIfMarkerExists(SharedModuleLogic.MarkerTool.StartMarkerData)) timeline.DeleteMarkerByCustomData(SharedModuleLogic.MarkerTool.StartMarkerData);
-        if (SharedModuleLogic.MarkerTool.CheckIfMarkerExists(SharedModuleLogic.MarkerTool.EndMarkerData)) timeline.DeleteMarkerByCustomData(SharedModuleLogic.MarkerTool.EndMarkerData);
+        if (SML.MarkerTool.CheckIfMarkerExists(SML.MarkerTool.StartMarkerData)) timeline.DeleteMarkerByCustomData(SML.MarkerTool.StartMarkerData);
+        if (SML.MarkerTool.CheckIfMarkerExists(SML.MarkerTool.EndMarkerData)) timeline.DeleteMarkerByCustomData(SML.MarkerTool.EndMarkerData);
     }
 
-    _Datastore.Set("StartMarker", SharedModuleLogic.MarkerTool.StartMarkerData);
-    _Datastore.Set("EndMarker", SharedModuleLogic.MarkerTool.EndMarkerData);
+    _Datastore.Set("StartMarker", SML.MarkerTool.StartMarkerData);
+    _Datastore.Set("EndMarker", SML.MarkerTool.EndMarkerData);
 
 </script>
 
@@ -72,8 +72,8 @@
 <main id={componentID}>
     <h1 id=title>Marker Tool</h1>
 
-    <button id="startMarkerButton" class=markerButton on:click={SharedModuleLogic.MarkerTool.CreateStartMarker}>Start</button>
-    <button id="endMarkerButton" class=markerButton on:click={SharedModuleLogic.MarkerTool.CreateEndMarker}>End</button>
+    <button id="startMarkerButton" class=markerButton on:click={SML.MarkerTool.CreateStartMarker}>Start</button>
+    <button id="endMarkerButton" class=markerButton on:click={SML.MarkerTool.CreateEndMarker}>End</button>
 
     <button id="clearMarkersButton" on:click={ClearBothMarkers}>Clear Markers</button>
 </main>
