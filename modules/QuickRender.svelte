@@ -19,6 +19,7 @@
 
         SML.Shared.Function.Add("QuickRender.Render", Render);
         SML.Shared.Function.Add("QuickRender.AddRenderJob", AddRenderJob);
+        SML.Shared.Function.Add("QuickRender.ChangeProfile", ChangeCurrentProfile);
     });
 
     type Profile = {
@@ -125,6 +126,13 @@
         }
 
         console.log(GetFileName());
+    }
+
+    function ChangeCurrentProfile(profileName: string): void {
+        let profile = RenderProfiles.find(x => x.ProfileName == profileName);
+        if (profile != undefined) {
+            CurrentProfile = profile;
+        }
     }
 
     function GetCombinedTryPath(result: string): string {

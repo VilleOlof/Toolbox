@@ -82,6 +82,7 @@ export module SML {
                 "QuickActions.Run": "QuickActions.Run",
                 "QuickRender.Render": "QuickRender.Render",
                 "QuickRender.AddRenderJob": "QuickRender.AddRenderJob",
+                "QuickRender.ChangeProfile": "QuickRender.ChangeProfile",
                 "ImageClipboard.Paste": "ImageClipboard.Paste",
             } as const;
             export type Subscription = typeof Subscription[keyof typeof Subscription];
