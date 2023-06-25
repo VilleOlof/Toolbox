@@ -7,7 +7,9 @@
     import { ModuleHandler } from '../src/Lib/ModuleHandler';
     import { Common } from '../src/Lib/Common';
 
-    import { onDestroy, onMount } from 'svelte';
+    import { SharedModuleLogic } from "../src/Lib/SharedModuleLogic";
+
+    import { onDestroy, onMount, setContext } from 'svelte';
 
     const componentID: string = "MarkerTool";
     //Maybe optimize all the calls to get a timeline?
@@ -18,11 +20,11 @@
         );
 
         Common.Electron.RegisterShortcut(StartMarkerShortcut, function StartMarkerKey() {
-            CreateStartMarker();
+            SharedModuleLogic.MarkerTool.CreateStartMarker();
         });
 
         Common.Electron.RegisterShortcut(EndMarkerShortcut, () => {
-            CreateEndMarker();
+            SharedModuleLogic.MarkerTool.CreateEndMarker();
         });
     });
 
@@ -53,79 +55,16 @@
         <SettingTypes.Keybind>{defaultModifierOne: SettingTypes.KeybindModifier.Shift, defaultModifierTwo: SettingTypes.KeybindModifier.Alt}
     );
 
-    function GetPlayHeadFrame(timeline?: Timeline): number {
-        let currentTimeline: Timeline = timeline ?? ResolveFunctions.GetCurrentTimeline();
-        if (!currentTimeline) return 0;
-
-        let playHead: string = currentTimeline.GetCurrentTimecode();
-
-        let playHeadFrame: number = ResolveFunctions.ConvertTimecodeToFrames(playHead);
-
-        playHeadFrame -= currentTimeline.GetStartFrame();
-
-        return playHeadFrame;
-    }
-
-    function CheckIfMarkerExists(markerData: string): boolean {
-        let timeline: Timeline = ResolveFunctions.GetCurrentTimeline();
-        if (!timeline) return false;
-        let markers = timeline.GetMarkers();
-
-        for (const [frameID, MarkerData] of Object.entries(markers)) {
-            if (MarkerData.customData == markerData) return true;
-        }
-
-        return false;
-    }
-
-    const StartMarkerData: string = "MarkerTool-StartMarker";
-    function CreateStartMarker(): void {
-        let timeline: Timeline = ResolveFunctions.GetCurrentTimeline();
-        if (!timeline) return;
-
-        let playHeadPosition = GetPlayHeadFrame(timeline);
-
-        if (CheckIfMarkerExists(StartMarkerData)) timeline.DeleteMarkerByCustomData(StartMarkerData);
-
-        timeline.AddMarker(
-            playHeadPosition,
-            StartColor,
-            "Start Marker",
-            "A Generated Marker By The MarkerTool Module",
-            1,
-            StartMarkerData
-        );
-    }
-
-    const EndMarkerData: string = "MarkerTool-EndMarker";
-    function CreateEndMarker(): void {
-        let timeline: Timeline = ResolveFunctions.GetCurrentTimeline();
-        if (!timeline) return;
-
-        let playHeadPosition = GetPlayHeadFrame(timeline);
-
-        if (CheckIfMarkerExists(EndMarkerData))  timeline.DeleteMarkerByCustomData(EndMarkerData);
-        
-        timeline.AddMarker(
-            playHeadPosition,
-            EndColor,
-            "End Marker",
-            "A Generated Marker By The MarkerTool Module",
-            1,
-            EndMarkerData
-        );
-    }
-
     function ClearBothMarkers(): void {
         let timeline: Timeline = ResolveFunctions.GetCurrentTimeline();
         if (!timeline) return;
 
-        if (CheckIfMarkerExists(StartMarkerData)) timeline.DeleteMarkerByCustomData(StartMarkerData);
-        if (CheckIfMarkerExists(EndMarkerData)) timeline.DeleteMarkerByCustomData(EndMarkerData);
+        if (SharedModuleLogic.MarkerTool.CheckIfMarkerExists(SharedModuleLogic.MarkerTool.StartMarkerData)) timeline.DeleteMarkerByCustomData(SharedModuleLogic.MarkerTool.StartMarkerData);
+        if (SharedModuleLogic.MarkerTool.CheckIfMarkerExists(SharedModuleLogic.MarkerTool.EndMarkerData)) timeline.DeleteMarkerByCustomData(SharedModuleLogic.MarkerTool.EndMarkerData);
     }
 
-    _Datastore.Set("StartMarker", StartMarkerData);
-    _Datastore.Set("EndMarker", EndMarkerData);
+    _Datastore.Set("StartMarker", SharedModuleLogic.MarkerTool.StartMarkerData);
+    _Datastore.Set("EndMarker", SharedModuleLogic.MarkerTool.EndMarkerData);
 
 </script>
 
@@ -133,8 +72,8 @@
 <main id={componentID}>
     <h1 id=title>Marker Tool</h1>
 
-    <button id="startMarkerButton" class=markerButton on:click={CreateStartMarker}>Start</button>
-    <button id="endMarkerButton" class=markerButton on:click={CreateEndMarker}>End</button>
+    <button id="startMarkerButton" class=markerButton on:click={SharedModuleLogic.MarkerTool.CreateStartMarker}>Start</button>
+    <button id="endMarkerButton" class=markerButton on:click={SharedModuleLogic.MarkerTool.CreateEndMarker}>End</button>
 
     <button id="clearMarkersButton" on:click={ClearBothMarkers}>Clear Markers</button>
 </main>

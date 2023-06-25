@@ -7,8 +7,9 @@
     import { ModuleHandler } from '../src/Lib/ModuleHandler';
     import { Common } from '../src/Lib/Common';
 
-    import { onMount } from 'svelte';
+    import { getContext, onMount } from 'svelte';
     import { fade, slide } from "svelte/transition";
+    import { SharedModuleLogic } from "../src/Lib/SharedModuleLogic";
 
     const path = require("path");
 
@@ -520,6 +521,16 @@
             "Profile Name": {
                 type: "string",
                 value: "New Profile"
+            }
+        },
+        "Marker Tool": {
+            "Start Marker": {
+                type: "boolean",
+                value: true
+            },
+            "End Marker": {
+                type: "boolean",
+                value: false
             }
         }
     }
@@ -1120,6 +1131,12 @@
             if (!profileActions) return;
 
             RunActions(profileName);
+        },
+        "Marker Tool": (start: boolean, end: boolean) => {
+            if (start && end) throw new Error("Cannot have both start and end markers enabled");
+
+            if (start) SharedModuleLogic.MarkerTool.CreateStartMarker();
+            if (end) SharedModuleLogic.MarkerTool.CreateEndMarker();
         }
     }
 
