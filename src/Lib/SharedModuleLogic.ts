@@ -105,7 +105,10 @@ export module SML {
             export function Run(event: string | Subscription, ...args: any[]): void {
                 if (!Subscription[event]) return;
                 for (const [_, callbackData] of Object.entries(Callbacks)) {
-                    if (callbackData.type == event) callbackData.function(...args);
+                    if (callbackData.type == event) {
+                        callbackData.function(...args);
+                        return;
+                    }
                 }
             }
         }
