@@ -14,6 +14,19 @@
     onMount(() => {
         ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Small,
         "Opens the current file at the current playhead position in a new explorer window. ");
+
+        if (ShortCut !== "") {
+            Common.Electron.RegisterShortcut(ShortCut, () => {
+                OpenFileAtPlayhead();
+            });
+        }
+    });
+
+    const _Settings = GlobalSettings.GetInstance(componentID);
+
+    const ShortCut = _Settings.RegisterSetting("Hotkey", "A shortcut to open the file at playhead", "", SettingTypes.Type.Keybind, <SettingTypes.Keybind>{
+        defaultModifierOne: SettingTypes.KeybindModifier.None,
+        defaultModifierTwo: SettingTypes.KeybindModifier.None
     });
 
     const OpenFileAtPlayhead = () => {
@@ -23,8 +36,16 @@
         const currentItem = timeline.GetCurrentVideoItem();
         if (!currentItem) return;
 
-        const filePath: string = currentItem.GetMediaPoolItem().GetClipProperty("File Path") as string;
-        if (!filePath) return;
+        let filePath: string = currentItem.GetMediaPoolItem().GetClipProperty("File Path") as string;
+        if (!filePath) {
+            const audioItem = ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Audio, [1], timeline) as TimelineItem;
+            if (!audioItem) return;
+
+            const audioFilePath: string = audioItem.GetMediaPoolItem().GetClipProperty("File Path") as string;
+            if (!audioFilePath) return;
+
+            filePath = audioFilePath;
+        }
 
         Common.IO.OpenFolder("", ["/select,", filePath], true);
     }
