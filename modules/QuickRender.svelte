@@ -179,7 +179,7 @@
         }
 
         const renderPresets: string[] = project.GetRenderPresetList();
-        const presetName: string = renderPresets[CurrentProfile.RenderPresetIndex];
+        const presetName: string = renderPresets[CurrentProfile.RenderPresetIndex - 1];
         project.LoadRenderPreset(presetName);
 
         let inPoint: number = 0;
