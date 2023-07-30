@@ -149,6 +149,10 @@
             "Return To Origin": {
                 type: "boolean",
                 value: true
+            },
+            "Copy End Cut From Track": {
+                type: "number",
+                value: -1
             }
         },
         "From Mediapool": {
@@ -593,7 +597,7 @@
             const currentMediapool = ResolveFunctions.GetCurrentProject().GetMediaPool();
             currentMediapool.CreateEmptyTimeline(timelineName);
         },
-        "Import Media": (importType: "Timeline" | "Mediapool", defaultPath: string, fileOrFolder: "File" | "Folder", startFrame:number = 0, originFrame: "Relative" | "Start", clipColor: ResolveEnums.ClipColor = ResolveEnums.ClipColor.Blue, trackIndex: number, mediapoolBinName: string, returnToOrigin: boolean) => {
+        "Import Media": (importType: "Timeline" | "Mediapool", defaultPath: string, fileOrFolder: "File" | "Folder", startFrame:number = 0, originFrame: "Relative" | "Start", clipColor: ResolveEnums.ClipColor = ResolveEnums.ClipColor.Blue, trackIndex: number, mediapoolBinName: string, returnToOrigin: boolean, endCutTrackIndex: number) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
@@ -644,10 +648,21 @@
                     recordFrame = currentTimeline.GetStartFrame() + startFrame;
                 }
 
+                let endFrame = parseInt(importedItem.GetClipProperty("End") as string);
+                if (endCutTrackIndex !== -1) {
+                    const endCutItem = ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, endCutTrackIndex, currentTimeline) as TimelineItem;
+
+                    if (endCutItem) {
+                        const diff = endCutItem.GetEnd() - ResolveFunctions.ConvertTimecodeToFrames(playheadTimecode)
+
+                        endFrame = (parseInt(importedItem.GetClipProperty("Start") as string) + diff) - 1;
+                    }
+                }
+
                 const clipInfo: ClipInfo = {
                     mediaPoolItem: importedItem,
                     startFrame: parseInt(importedItem.GetClipProperty("Start") as string),
-                    endFrame: parseInt(importedItem.GetClipProperty("End") as string),
+                    endFrame: endFrame,
 
                     trackIndex: trackIndex,
                     recordFrame: recordFrame
