@@ -653,7 +653,9 @@
                     const endCutItem = ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, endCutTrackIndex, currentTimeline) as TimelineItem;
 
                     if (endCutItem) {
-                        const diff = endCutItem.GetEnd() - ResolveFunctions.ConvertTimecodeToFrames(playheadTimecode)
+                        let diff = endCutItem.GetEnd() - ResolveFunctions.ConvertTimecodeToFrames(playheadTimecode)
+                        const importedItemFramerate = parseInt(importedItem.GetClipProperty("FPS") as string);
+                        diff = Math.round(diff * importedItemFramerate / parseInt(currentProject.GetSetting("timelineFrameRate")));
 
                         endFrame = (parseInt(importedItem.GetClipProperty("Start") as string) + diff) - 1;
                     }
