@@ -228,6 +228,21 @@
                 value: true,
             }
         },
+        "Goto Next Marker": {
+            "Name": {
+                type: "string",
+                value: "",
+            },
+            "Color": {
+                type: "dropdown",
+                value: "Blue",
+                dropdownOptions: Object.keys(ResolveEnums.MarkerColor),
+            },
+            "Stop If Found": {
+                type: "boolean",
+                value: true,
+            }
+        },
         "New Compound": {
             "Tracks: (1,2,3)": {
                 type: "string",
@@ -528,6 +543,10 @@
             "Profile Name": {
                 type: "string",
                 value: "New Profile"
+            },
+            "Loop Until Error": {
+                type: "boolean",
+                value: false
             }
         },
         "Marker Tool": {
@@ -1146,17 +1165,60 @@
 
             currentTimeline.SetCurrentTimecode(ResolveFunctions.ConvertFramesToTimecode(playhead));
         },
-        "Run Profile": (profileName: string) => {
+        "Run Profile": (profileName: string, loop: boolean) => {
             const profileActions = _profiles[profileName];
             if (!profileActions) return;
 
-            RunActions(profileName);
+            if (!loop) {
+                RunActions(profileName);
+                return;
+            }
+
+            const MAX_ATTEMPTS = 100;
+            let attempts = 0;
+            while (true) {
+                attempts += 1;
+                if (attempts === MAX_ATTEMPTS) break;
+
+                try {
+                    RunActions(profileName);
+                }
+                catch {
+                    break;
+                }
+            }
         },
         "Marker Tool": (start: boolean, end: boolean) => {
             if (start && end) throw new Error("Cannot have both start and end markers enabled");
 
             if (start) SML.MarkerTool.CreateStartMarker();
             if (end) SML.MarkerTool.CreateEndMarker();
+        },
+        "Goto Next Marker": (name: string, color: ResolveEnums.MarkerColor, stopIfFound: boolean) => {
+            const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+            if (!currentTimeline) {
+                console.warn("No timeline selected");
+                return;
+            }
+
+            const currentFrame = ResolveFunctions.ConvertTimecodeToFrames(currentTimeline.GetCurrentTimecode()) - currentTimeline.GetStartFrame();
+
+            const markers = Object.entries(currentTimeline.GetMarkers());
+            let markerFound = false;
+            for (let i = 0; i < markers.length; i++) {
+                const [frame, marker] = markers[i];
+                if (parseInt(frame) <= currentFrame) continue;
+
+                if ((marker.name === name || name === "") && color === marker.color) {
+                    markerFound = true;
+
+                    const timecode = ResolveFunctions.ConvertFramesToTimecode(parseInt(frame) + currentTimeline.GetStartFrame() + 1);
+                    currentTimeline.SetCurrentTimecode(timecode);
+                    if (stopIfFound) break;
+                }
+            }
+
+            if (!markerFound) throw Error();
         }
     }
 
