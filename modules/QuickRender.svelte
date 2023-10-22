@@ -1,37 +1,50 @@
 <script lang="ts">
-    import { Resolve, ResolveFunctions, AppQuit } from "../src/Lib/DavinciResolve";
+    import {
+        Resolve,
+        ResolveFunctions,
+        AppQuit,
+    } from "../src/Lib/DavinciResolve";
     import { ResolveEnums } from "../src/Lib/ResolveEnums";
 
     import { DataStore } from "../src/Stores/DataStore";
-    import { Settings, GlobalSettings, SettingTypes } from '../src/Lib/Settings';
-    import { ModuleHandler } from '../src/Lib/ModuleHandler';
-    import { Common } from '../src/Lib/Common';
+    import {
+        Settings,
+        GlobalSettings,
+        SettingTypes,
+    } from "../src/Lib/Settings";
+    import { ModuleHandler } from "../src/Lib/ModuleHandler";
+    import { Common } from "../src/Lib/Common";
 
-    import { onMount } from 'svelte';
+    import { onMount } from "svelte";
     import { SML } from "../src/Lib/SharedModuleLogic";
 
     const componentID: string = "QuickRender";
 
     onMount(() => {
-        ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Large,
+        ModuleHandler.RegisterModule(
+            componentID,
+            ModuleHandler.ComponentSize.Large,
             "A module that makes it quick and easy to render your timeline with just a few clicks."
         );
 
         SML.Shared.Function.Add("QuickRender.Render", Render);
         SML.Shared.Function.Add("QuickRender.AddRenderJob", AddRenderJob);
-        SML.Shared.Function.Add("QuickRender.ChangeProfile", ChangeCurrentProfile);
+        SML.Shared.Function.Add(
+            "QuickRender.ChangeProfile",
+            ChangeCurrentProfile
+        );
     });
 
     type Profile = {
-        ProfileName: string,
-        RenderPresetIndex: number,
-        FilePath: string,
-        FileName: string,
-        FileExtension: string,
-        Suffix: string,
-        UseSuffix: boolean,
-        Overwrite: boolean,
-    }
+        ProfileName: string;
+        RenderPresetIndex: number;
+        FilePath: string;
+        FileName: string;
+        FileExtension: string;
+        Suffix: string;
+        UseSuffix: boolean;
+        Overwrite: boolean;
+    };
     const DefaultProfile: Profile = {
         ProfileName: "Default",
         RenderPresetIndex: 6,
@@ -41,18 +54,41 @@
         Suffix: "",
         UseSuffix: false,
         Overwrite: false,
-    }
+    };
 
     let _DataStore = new DataStore(componentID);
     let _Settings = GlobalSettings.GetInstance(componentID);
 
-    let QuitOnRender = _Settings.RegisterSetting("Quit Plugin On Render", "Saves and quits the plugin when pressing the 'Render' Button", false, SettingTypes.Type.Checkbox);
-    let ClearJobsBeforeRender = _Settings.RegisterSetting("Clear Jobs Before Render", "Clears all render jobs in the queue before rendering", false, SettingTypes.Type.Checkbox);
-    let PromptFolderOnRender = _Settings.RegisterSetting("Prompt Folder On Render", "Prompts the user to select a folder when pressing the 'Render' Button", false, SettingTypes.Type.Checkbox);
-    let UseMarkerTool = _Settings.RegisterSetting("Use Marker Tool", "Uses the marker tool to set the in and out points", false, SettingTypes.Type.Checkbox);
+    let QuitOnRender = _Settings.RegisterSetting(
+        "Quit Plugin On Render",
+        "Saves and quits the plugin when pressing the 'Render' Button",
+        false,
+        SettingTypes.Type.Checkbox
+    );
+    let ClearJobsBeforeRender = _Settings.RegisterSetting(
+        "Clear Jobs Before Render",
+        "Clears all render jobs in the queue before rendering",
+        false,
+        SettingTypes.Type.Checkbox
+    );
+    let PromptFolderOnRender = _Settings.RegisterSetting(
+        "Prompt Folder On Render",
+        "Prompts the user to select a folder when pressing the 'Render' Button",
+        false,
+        SettingTypes.Type.Checkbox
+    );
+    let UseMarkerTool = _Settings.RegisterSetting(
+        "Use Marker Tool",
+        "Uses the marker tool to set the in and out points",
+        false,
+        SettingTypes.Type.Checkbox
+    );
 
     let DataProfileFallback = JSON.parse(JSON.stringify(DefaultProfile));
-    let RenderProfiles: Profile[] = _DataStore.Get<Profile[]>("RenderProfiles", [DataProfileFallback]);
+    let RenderProfiles: Profile[] = _DataStore.Get<Profile[]>(
+        "RenderProfiles",
+        [DataProfileFallback]
+    );
 
     //if there are no profiles, add the default profile
     if (RenderProfiles.length == 0) {
@@ -74,14 +110,15 @@
     }
 
     function ChangeFolder(): void {
-        if (CurrentProfile.FilePath == DefaultProfile.FilePath) CurrentProfile.FilePath = "";
+        if (CurrentProfile.FilePath == DefaultProfile.FilePath)
+            CurrentProfile.FilePath = "";
 
         const folders = Common.IO.Dialog({
             title: "Select Folder",
             defaultPath: CurrentProfile.FilePath,
             buttonLabel: "Select Folder",
-            properties: ["openDirectory"]
-        })
+            properties: ["openDirectory"],
+        });
 
         if (folders) {
             CurrentProfile.FilePath = folders[0];
@@ -89,7 +126,8 @@
     }
 
     function GetRenderPresets(): string[] {
-        let presets: string[] = ResolveFunctions.GetCurrentProject().GetRenderPresetList();
+        let presets: string[] =
+            ResolveFunctions.GetCurrentProject().GetRenderPresetList();
         return presets;
     }
 
@@ -103,7 +141,9 @@
     }
 
     function RemoveProfile(): void {
-        RenderProfiles = RenderProfiles.filter(x => x.ProfileName != CurrentProfile.ProfileName);
+        RenderProfiles = RenderProfiles.filter(
+            (x) => x.ProfileName != CurrentProfile.ProfileName
+        );
         RenderProfiles = _DataStore.Set("RenderProfiles", RenderProfiles);
 
         if (RenderProfiles.length == 0) {
@@ -120,7 +160,9 @@
     }
 
     function ProfileChange(): void {
-        let profile = RenderProfiles.find(x => x.ProfileName == currentProfileName);
+        let profile = RenderProfiles.find(
+            (x) => x.ProfileName == currentProfileName
+        );
         if (profile != undefined) {
             CurrentProfile = profile;
         }
@@ -129,18 +171,52 @@
     }
 
     function ChangeCurrentProfile(profileName: string): void {
-        let profile = RenderProfiles.find(x => x.ProfileName == profileName);
+        let profile = RenderProfiles.find((x) => x.ProfileName == profileName);
         if (profile != undefined) {
             CurrentProfile = profile;
         }
     }
 
     function GetCombinedTryPath(result: string): string {
-        return CurrentProfile.FilePath + "\\" + result + "." + CurrentProfile.FileExtension;
+        return (
+            CurrentProfile.FilePath +
+            "\\" +
+            result +
+            "." +
+            CurrentProfile.FileExtension
+        );
     }
 
-    function GetCombinedAlternativeTryPath(result: string, index: number): string {
-        return CurrentProfile.FilePath + "\\" + result + `_${index}.` + CurrentProfile.FileExtension;
+    function GetCombinedAlternativeTryPath(
+        result: string,
+        index: number
+    ): string {
+        return (
+            CurrentProfile.FilePath +
+            "\\" +
+            GetCombinedAlternativeTryName(result, index)
+        );
+    }
+
+    function GetCombinedAlternativeTryName(
+        result: string,
+        index: number
+    ): string {
+        return result + `_${index}.` + CurrentProfile.FileExtension;
+    }
+
+    function CheckIfIdenticalRenderJobExists(name: string): boolean {
+        const renderJobList =
+            ResolveFunctions.GetCurrentProject().GetRenderJobList();
+
+        for (let i = 0; i < renderJobList.length; i++) {
+            const renderJob = renderJobList[i];
+            if (renderJob.OutputFilename == name) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     function GetFileName(): string {
@@ -155,12 +231,24 @@
             let amountOfFiles = 0;
 
             let path = GetCombinedTryPath(result);
-            let alternativePath = GetCombinedAlternativeTryPath(result, amountOfFiles);
+            let alternativePath = GetCombinedAlternativeTryPath(
+                result,
+                amountOfFiles
+            );
 
-            while (Common.IO.FileExists(path) || Common.IO.FileExists(alternativePath)) {
+            while (
+                Common.IO.FileExists(path) ||
+                Common.IO.FileExists(alternativePath) ||
+                CheckIfIdenticalRenderJobExists(
+                    GetCombinedAlternativeTryName(result, amountOfFiles)
+                )
+            ) {
                 amountOfFiles++;
                 path = GetCombinedTryPath(result);
-                alternativePath = GetCombinedAlternativeTryPath(result, amountOfFiles);;
+                alternativePath = GetCombinedAlternativeTryPath(
+                    result,
+                    amountOfFiles
+                );
             }
 
             result += "_" + amountOfFiles;
@@ -179,7 +267,8 @@
         }
 
         const renderPresets: string[] = project.GetRenderPresetList();
-        const presetName: string = renderPresets[CurrentProfile.RenderPresetIndex - 1];
+        const presetName: string =
+            renderPresets[CurrentProfile.RenderPresetIndex - 1];
         project.LoadRenderPreset(presetName);
 
         let inPoint: number = 0;
@@ -194,31 +283,38 @@
                 return;
             }
 
-            let startMarkerData = _MarkerToolDataStore.Get<string>('StartMarker');
-            let endMarkerData = _MarkerToolDataStore.Get<string>('EndMarker');
+            let startMarkerData =
+                _MarkerToolDataStore.Get<string>("StartMarker");
+            let endMarkerData = _MarkerToolDataStore.Get<string>("EndMarker");
 
             if (startMarkerData && endMarkerData) {
                 const currentTimeline = ResolveFunctions.GetCurrentTimeline();
 
-                inPoint = ResolveFunctions.GetMarkerFrameID(startMarkerData, currentTimeline);
-                outPoint = ResolveFunctions.GetMarkerFrameID(endMarkerData, currentTimeline);
+                inPoint = ResolveFunctions.GetMarkerFrameID(
+                    startMarkerData,
+                    currentTimeline
+                );
+                outPoint = ResolveFunctions.GetMarkerFrameID(
+                    endMarkerData,
+                    currentTimeline
+                );
 
                 inPoint += currentTimeline.GetStartFrame();
                 outPoint += currentTimeline.GetStartFrame();
 
-                inPoint += 1 //marker Duration frame
+                inPoint += 1; //marker Duration frame
             }
         }
 
         renderSettings = {
-            SelectAllFrames: (inPoint == 0 || outPoint == 0),
+            SelectAllFrames: inPoint == 0 || outPoint == 0,
             TargetDir: CurrentProfile.FilePath,
             CustomName: GetFileName(),
 
             MarkIn: inPoint,
             MarkOut: outPoint,
-        }
-        
+        };
+
         project.SetRenderSettings(renderSettings);
 
         project.AddRenderJob();
@@ -255,79 +351,148 @@
     }
 </script>
 
-
 <main id={componentID}>
     <div id="topBar">
         <div id="leftSide">
-            <select id="renderProfileDropdown" bind:value={currentProfileName} on:change={ProfileChange}>
+            <select
+                id="renderProfileDropdown"
+                bind:value={currentProfileName}
+                on:change={ProfileChange}
+            >
                 {#each RenderProfiles as profile}
-                    <option value={profile.ProfileName}>{profile.ProfileName}</option>
+                    <option value={profile.ProfileName}
+                        >{profile.ProfileName}</option
+                    >
                 {/each}
             </select>
 
-            <button id="addProfileButton" class=buttonStyle on:click={AddProfile}>+ Profile</button>
-            <button id="removeProfileButton" class="buttonStyle" on:click={RemoveProfile}>-</button>
+            <button
+                id="addProfileButton"
+                class="buttonStyle"
+                on:click={AddProfile}>+ Profile</button
+            >
+            <button
+                id="removeProfileButton"
+                class="buttonStyle"
+                on:click={RemoveProfile}>-</button
+            >
         </div>
 
         <div id="rightSide">
-            <button id="renderButton" class=buttonStyle on:click={Render}>Render</button>
+            <button id="renderButton" class="buttonStyle" on:click={Render}
+                >Render</button
+            >
         </div>
     </div>
 
-    <div id="lineBreak"></div>
+    <div id="lineBreak" />
 
     <div id="profileSettings">
-        <div id="renderPreset" class=renderOption>
+        <div id="renderPreset" class="renderOption">
             <label for="renderPresetDropdown">Render Preset</label>
-            <select id="renderPresetDropdown" bind:value={CurrentProfile.RenderPresetIndex}>
+            <select
+                id="renderPresetDropdown"
+                bind:value={CurrentProfile.RenderPresetIndex}
+            >
                 {#each GetRenderPresets() as preset, i}
-                    <option value={i+1}>{preset}</option>
+                    <option value={i + 1}>{preset}</option>
                 {/each}
             </select>
         </div>
 
-        <div id="folder" class=renderOption>
-            <label for="filePathInput" on:click={OpenFilePath} on:keydown={OpenFilePath}>Folder</label>
+        <div id="folder" class="renderOption">
+            <label
+                for="filePathInput"
+                on:click={OpenFilePath}
+                on:keydown={OpenFilePath}>Folder</label
+            >
             <div>
-                <input type="text" id="folderInput" class=inputTextStyle bind:value={CurrentProfile.FilePath}>
-                <button id="folderLocationButton" class=buttonStyle on:click={ChangeFolder}>.../</button>
+                <input
+                    type="text"
+                    id="folderInput"
+                    class="inputTextStyle"
+                    bind:value={CurrentProfile.FilePath}
+                />
+                <button
+                    id="folderLocationButton"
+                    class="buttonStyle"
+                    on:click={ChangeFolder}>.../</button
+                >
             </div>
         </div>
 
-        <div id="fileName" class=renderOption>
+        <div id="fileName" class="renderOption">
             <label for="fileNameInput">File Name</label>
             <div>
-                <input id="fileNameInput" type="text" class=inputTextStyle bind:value={CurrentProfile.FileName}/>
-                <input id="fileExtensionInput" type="text" class=inputTextStyle bind:value={CurrentProfile.FileExtension}>
+                <input
+                    id="fileNameInput"
+                    type="text"
+                    class="inputTextStyle"
+                    bind:value={CurrentProfile.FileName}
+                />
+                <input
+                    id="fileExtensionInput"
+                    type="text"
+                    class="inputTextStyle"
+                    bind:value={CurrentProfile.FileExtension}
+                />
             </div>
         </div>
 
-        <div id="suffix" class=renderOption>
+        <div id="suffix" class="renderOption">
             <label for="suffixInput">Suffix</label>
 
             <div id="suffixLeftSide">
-                <input id="suffixInput" type="text" class=inputTextStyle bind:value={CurrentProfile.Suffix}/>
-                <input id="useSuffix" type="checkbox" class=checkBoxxStyle bind:checked={CurrentProfile.UseSuffix}>
+                <input
+                    id="suffixInput"
+                    type="text"
+                    class="inputTextStyle"
+                    bind:value={CurrentProfile.Suffix}
+                />
+                <input
+                    id="useSuffix"
+                    type="checkbox"
+                    class="checkBoxxStyle"
+                    bind:checked={CurrentProfile.UseSuffix}
+                />
             </div>
         </div>
 
-        <div id="overwrite" class=renderOption>
+        <div id="overwrite" class="renderOption">
             <label for="overwriteCheckbox">Overwrite</label>
-            <input id="overwriteCheckbox" type="checkbox" class=checkBoxxStyle bind:checked={CurrentProfile.Overwrite}/>
+            <input
+                id="overwriteCheckbox"
+                type="checkbox"
+                class="checkBoxxStyle"
+                bind:checked={CurrentProfile.Overwrite}
+            />
         </div>
 
         <div id="profileName" class="renderOption">
             <label for="profileNameInput">Profile Name</label>
-            <input id="profileNameInput" type="text" class=inputTextStyle bind:value={CurrentProfile.ProfileName} on:change={UpdateDropdown}/>
+            <input
+                id="profileNameInput"
+                type="text"
+                class="inputTextStyle"
+                bind:value={CurrentProfile.ProfileName}
+                on:change={UpdateDropdown}
+            />
         </div>
     </div>
 
     <div id="bottomBar">
-        <button id="addRenderJobButton" class=buttonStyle on:click={AddRenderJob}>Add Renderjob</button>
-        <button id="clearRenderJobButton" class=buttonStyle on:click={ClearRenderJobs}>Clear Renderjobs</button>
+        <button
+            id="addRenderJobButton"
+            class="buttonStyle"
+            on:click={AddRenderJob}>Add Renderjob</button
+        >
+        <button
+            id="clearRenderJobButton"
+            class="buttonStyle"
+            on:click={ClearRenderJobs}>Clear Renderjobs</button
+        >
     </div>
 </main>
-
 
 <style lang="scss">
     @use "../src/scss/Colors" as Colors;
@@ -456,7 +621,7 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        
+
         & > input[type="checkbox"] {
             margin-left: 1rem;
         }
@@ -495,10 +660,9 @@
         &:hover {
             cursor: pointer;
 
-            color: darken(Colors.$TextColor, 25%)
+            color: darken(Colors.$TextColor, 25%);
         }
 
         transition: color 0.2s;
     }
-
 </style>
