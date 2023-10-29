@@ -610,6 +610,10 @@
                 type: "boolean",
                 value: true,
             },
+            "Begin Render": {
+                type: "boolean",
+                value: true,
+            },
         },
     };
 
@@ -1580,7 +1584,8 @@
             fileName: string,
             fileExt: string,
             markerTool: boolean,
-            clearRenderJobs: boolean
+            clearRenderJobs: boolean,
+            renderVideo: boolean
         ) => {
             const project = ResolveFunctions.GetCurrentProject();
 
@@ -1645,7 +1650,7 @@
 
             project.AddRenderJob();
 
-            project.StartRendering();
+            if (renderVideo) project.StartRendering();
         },
     };
 
