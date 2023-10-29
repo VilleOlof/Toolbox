@@ -3,11 +3,11 @@
     import { ResolveEnums } from "../src/Lib/ResolveEnums";
 
     import { DataStore } from "../src/Stores/DataStore";
-    import { GlobalSettings, SettingTypes } from '../src/Lib/Settings';
-    import { ModuleHandler } from '../src/Lib/ModuleHandler';
-    import { Common } from '../src/Lib/Common';
+    import { GlobalSettings, SettingTypes } from "../src/Lib/Settings";
+    import { ModuleHandler } from "../src/Lib/ModuleHandler";
+    import { Common } from "../src/Lib/Common";
 
-    import { onMount } from 'svelte';
+    import { onMount } from "svelte";
     import { fade, slide } from "svelte/transition";
     import { SML } from "../src/Lib/SharedModuleLogic";
 
@@ -16,9 +16,11 @@
     const componentID: string = "QuickActions";
 
     onMount(() => {
-        ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Large,
+        ModuleHandler.RegisterModule(
+            componentID,
+            ModuleHandler.ComponentSize.Large,
             "An advanced module for doing mundane tasks quickly\n" +
-            "Import Media, Add Tracks, Apply LUT and more by clicking one button!"
+                "Import Media, Add Tracks, Apply LUT and more by clicking one button!"
         );
 
         profileNameChangeInput.value = CurrentProfile;
@@ -26,85 +28,99 @@
         SML.Shared.Function.Add("QuickActions.Run", RunActions);
     });
 
-    let defaultProfile = {}
+    let defaultProfile = {};
 
     let _Settings = GlobalSettings.GetInstance(componentID);
 
-    const showActionArrows: boolean = _Settings.RegisterSetting("Show Action Arrows", "To show or not to show the arrows that moves actions", true, SettingTypes.Type.Checkbox);
+    const showActionArrows: boolean = _Settings.RegisterSetting(
+        "Show Action Arrows",
+        "To show or not to show the arrows that moves actions",
+        true,
+        SettingTypes.Type.Checkbox
+    );
 
     let _Datastore = new DataStore(componentID);
 
-    let _profiles = _Datastore.Get<Profiles>("Profiles", { "New Profile": defaultProfile});
-    if (Object.keys(_profiles).length == 0) _profiles["New Profile"] = defaultProfile; //ensures that there is always at least one profile.
+    let _profiles = _Datastore.Get<Profiles>("Profiles", {
+        "New Profile": defaultProfile,
+    });
+    if (Object.keys(_profiles).length == 0)
+        _profiles["New Profile"] = defaultProfile; //ensures that there is always at least one profile.
 
     $: _Datastore.Set("Profiles", _profiles); //ensures that the datastore is updated when the profiles are updated
     $: SML.Shared.Data.Set("QuickActions.Profiles", _profiles);
 
-    let CurrentProfile: string = _Datastore.Get<string>("CurrentProfile", "Default");
+    let CurrentProfile: string = _Datastore.Get<string>(
+        "CurrentProfile",
+        "Default"
+    );
     $: _Datastore.Set("CurrentProfile", CurrentProfile);
 
-    if (!Object.keys(_profiles).includes(CurrentProfile)) CurrentProfile = Object.keys(_profiles)[0];
+    if (!Object.keys(_profiles).includes(CurrentProfile))
+        CurrentProfile = Object.keys(_profiles)[0];
 
     let originPlayheadFrame: number;
 
     type Profile = {
         //Action UUID
-        [key: string]: Action,
-    }
+        [key: string]: Action;
+    };
 
     type Profiles = {
         //Profile Name
-        [key: string]: Profile
-    }
+        [key: string]: Profile;
+    };
 
     type Action = {
-        Minimized: boolean,
-        Name: string,
+        Minimized: boolean;
+        Name: string;
         // Action name, action value
-        Parameters: {[key: string]: any}
-    }
+        Parameters: { [key: string]: any };
+    };
 
     type ActionInput = {
-        type: "string" | "number" | "boolean" | "dropdown" | "file",
-        value: any //string | number | boolean,
-        dropdownOptions?: Array<string>,
-    }
+        type: "string" | "number" | "boolean" | "dropdown" | "file" | "folder";
+        value: any; //string | number | boolean,
+        dropdownOptions?: Array<string>;
+    };
 
     type ActionName = string;
     type ValueName = string;
-    const ActionValueLookup: {[key: ActionName]: {[key: ValueName]: ActionInput}} = {
+    const ActionValueLookup: {
+        [key: ActionName]: { [key: ValueName]: ActionInput };
+    } = {
         "Add Track": {
-            "Name": {
+            Name: {
                 type: "string",
                 value: "New Track",
             },
-            "Type": {
+            Type: {
                 type: "dropdown",
                 value: "Video",
                 dropdownOptions: Object.keys(ResolveEnums.TrackType),
             },
             "Add Until X": {
                 type: "number",
-                value: -1
-            }
+                value: -1,
+            },
         },
         "Delete Tracks": {
             "Tracks (1,2,3)": {
                 type: "string",
-                value: "1"
+                value: "1",
             },
-            "Type": {
+            Type: {
                 type: "dropdown",
                 value: "Video",
                 dropdownOptions: Object.keys(ResolveEnums.TrackType),
             },
-            "Name": {
+            Name: {
                 type: "string",
                 value: "",
             },
         },
         "Create Timeline": {
-            "Name": {
+            Name: {
                 type: "string",
                 value: "New Timeline",
             },
@@ -131,12 +147,14 @@
             "Origin Frame": {
                 type: "dropdown",
                 value: "Relative",
-                dropdownOptions: ["Relative", "Start"]
+                dropdownOptions: ["Relative", "Start"],
             },
             "Clip Color": {
                 type: "dropdown",
                 value: "None",
-                dropdownOptions: Object.keys(ResolveEnums.ClipColor).concat("None"),
+                dropdownOptions: Object.keys(ResolveEnums.ClipColor).concat(
+                    "None"
+                ),
             },
             "Track (If Timeline)": {
                 type: "number",
@@ -148,12 +166,12 @@
             },
             "Return To Origin": {
                 type: "boolean",
-                value: true
+                value: true,
             },
             "Copy End Cut From Track": {
                 type: "number",
-                value: -1
-            }
+                value: -1,
+            },
         },
         "From Mediapool": {
             "Clip Name (Incl. Ext)": {
@@ -164,7 +182,7 @@
                 type: "string",
                 value: "Content",
             },
-            "Track": {
+            Track: {
                 type: "number",
                 value: 1,
             },
@@ -175,7 +193,7 @@
             "Origin Frame": {
                 type: "dropdown",
                 value: "Relative",
-                dropdownOptions: ["Relative", "Start"]
+                dropdownOptions: ["Relative", "Start"],
             },
         },
         "Apply LUT": {
@@ -191,26 +209,26 @@
             "Tracks (1,2,3)": {
                 type: "string",
                 value: "1",
-            }
+            },
         },
         "Add Bin": {
-            "Name": {
+            Name: {
                 type: "string",
                 value: "New Bin",
-            }
+            },
         },
         "Goto Bin": {
-            "Name": {
+            Name: {
                 type: "string",
                 value: "New Bin",
-            }
+            },
         },
         "Add Marker": {
-            "Name": {
+            Name: {
                 type: "string",
                 value: "New Marker",
             },
-            "Color": {
+            Color: {
                 type: "dropdown",
                 value: "Blue",
                 dropdownOptions: Object.keys(ResolveEnums.ClipColor),
@@ -226,14 +244,14 @@
             "Use Playhead": {
                 type: "boolean",
                 value: true,
-            }
+            },
         },
         "Goto Next Marker": {
-            "Name": {
+            Name: {
                 type: "string",
                 value: "",
             },
-            "Color": {
+            Color: {
                 type: "dropdown",
                 value: "Blue",
                 dropdownOptions: Object.keys(ResolveEnums.MarkerColor),
@@ -241,96 +259,102 @@
             "Stop If Found": {
                 type: "boolean",
                 value: true,
-            }
+            },
         },
         "New Compound": {
             "Tracks: (1,2,3)": {
                 type: "string",
                 value: "1",
             },
-            "Name": {
+            Name: {
                 type: "string",
                 value: "New Compound Clip",
-            }
+            },
         },
         "Insert Generator": {
-            "Generator": {
+            Generator: {
                 type: "dropdown",
                 value: "Solid Color",
                 dropdownOptions: Object.values(ResolveEnums.TimelineGenerator),
-            }
+            },
         },
         "Insert Title": {
-            "Title": {
+            Title: {
                 type: "dropdown",
                 value: "Text",
                 dropdownOptions: Object.values(ResolveEnums.TitleNames),
-            }
+            },
         },
         "Move Playhead": {
             "Move To": {
                 type: "dropdown",
                 value: "Origin",
-                dropdownOptions: ["Relative", "Start", "Origin", "Start Of Clip", "End Of Clip"]
+                dropdownOptions: [
+                    "Relative",
+                    "Start",
+                    "Origin",
+                    "Start Of Clip",
+                    "End Of Clip",
+                ],
             },
             "Frame Offset": {
                 type: "number",
                 value: 0,
             },
-            "Track": {
+            Track: {
                 type: "number",
                 value: 1,
-            }
+            },
         },
         "Switch Page": {
-            "Page": {
+            Page: {
                 type: "dropdown",
                 value: "Edit",
-                dropdownOptions: Object.keys(ResolveEnums.Pages)
-            }
+                dropdownOptions: Object.keys(ResolveEnums.Pages),
+            },
         },
         "Lock Track": {
             "Tracks (1,2,3)": {
                 type: "string",
                 value: "1",
             },
-            "Type": {
+            Type: {
                 type: "dropdown",
                 value: "Video",
                 dropdownOptions: Object.keys(ResolveEnums.TrackType),
             },
-            "Lock": {
+            Lock: {
                 type: "boolean",
                 value: true,
-            }
+            },
         },
         "Rename Track": {
-            "Track": {
+            Track: {
                 type: "number",
                 value: 1,
             },
-            "Type": {
+            Type: {
                 type: "dropdown",
                 value: "Video",
                 dropdownOptions: Object.keys(ResolveEnums.TrackType),
             },
             "New Name": {
                 type: "string",
-                value: "New Track"
-            }
+                value: "New Track",
+            },
         },
-        "Delay": {
-            "Seconds": {
+        Delay: {
+            Seconds: {
                 type: "number",
                 value: 1,
-            }
+            },
         },
         "Clip Position": {
-            "Pan": {
+            Pan: {
                 type: "number",
                 value: 0,
             },
-            "Tilt": {
+            Tilt: {
                 type: "number",
                 value: 0,
             },
@@ -344,8 +368,8 @@
             },
             "Tracks (1,2,3)": {
                 type: "string",
-                value: "1"
-            }
+                value: "1",
+            },
         },
         "Clip Zoom": {
             "Zoom X": {
@@ -356,21 +380,21 @@
                 type: "number",
                 value: 1,
             },
-            "Pitch": {
+            Pitch: {
                 type: "number",
                 value: 0,
             },
-            "Yaw": {
+            Yaw: {
                 type: "number",
                 value: 0,
             },
             "Tracks (1,2,3)": {
                 type: "string",
-                value: "1"
-            }
+                value: "1",
+            },
         },
         "Clip Rotation": {
-            "Rotation": {
+            Rotation: {
                 type: "number",
                 value: 0,
             },
@@ -384,8 +408,8 @@
             },
             "Tracks (1,2,3)": {
                 type: "string",
-                value: "1"
-            }
+                value: "1",
+            },
         },
         "Clip Crop": {
             "Crop Left": {
@@ -414,60 +438,60 @@
             },
             "Tracks (1,2,3)": {
                 type: "string",
-                value: "1"
-            }
+                value: "1",
+            },
         },
         "Clip Opacity": {
-            "Opacity": {
+            Opacity: {
                 type: "number",
                 value: 100,
             },
             "Tracks (1,2,3)": {
                 type: "string",
-                value: "1"
-            }
+                value: "1",
+            },
         },
         "Clip Color": {
-            "Color": {
+            Color: {
                 type: "dropdown",
                 value: "Blue",
                 dropdownOptions: Object.values(ResolveEnums.ClipColor),
             },
             "Tracks (1,2,3)": {
                 type: "string",
-                value: "1"
+                value: "1",
             },
             "Track Type": {
                 type: "dropdown",
                 value: "Video",
                 dropdownOptions: Object.keys(ResolveEnums.TrackType),
-            }
+            },
         },
         "Disable Clip": {
-            "Disabled": {
+            Disabled: {
                 type: "boolean",
                 value: true,
             },
             "Tracks (1,2,3)": {
                 type: "string",
-                value: "1"
+                value: "1",
             },
             "Track Type": {
                 type: "dropdown",
                 value: "Video",
                 dropdownOptions: Object.keys(ResolveEnums.TrackType),
-            }
+            },
         },
         "Delete Clip": {
             "Tracks (1,2,3)": {
                 type: "string",
-                value: "1"
+                value: "1",
             },
             "Track Type": {
                 type: "dropdown",
                 value: "Video",
                 dropdownOptions: Object.keys(ResolveEnums.TrackType),
-            }
+            },
         },
         "Duplicate Clip": {
             "Origin Track": {
@@ -489,17 +513,17 @@
             },
             "Return To Origin": {
                 type: "boolean",
-                value: true
+                value: true,
             },
             "Don't Keep Length": {
                 type: "boolean",
-                value: false
-            }
+                value: false,
+            },
         },
         "Rename Media Item": {
-            "Track": {
+            Track: {
                 type: "number",
-                value: 1
+                value: 1,
             },
             "Track Type": {
                 type: "dropdown",
@@ -508,61 +532,93 @@
             },
             "New Name": {
                 type: "string",
-                value: "Renamed Clip"
-            }
+                value: "Renamed Clip",
+            },
         },
         "Link Clips": {
             "Video Tracks (1,2,3)": {
                 type: "string",
-                value: "1"
+                value: "1",
             },
             "Audio Tracks (1,2,3)": {
                 type: "string",
-                value: "1"
+                value: "1",
             },
             "Linked?": {
                 type: "boolean",
-                value: true
-            }
+                value: true,
+            },
         },
         "Cut Item": {
             "Video Track": {
                 type: "number",
-                value: 1
+                value: 1,
             },
             "Audio Tracks (1,2,3)": {
                 type: "string",
-                value: "1"
+                value: "1",
             },
             "Frame Offset": {
                 type: "number",
                 value: 0,
-            }
+            },
         },
         "Run Profile": {
             "Profile Name": {
                 type: "string",
-                value: "New Profile"
+                value: "New Profile",
             },
             "Loop Until Error": {
                 type: "boolean",
-                value: false
-            }
+                value: false,
+            },
         },
         "Marker Tool": {
             "Start Marker": {
                 type: "boolean",
-                value: true
+                value: true,
             },
             "End Marker": {
                 type: "boolean",
-                value: false
-            }
-        }
-    }
+                value: false,
+            },
+        },
+        Render: {
+            "Render Preset": {
+                type: "dropdown",
+                value: "YouTube - 1080p",
+                dropdownOptions:
+                    ResolveFunctions.GetCurrentProject().GetRenderPresetList(),
+            },
+            Folder: {
+                type: "folder",
+                value: Common.IO.GetHomeDirectory(),
+            },
+            "File Name": {
+                type: "string",
+                value: "My Video",
+            },
+            "File Ext.": {
+                type: "string",
+                value: "mp4",
+            },
+            "Use Marker Tool": {
+                type: "boolean",
+                value: true,
+            },
+            "Clear Render Jobs": {
+                type: "boolean",
+                value: true,
+            },
+        },
+    };
 
     let ActionFunctions = {
-        "Add Track": (trackName: string, trackType: ResolveEnums.TrackType, addUntilX: number) => {
+        "Add Track": (
+            trackName: string,
+            trackType: ResolveEnums.TrackType,
+            addUntilX: number
+        ) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
@@ -573,20 +629,31 @@
                 for (let i = 0; i < addUntilX; i++) {
                     const trackCount = currentTimeline.GetTrackCount(trackType);
                     if (trackCount <= i) {
-                        if (trackType.toLowerCase() == ResolveEnums.TrackType.Audio) currentTimeline.AddTrack(trackType.toLowerCase(), "stereo")
+                        if (
+                            trackType.toLowerCase() ==
+                            ResolveEnums.TrackType.Audio
+                        )
+                            currentTimeline.AddTrack(
+                                trackType.toLowerCase(),
+                                "stereo"
+                            );
                         else currentTimeline.AddTrack(trackType.toLowerCase());
                     }
                 }
-            }
-            else {
-                if (trackType.toLowerCase() == ResolveEnums.TrackType.Audio) currentTimeline.AddTrack(trackType.toLowerCase(), "stereo")
+            } else {
+                if (trackType.toLowerCase() == ResolveEnums.TrackType.Audio)
+                    currentTimeline.AddTrack(trackType.toLowerCase(), "stereo");
                 else currentTimeline.AddTrack(trackType.toLowerCase());
             }
 
             const trackCount = currentTimeline.GetTrackCount(trackType);
             currentTimeline.SetTrackName(trackType, trackCount, trackName);
         },
-        "Delete Tracks": (tracks: string, trackType: ResolveEnums.TrackType, trackName: string) => {
+        "Delete Tracks": (
+            tracks: string,
+            trackType: ResolveEnums.TrackType,
+            trackName: string
+        ) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
@@ -596,27 +663,46 @@
             if (trackName !== "") {
                 const trackCount = currentTimeline.GetTrackCount(trackType);
                 for (let i = 1; i <= trackCount; i++) {
-                    const CurrenttrackName = currentTimeline.GetTrackName(trackType, i);
+                    const CurrenttrackName = currentTimeline.GetTrackName(
+                        trackType,
+                        i
+                    );
                     if (CurrenttrackName == trackName) {
                         currentTimeline.DeleteTrack(trackType, i);
                         break;
                     }
                 }
-            }
-            else {
+            } else {
                 const trackArray = tracks.split(",").map(Number);
 
-                for (let trackIndex = 0; trackIndex < trackArray.length; trackIndex++) {
+                for (
+                    let trackIndex = 0;
+                    trackIndex < trackArray.length;
+                    trackIndex++
+                ) {
                     const actualTrackIndex = trackArray[trackIndex];
                     currentTimeline.DeleteTrack(trackType, actualTrackIndex);
                 }
             }
         },
-        "Create Timeline": (timelineName: string) => { // Only gets an error if an existing timeline with the same name exists.
-            const currentMediapool = ResolveFunctions.GetCurrentProject().GetMediaPool();
+        "Create Timeline": (timelineName: string) => {
+            // Only gets an error if an existing timeline with the same name exists.
+            const currentMediapool =
+                ResolveFunctions.GetCurrentProject().GetMediaPool();
             currentMediapool.CreateEmptyTimeline(timelineName);
         },
-        "Import Media": (importType: "Timeline" | "Mediapool", defaultPath: string, fileOrFolder: "File" | "Folder", startFrame:number = 0, originFrame: "Relative" | "Start", clipColor: ResolveEnums.ClipColor = ResolveEnums.ClipColor.Blue, trackIndex: number, mediapoolBinName: string, returnToOrigin: boolean, endCutTrackIndex: number) => {
+        "Import Media": (
+            importType: "Timeline" | "Mediapool",
+            defaultPath: string,
+            fileOrFolder: "File" | "Folder",
+            startFrame: number = 0,
+            originFrame: "Relative" | "Start",
+            clipColor: ResolveEnums.ClipColor = ResolveEnums.ClipColor.Blue,
+            trackIndex: number,
+            mediapoolBinName: string,
+            returnToOrigin: boolean,
+            endCutTrackIndex: number
+        ) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
@@ -630,8 +716,8 @@
 
             if (defaultPath == "") {
                 defaultPath = ChooseFile(true, false)[0];
-            }
-            else if (path.extname(defaultPath) == "") { //if default path is a folder, open a file with that location
+            } else if (path.extname(defaultPath) == "") {
+                //if default path is a folder, open a file with that location
                 defaultPath = ChooseFile(true, false, defaultPath)[0];
             }
 
@@ -644,73 +730,118 @@
             if (mediapoolBinName != "") {
                 let bin = ResolveFunctions.GetMediaFolder(mediapoolBinName);
                 if (bin == null) {
-                    bin = currentMediapool.AddSubFolder(currentMediapool.GetRootFolder(), mediapoolBinName);
+                    bin = currentMediapool.AddSubFolder(
+                        currentMediapool.GetRootFolder(),
+                        mediapoolBinName
+                    );
                 }
                 currentMediapool.SetCurrentFolder(bin);
-            }
-            else {
-                currentMediapool.SetCurrentFolder(currentMediapool.GetRootFolder());
+            } else {
+                currentMediapool.SetCurrentFolder(
+                    currentMediapool.GetRootFolder()
+                );
             }
 
             const importedItem = currentMediapool.ImportMedia([defaultPath])[0];
             /* @ts-ignore //'None' is added */
-            if (clipColor != 'None') importedItem.SetClipColor(clipColor);
+            if (clipColor != "None") importedItem.SetClipColor(clipColor);
 
             if (importType == "Timeline") {
                 let recordFrame: number;
                 if (originFrame == "Relative") {
-                    const playhead = ResolveFunctions.ConvertTimecodeToFrames(currentTimeline.GetCurrentTimecode());
+                    const playhead = ResolveFunctions.ConvertTimecodeToFrames(
+                        currentTimeline.GetCurrentTimecode()
+                    );
                     recordFrame = playhead + startFrame;
                     console.log(recordFrame, playhead, startFrame);
-                }
-                else {
+                } else {
                     recordFrame = currentTimeline.GetStartFrame() + startFrame;
                 }
 
-                let endFrame = parseInt(importedItem.GetClipProperty("End") as string);
+                let endFrame = parseInt(
+                    importedItem.GetClipProperty("End") as string
+                );
                 if (endCutTrackIndex !== -1) {
-                    const endCutItem = ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, endCutTrackIndex, currentTimeline) as TimelineItem;
+                    const endCutItem = ResolveFunctions.GetTimelineItem(
+                        ResolveEnums.TrackType.Video,
+                        endCutTrackIndex,
+                        currentTimeline
+                    ) as TimelineItem;
 
                     if (endCutItem) {
-                        let diff = endCutItem.GetEnd() - ResolveFunctions.ConvertTimecodeToFrames(playheadTimecode)
-                        const importedItemFramerate = parseInt(importedItem.GetClipProperty("FPS") as string);
-                        diff = Math.round(diff * importedItemFramerate / parseInt(currentProject.GetSetting("timelineFrameRate")));
+                        let diff =
+                            endCutItem.GetEnd() -
+                            ResolveFunctions.ConvertTimecodeToFrames(
+                                playheadTimecode
+                            );
+                        const importedItemFramerate = parseInt(
+                            importedItem.GetClipProperty("FPS") as string
+                        );
+                        diff = Math.round(
+                            (diff * importedItemFramerate) /
+                                parseInt(
+                                    currentProject.GetSetting(
+                                        "timelineFrameRate"
+                                    )
+                                )
+                        );
 
-                        endFrame = (parseInt(importedItem.GetClipProperty("Start") as string) + diff) - 1;
+                        endFrame =
+                            parseInt(
+                                importedItem.GetClipProperty("Start") as string
+                            ) +
+                            diff -
+                            1;
                     }
                 }
 
                 const clipInfo: ClipInfo = {
                     mediaPoolItem: importedItem,
-                    startFrame: parseInt(importedItem.GetClipProperty("Start") as string),
+                    startFrame: parseInt(
+                        importedItem.GetClipProperty("Start") as string
+                    ),
                     endFrame: endFrame,
 
                     trackIndex: trackIndex,
-                    recordFrame: recordFrame
-                }
+                    recordFrame: recordFrame,
+                };
 
                 currentMediapool.AppendToTimeline([clipInfo]);
 
-                if (returnToOrigin) currentTimeline.SetCurrentTimecode(playheadTimecode);
+                if (returnToOrigin)
+                    currentTimeline.SetCurrentTimecode(playheadTimecode);
             }
         },
         //Maybe make better? carries a lot of similar code to 'Import Media' above
-        "From Mediapool": (clipName: string, binName: string, track: number, startFrame: number, originFrame: 'Relative' | 'Start') => {
+        "From Mediapool": (
+            clipName: string,
+            binName: string,
+            track: number,
+            startFrame: number,
+            originFrame: "Relative" | "Start"
+        ) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
-            const currentMediapool = ResolveFunctions.GetCurrentProject().GetMediaPool();
+            const currentMediapool =
+                ResolveFunctions.GetCurrentProject().GetMediaPool();
 
             if (binName != "") {
                 let bin = ResolveFunctions.GetMediaFolder(binName);
                 if (bin == null) {
-                    bin = currentMediapool.AddSubFolder(currentMediapool.GetRootFolder(), binName);
+                    bin = currentMediapool.AddSubFolder(
+                        currentMediapool.GetRootFolder(),
+                        binName
+                    );
                 }
                 currentMediapool.SetCurrentFolder(bin);
-            }
-            else {
-                currentMediapool.SetCurrentFolder(currentMediapool.GetRootFolder());
+            } else {
+                currentMediapool.SetCurrentFolder(
+                    currentMediapool.GetRootFolder()
+                );
             }
 
-            const currentItems = currentMediapool.GetCurrentFolder().GetClipList();
+            const currentItems = currentMediapool
+                .GetCurrentFolder()
+                .GetClipList();
             let importedItem: MediaPoolItem;
 
             for (let i = 0; i < currentItems.length; i++) {
@@ -720,52 +851,71 @@
                 }
             }
             if (!importedItem) {
-                console.warn("No clip with name " + clipName + " found in bin " + binName);
+                console.warn(
+                    "No clip with name " + clipName + " found in bin " + binName
+                );
                 return;
             }
 
             let recordFrame: number;
             if (originFrame == "Relative") {
-                const playhead = ResolveFunctions.ConvertTimecodeToFrames(currentTimeline.GetCurrentTimecode());
+                const playhead = ResolveFunctions.ConvertTimecodeToFrames(
+                    currentTimeline.GetCurrentTimecode()
+                );
                 recordFrame = playhead + startFrame;
                 console.log(recordFrame, playhead, startFrame);
-            }
-            else {
+            } else {
                 recordFrame = currentTimeline.GetStartFrame() + startFrame;
             }
 
             const clipInfo: ClipInfo = {
                 mediaPoolItem: importedItem,
-                startFrame: parseInt(importedItem.GetClipProperty("Start") as string),
-                endFrame: parseInt(importedItem.GetClipProperty("End") as string),
+                startFrame: parseInt(
+                    importedItem.GetClipProperty("Start") as string
+                ),
+                endFrame: parseInt(
+                    importedItem.GetClipProperty("End") as string
+                ),
 
                 trackIndex: track,
-                recordFrame: recordFrame
-            }
+                recordFrame: recordFrame,
+            };
 
             currentMediapool.AppendToTimeline([clipInfo]);
         },
-        "Duplicate Clip": (originTrack: number, destTrack: number, frameOffset: number, originTrackType: ResolveEnums.TrackType, returnToOrigin: boolean, dontKeepLength: boolean) => {
+        "Duplicate Clip": (
+            originTrack: number,
+            destTrack: number,
+            frameOffset: number,
+            originTrackType: ResolveEnums.TrackType,
+            returnToOrigin: boolean,
+            dontKeepLength: boolean
+        ) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
-            const currentMediapool = ResolveFunctions.GetCurrentProject().GetMediaPool();
+            const currentMediapool =
+                ResolveFunctions.GetCurrentProject().GetMediaPool();
 
             const playhead = currentTimeline.GetCurrentTimecode();
-            const selectedItem = ResolveFunctions.GetTimelineItem(originTrackType, originTrack, currentTimeline) as TimelineItem;
+            const selectedItem = ResolveFunctions.GetTimelineItem(
+                originTrackType,
+                originTrack,
+                currentTimeline
+            ) as TimelineItem;
             if (!selectedItem) return;
             const mediaReference = selectedItem.GetMediaPoolItem();
 
             let endFrame = 0;
             if (dontKeepLength) {
-                endFrame = parseInt(mediaReference.GetClipProperty("Frames") as string);
-            }
-            else {
+                endFrame = parseInt(
+                    mediaReference.GetClipProperty("Frames") as string
+                );
+            } else {
                 endFrame = selectedItem.GetRightOffset() - 1;
             }
             let recordFrame = 0;
             if (frameOffset != 0) {
                 recordFrame = selectedItem.GetEnd() + frameOffset;
-            }
-            else {
+            } else {
                 recordFrame = selectedItem.GetStart();
             }
 
@@ -775,14 +925,18 @@
                 endFrame: endFrame,
 
                 trackIndex: destTrack,
-                recordFrame: recordFrame
-            }
+                recordFrame: recordFrame,
+            };
 
             currentMediapool.AppendToTimeline([clipInfo]);
 
             if (returnToOrigin) currentTimeline.SetCurrentTimecode(playhead);
         },
-        "Apply LUT": (filePath: string, fileOrFolder: "File" | "Folder", tracks: string) => {
+        "Apply LUT": (
+            filePath: string,
+            fileOrFolder: "File" | "Folder",
+            tracks: string
+        ) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
@@ -790,7 +944,11 @@
             }
 
             const trackArray = tracks.split(",").map(Number);
-            const timelineItems = ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, trackArray, currentTimeline) as TimelineItem[];
+            const timelineItems = ResolveFunctions.GetTimelineItem(
+                ResolveEnums.TrackType.Video,
+                trackArray,
+                currentTimeline
+            ) as TimelineItem[];
 
             if (filePath == "") {
                 filePath = ChooseFile(true, false)[0];
@@ -802,26 +960,39 @@
             const projectManager = Resolve.GetProjectManager();
             projectManager.GotoRootFolder();
 
-            const mediapool = ResolveFunctions.GetCurrentProject().GetMediaPool();
+            const mediapool =
+                ResolveFunctions.GetCurrentProject().GetMediaPool();
             const ParentFolder = mediapool.GetRootFolder();
 
             mediapool.AddSubFolder(ParentFolder, binName);
         },
         "Goto Bin": (binName: string) => {
-            const currentMediapool = ResolveFunctions.GetCurrentProject().GetMediaPool();
+            const currentMediapool =
+                ResolveFunctions.GetCurrentProject().GetMediaPool();
 
             if (binName != "") {
                 let bin = ResolveFunctions.GetMediaFolder(binName);
                 if (bin == null) {
-                    bin = currentMediapool.AddSubFolder(currentMediapool.GetRootFolder(), binName);
+                    bin = currentMediapool.AddSubFolder(
+                        currentMediapool.GetRootFolder(),
+                        binName
+                    );
                 }
                 currentMediapool.SetCurrentFolder(bin);
-            }
-            else {
-                currentMediapool.SetCurrentFolder(currentMediapool.GetRootFolder());
+            } else {
+                currentMediapool.SetCurrentFolder(
+                    currentMediapool.GetRootFolder()
+                );
             }
         },
-        "Add Marker": (markerName: string, markerColor: ResolveEnums.MarkerColor, markerDuration: number, markerPosition: number, usePlayhead: boolean) => { // Works but only with certain colors, only (Blue, Green, Pink, Purple, Yellow), The rest 11 wont appear
+        "Add Marker": (
+            markerName: string,
+            markerColor: ResolveEnums.MarkerColor,
+            markerDuration: number,
+            markerPosition: number,
+            usePlayhead: boolean
+        ) => {
+            // Works but only with certain colors, only (Blue, Green, Pink, Purple, Yellow), The rest 11 wont appear
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
@@ -829,10 +1000,23 @@
             }
 
             //god forgive me for nesting ternary operators
-            markerPosition = markerPosition ? markerPosition : usePlayhead ? (ResolveFunctions.ConvertTimecodeToFrames(currentTimeline.GetCurrentTimecode()) - currentTimeline.GetStartFrame()) : 0;
-            currentTimeline.AddMarker(markerPosition, markerColor, markerName, "Generated Marker From Quick Actions", markerDuration);
+            markerPosition = markerPosition
+                ? markerPosition
+                : usePlayhead
+                ? ResolveFunctions.ConvertTimecodeToFrames(
+                      currentTimeline.GetCurrentTimecode()
+                  ) - currentTimeline.GetStartFrame()
+                : 0;
+            currentTimeline.AddMarker(
+                markerPosition,
+                markerColor,
+                markerName,
+                "Generated Marker From Quick Actions",
+                markerDuration
+            );
         },
-        "New Compound": (tracks: string, compoundClipName: string) => { //Works but maybe should implement audio too.
+        "New Compound": (tracks: string, compoundClipName: string) => {
+            //Works but maybe should implement audio too.
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
@@ -840,18 +1024,27 @@
             }
 
             const trackNumbers = tracks.split(",").map(Number);
-            let timelineItems = ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, trackNumbers, currentTimeline) as TimelineItem[];
+            let timelineItems = ResolveFunctions.GetTimelineItem(
+                ResolveEnums.TrackType.Video,
+                trackNumbers,
+                currentTimeline
+            ) as TimelineItem[];
 
             if (!Array.isArray(timelineItems)) {
                 timelineItems = [timelineItems];
             }
 
-            const compoundClip = currentTimeline.CreateCompoundClip(timelineItems);
+            const compoundClip =
+                currentTimeline.CreateCompoundClip(timelineItems);
 
             const compoundMediaReference = compoundClip.GetMediaPoolItem();
-            compoundMediaReference.SetClipProperty('Clip Name', compoundClipName);
+            compoundMediaReference.SetClipProperty(
+                "Clip Name",
+                compoundClipName
+            );
         },
-        "Insert Generator": (generator: ResolveEnums.TimelineGenerator) => { //Just some of them work, ("BT.2111 Color Bar HLG Narrow", "BT.2111 Color Bar PQ Full", "BT.2111 Color Bar PQ Narrow") doesnt get inserted
+        "Insert Generator": (generator: ResolveEnums.TimelineGenerator) => {
+            //Just some of them work, ("BT.2111 Color Bar HLG Narrow", "BT.2111 Color Bar PQ Full", "BT.2111 Color Bar PQ Narrow") doesnt get inserted
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
@@ -869,7 +1062,16 @@
 
             currentTimeline.InsertTitleIntoTimeline(title);
         },
-        "Move Playhead": (moveTo: "Relative" | "Start" | "Origin" | "Start Of Clip" | "End Of Clip", frameOffset: number, track: number) => {
+        "Move Playhead": (
+            moveTo:
+                | "Relative"
+                | "Start"
+                | "Origin"
+                | "Start Of Clip"
+                | "End Of Clip",
+            frameOffset: number,
+            track: number
+        ) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
@@ -878,42 +1080,59 @@
 
             let timecode: string = "";
             switch (moveTo) {
-                case 'Relative': {
-                    let currentFrame = ResolveFunctions.ConvertTimecodeToFrames(currentTimeline.GetCurrentTimecode());
+                case "Relative": {
+                    let currentFrame = ResolveFunctions.ConvertTimecodeToFrames(
+                        currentTimeline.GetCurrentTimecode()
+                    );
                     currentFrame += frameOffset;
-                    timecode = ResolveFunctions.ConvertFramesToTimecode(currentFrame);
+                    timecode =
+                        ResolveFunctions.ConvertFramesToTimecode(currentFrame);
                     break;
                 }
-                case 'Start': {
+                case "Start": {
                     let startFrame = currentTimeline.GetStartFrame();
                     startFrame += frameOffset;
-                    timecode = ResolveFunctions.ConvertFramesToTimecode(startFrame);
+                    timecode =
+                        ResolveFunctions.ConvertFramesToTimecode(startFrame);
                     break;
                 }
-                case 'Origin': {
+                case "Origin": {
                     if (!originPlayheadFrame) return;
                     originPlayheadFrame += frameOffset;
-                    timecode = ResolveFunctions.ConvertFramesToTimecode(originPlayheadFrame);
+                    timecode =
+                        ResolveFunctions.ConvertFramesToTimecode(
+                            originPlayheadFrame
+                        );
                     break;
                 }
-                case 'Start Of Clip': {
-                    const currentClip = ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, track, currentTimeline) as TimelineItem;
+                case "Start Of Clip": {
+                    const currentClip = ResolveFunctions.GetTimelineItem(
+                        ResolveEnums.TrackType.Video,
+                        track,
+                        currentTimeline
+                    ) as TimelineItem;
                     if (!currentClip) return;
 
                     let startFrame = currentClip.GetStart();
                     startFrame += frameOffset;
 
-                    timecode = ResolveFunctions.ConvertFramesToTimecode(startFrame);
+                    timecode =
+                        ResolveFunctions.ConvertFramesToTimecode(startFrame);
                     break;
                 }
-                case 'End Of Clip': {
-                    const currentClip = ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, track, currentTimeline) as TimelineItem;
+                case "End Of Clip": {
+                    const currentClip = ResolveFunctions.GetTimelineItem(
+                        ResolveEnums.TrackType.Video,
+                        track,
+                        currentTimeline
+                    ) as TimelineItem;
                     if (!currentClip) return;
 
                     let startFrame = currentClip.GetEnd();
                     startFrame += frameOffset;
 
-                    timecode = ResolveFunctions.ConvertFramesToTimecode(startFrame);
+                    timecode =
+                        ResolveFunctions.ConvertFramesToTimecode(startFrame);
                     break;
                 }
             }
@@ -921,10 +1140,14 @@
             currentTimeline.SetCurrentTimecode(timecode);
         },
         "Switch Page": (page: ResolveEnums.Pages) => {
-            if (page == 'none') return;
+            if (page == "none") return;
             Resolve.OpenPage(page);
         },
-        "Lock Track": (tracks: string, trackType: ResolveEnums.TrackType, Lock: boolean) => {
+        "Lock Track": (
+            tracks: string,
+            trackType: ResolveEnums.TrackType,
+            Lock: boolean
+        ) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
@@ -940,7 +1163,11 @@
                 }
             }
         },
-        "Rename Track": (track: number, trackType: ResolveEnums.TrackType, newName: string) => {
+        "Rename Track": (
+            track: number,
+            trackType: ResolveEnums.TrackType,
+            newName: string
+        ) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
@@ -949,15 +1176,23 @@
 
             currentTimeline.SetTrackName(trackType, track, newName);
         },
-        "Delay": (seconds: number) => {
+        Delay: (seconds: number) => {
             const start = Date.now();
             let now = start;
-            console.log(`I dont know why, but if i remove this console.log, the loop finishes instantly, sooo take this random number: ${now}`)
-            while (now - start < (seconds*1000)) {
+            console.log(
+                `I dont know why, but if i remove this console.log, the loop finishes instantly, sooo take this random number: ${now}`
+            );
+            while (now - start < seconds * 1000) {
                 now = Date.now();
             }
         },
-        "Clip Position": (Pan: number, Tilt: number, AnchorX: number, AnchorY: number, tracks: string) => {
+        "Clip Position": (
+            Pan: number,
+            Tilt: number,
+            AnchorX: number,
+            AnchorY: number,
+            tracks: string
+        ) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
@@ -966,14 +1201,25 @@
 
             const trackNumbers = tracks.split(",").map(Number);
 
-            ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, trackNumbers, currentTimeline, (item) => {
-                item.SetProperty("Pan", Pan);
-                item.SetProperty("Tilt", Tilt);
-                if (AnchorX != 0) item.SetProperty("AnchorPointX", AnchorX);
-                if (AnchorY != 0) item.SetProperty("AnchorPointY", AnchorY);
-            });
+            ResolveFunctions.GetTimelineItem(
+                ResolveEnums.TrackType.Video,
+                trackNumbers,
+                currentTimeline,
+                (item) => {
+                    item.SetProperty("Pan", Pan);
+                    item.SetProperty("Tilt", Tilt);
+                    if (AnchorX != 0) item.SetProperty("AnchorPointX", AnchorX);
+                    if (AnchorY != 0) item.SetProperty("AnchorPointY", AnchorY);
+                }
+            );
         },
-        "Clip Zoom": (ZoomX: number, ZoomY: number, Pitch: number, Yaw: number, tracks: string) => {
+        "Clip Zoom": (
+            ZoomX: number,
+            ZoomY: number,
+            Pitch: number,
+            Yaw: number,
+            tracks: string
+        ) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
@@ -982,14 +1228,24 @@
 
             const trackNumbers = tracks.split(",").map(Number);
 
-            ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, trackNumbers, currentTimeline, (item) => {
-                item.SetProperty("ZoomX", ZoomX);
-                item.SetProperty("ZoomY", ZoomY);
-                item.SetProperty("Pitch", Pitch);
-                item.SetProperty("Yaw", Yaw);
-            });
+            ResolveFunctions.GetTimelineItem(
+                ResolveEnums.TrackType.Video,
+                trackNumbers,
+                currentTimeline,
+                (item) => {
+                    item.SetProperty("ZoomX", ZoomX);
+                    item.SetProperty("ZoomY", ZoomY);
+                    item.SetProperty("Pitch", Pitch);
+                    item.SetProperty("Yaw", Yaw);
+                }
+            );
         },
-        "Clip Rotation": (Rotation: number, FlipX: boolean, FlipY: boolean, tracks: string) => {
+        "Clip Rotation": (
+            Rotation: number,
+            FlipX: boolean,
+            FlipY: boolean,
+            tracks: string
+        ) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
@@ -998,13 +1254,26 @@
 
             const trackNumbers = tracks.split(",").map(Number);
 
-            ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, trackNumbers, currentTimeline, (item) => {
-                item.SetProperty("RotationAngle", Rotation);
-                item.SetProperty("FlipX", FlipX);
-                item.SetProperty("FlipY", FlipY);
-            });
+            ResolveFunctions.GetTimelineItem(
+                ResolveEnums.TrackType.Video,
+                trackNumbers,
+                currentTimeline,
+                (item) => {
+                    item.SetProperty("RotationAngle", Rotation);
+                    item.SetProperty("FlipX", FlipX);
+                    item.SetProperty("FlipY", FlipY);
+                }
+            );
         },
-        "Clip Crop": (CropLeft: number, CropRight: number, CropTop: number, CropBottom: number, CropSoftness: number, CropRetain: boolean, tracks: string) => {
+        "Clip Crop": (
+            CropLeft: number,
+            CropRight: number,
+            CropTop: number,
+            CropBottom: number,
+            CropSoftness: number,
+            CropRetain: boolean,
+            tracks: string
+        ) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
@@ -1013,14 +1282,19 @@
 
             const trackNumbers = tracks.split(",").map(Number);
 
-            ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, trackNumbers, currentTimeline, (item) => {
-                item.SetProperty("CropLeft", CropLeft);
-                item.SetProperty("CropRight", CropRight);
-                item.SetProperty("CropTop", CropTop);
-                item.SetProperty("CropBottom", CropBottom);
-                item.SetProperty("CropSoftness", CropSoftness);
-                item.SetProperty("CropRetain", CropRetain);
-            });
+            ResolveFunctions.GetTimelineItem(
+                ResolveEnums.TrackType.Video,
+                trackNumbers,
+                currentTimeline,
+                (item) => {
+                    item.SetProperty("CropLeft", CropLeft);
+                    item.SetProperty("CropRight", CropRight);
+                    item.SetProperty("CropTop", CropTop);
+                    item.SetProperty("CropBottom", CropBottom);
+                    item.SetProperty("CropSoftness", CropSoftness);
+                    item.SetProperty("CropRetain", CropRetain);
+                }
+            );
         },
         "Clip Opacity": (opacity: number, tracks: string) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
@@ -1031,11 +1305,20 @@
 
             const trackNumbers = tracks.split(",").map(Number);
 
-            ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, trackNumbers, currentTimeline, (item) => {
-                item.SetProperty("Opacity", opacity);
-            });
+            ResolveFunctions.GetTimelineItem(
+                ResolveEnums.TrackType.Video,
+                trackNumbers,
+                currentTimeline,
+                (item) => {
+                    item.SetProperty("Opacity", opacity);
+                }
+            );
         },
-        "Clip Color": (color: ResolveEnums.ClipColor, tracks: string, trackType: ResolveEnums.TrackType) => {
+        "Clip Color": (
+            color: ResolveEnums.ClipColor,
+            tracks: string,
+            trackType: ResolveEnums.TrackType
+        ) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
@@ -1044,11 +1327,20 @@
 
             const trackNumbers = tracks.split(",").map(Number);
 
-            ResolveFunctions.GetTimelineItem(trackType, trackNumbers, currentTimeline, (item) => {
-                item.SetClipColor(color);
-            });
+            ResolveFunctions.GetTimelineItem(
+                trackType,
+                trackNumbers,
+                currentTimeline,
+                (item) => {
+                    item.SetClipColor(color);
+                }
+            );
         },
-        "Disable Clip": (state: boolean, tracks: string, trackType: ResolveEnums.TrackType) => {
+        "Disable Clip": (
+            state: boolean,
+            tracks: string,
+            trackType: ResolveEnums.TrackType
+        ) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
@@ -1057,9 +1349,14 @@
 
             const trackNumbers = tracks.split(",").map(Number);
 
-            ResolveFunctions.GetTimelineItem(trackType, trackNumbers, currentTimeline, (item) => {
-                item.SetClipEnabled(!state);
-            });
+            ResolveFunctions.GetTimelineItem(
+                trackType,
+                trackNumbers,
+                currentTimeline,
+                (item) => {
+                    item.SetClipEnabled(!state);
+                }
+            );
         },
         "Delete Clip": (tracks: string, trackType: ResolveEnums.TrackType) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
@@ -1070,11 +1367,15 @@
 
             const trackNumbers = tracks.split(",").map(Number);
 
-            let items: TimelineItem[] = []
+            let items: TimelineItem[] = [];
 
             for (let i = 0; i < trackNumbers.length; i++) {
                 const track = trackNumbers[i];
-                const item = ResolveFunctions.GetTimelineItem(trackType, [track], currentTimeline) as TimelineItem;
+                const item = ResolveFunctions.GetTimelineItem(
+                    trackType,
+                    [track],
+                    currentTimeline
+                ) as TimelineItem;
                 if (item === undefined) continue;
                 items.push(item);
             }
@@ -1087,20 +1388,32 @@
 
             currentTimeline.DeleteClips(items);
         },
-        "Rename Media Item": (track: number, trackType: ResolveEnums.TrackType, newName: string) => {
+        "Rename Media Item": (
+            track: number,
+            trackType: ResolveEnums.TrackType,
+            newName: string
+        ) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
                 return;
             }
 
-            const item = ResolveFunctions.GetTimelineItem(trackType, track, currentTimeline) as TimelineItem;
+            const item = ResolveFunctions.GetTimelineItem(
+                trackType,
+                track,
+                currentTimeline
+            ) as TimelineItem;
             const mediaReference = item.GetMediaPoolItem();
             if (!mediaReference) return;
 
             mediaReference.SetClipProperty("Clip Name", newName);
         },
-        "Link Clips": (VideoTracks: string, AudioTracks: string, linked: boolean) => {
+        "Link Clips": (
+            VideoTracks: string,
+            AudioTracks: string,
+            linked: boolean
+        ) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
@@ -1108,14 +1421,22 @@
             }
 
             const VideoTrackNumbers = VideoTracks.split(",").map(Number);
-            let VideoItems = ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, VideoTrackNumbers, currentTimeline) as TimelineItem[];
+            let VideoItems = ResolveFunctions.GetTimelineItem(
+                ResolveEnums.TrackType.Video,
+                VideoTrackNumbers,
+                currentTimeline
+            ) as TimelineItem[];
             if (!Array.isArray(VideoItems)) {
                 VideoItems = [VideoItems];
             }
             if (!VideoItems) return;
 
             const AudioTrackNumbers = AudioTracks.split(",").map(Number);
-            let AudioItems = ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Audio, AudioTrackNumbers, currentTimeline) as TimelineItem[];
+            let AudioItems = ResolveFunctions.GetTimelineItem(
+                ResolveEnums.TrackType.Audio,
+                AudioTrackNumbers,
+                currentTimeline
+            ) as TimelineItem[];
             if (!Array.isArray(AudioItems)) {
                 AudioItems = [AudioItems];
             }
@@ -1123,15 +1444,19 @@
 
             let TotalItems: TimelineItem[] = [];
             for (let i = 0; i < VideoItems.length; i++) {
-                TotalItems.push(VideoItems[i])
+                TotalItems.push(VideoItems[i]);
             }
             for (let j = 0; j < AudioItems.length; j++) {
-                TotalItems.push(AudioItems[j])
+                TotalItems.push(AudioItems[j]);
             }
 
             currentTimeline.SetClipsLinked(TotalItems, linked);
         },
-        "Cut Item": (videoTrack: number, audioTracks: string, frameOffset: number) => {
+        "Cut Item": (
+            videoTrack: number,
+            audioTracks: string,
+            frameOffset: number
+        ) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
@@ -1141,15 +1466,28 @@
             const trackNumbers = audioTracks.split(",").map(Number);
             console.log(trackNumbers);
 
-            const videoItem = ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Video, [videoTrack], currentTimeline) as TimelineItem;
-            const audioItems = trackNumbers[0] != 0 ? ResolveFunctions.GetTimelineItem(ResolveEnums.TrackType.Audio, trackNumbers, currentTimeline) as TimelineItem[] : [];
+            const videoItem = ResolveFunctions.GetTimelineItem(
+                ResolveEnums.TrackType.Video,
+                [videoTrack],
+                currentTimeline
+            ) as TimelineItem;
+            const audioItems =
+                trackNumbers[0] != 0
+                    ? (ResolveFunctions.GetTimelineItem(
+                          ResolveEnums.TrackType.Audio,
+                          trackNumbers,
+                          currentTimeline
+                      ) as TimelineItem[])
+                    : [];
 
             const cutItems: ResolveFunctions.CutItems = {
                 video: videoItem,
                 audio: audioItems ?? [],
-                trackToAppend: videoTrack
-            }
-            let playhead = ResolveFunctions.ConvertTimecodeToFrames(currentTimeline.GetCurrentTimecode());
+                trackToAppend: videoTrack,
+            };
+            let playhead = ResolveFunctions.ConvertTimecodeToFrames(
+                currentTimeline.GetCurrentTimecode()
+            );
             let currentFrame = playhead;
 
             currentFrame -= 1; // CurrentFrame is one frame too high.
@@ -1163,7 +1501,9 @@
             //console.log(cutItems, [currentFrame]);
             ResolveFunctions.CutTimelineItem(cutItems, [currentFrame]);
 
-            currentTimeline.SetCurrentTimecode(ResolveFunctions.ConvertFramesToTimecode(playhead));
+            currentTimeline.SetCurrentTimecode(
+                ResolveFunctions.ConvertFramesToTimecode(playhead)
+            );
         },
         "Run Profile": (profileName: string, loop: boolean) => {
             const profileActions = _profiles[profileName];
@@ -1182,26 +1522,35 @@
 
                 try {
                     RunActions(profileName);
-                }
-                catch {
+                } catch {
                     break;
                 }
             }
         },
         "Marker Tool": (start: boolean, end: boolean) => {
-            if (start && end) throw new Error("Cannot have both start and end markers enabled");
+            if (start && end)
+                throw new Error(
+                    "Cannot have both start and end markers enabled"
+                );
 
             if (start) SML.MarkerTool.CreateStartMarker();
             if (end) SML.MarkerTool.CreateEndMarker();
         },
-        "Goto Next Marker": (name: string, color: ResolveEnums.MarkerColor, stopIfFound: boolean) => {
+        "Goto Next Marker": (
+            name: string,
+            color: ResolveEnums.MarkerColor,
+            stopIfFound: boolean
+        ) => {
             const currentTimeline = ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) {
                 console.warn("No timeline selected");
                 return;
             }
 
-            const currentFrame = ResolveFunctions.ConvertTimecodeToFrames(currentTimeline.GetCurrentTimecode()) - currentTimeline.GetStartFrame();
+            const currentFrame =
+                ResolveFunctions.ConvertTimecodeToFrames(
+                    currentTimeline.GetCurrentTimecode()
+                ) - currentTimeline.GetStartFrame();
 
             const markers = Object.entries(currentTimeline.GetMarkers());
             let markerFound = false;
@@ -1209,18 +1558,96 @@
                 const [frame, marker] = markers[i];
                 if (parseInt(frame) <= currentFrame) continue;
 
-                if ((marker.name === name || name === "") && color === marker.color) {
+                if (
+                    (marker.name === name || name === "") &&
+                    color === marker.color
+                ) {
                     markerFound = true;
 
-                    const timecode = ResolveFunctions.ConvertFramesToTimecode(parseInt(frame) + currentTimeline.GetStartFrame() + 1);
+                    const timecode = ResolveFunctions.ConvertFramesToTimecode(
+                        parseInt(frame) + currentTimeline.GetStartFrame() + 1
+                    );
                     currentTimeline.SetCurrentTimecode(timecode);
                     if (stopIfFound) break;
                 }
             }
 
             if (!markerFound) throw Error();
-        }
-    }
+        },
+        Render: (
+            renderPreset: Preset,
+            folder: string,
+            fileName: string,
+            fileExt: string,
+            markerTool: boolean,
+            clearRenderJobs: boolean
+        ) => {
+            const project = ResolveFunctions.GetCurrentProject();
+
+            if (clearRenderJobs) project.DeleteAllRenderJobs();
+
+            project.LoadRenderPreset(renderPreset);
+
+            // This is totally not straight copied from the QuickRender module
+            //this should somehow be in shared? if i can get the motivation to do that
+            let inPoint: number = 0;
+            let outPoint: number = 0;
+
+            let renderSettings: RenderSettings;
+
+            if (markerTool) {
+                const _MarkerToolDataStore =
+                    DataStore.GetDataStoreByID("MarkerTool");
+                if (!_MarkerToolDataStore) {
+                    console.log("Marker Tool not found");
+                    return;
+                }
+
+                let startMarkerData =
+                    _MarkerToolDataStore.Get<string>("StartMarker");
+                let endMarkerData =
+                    _MarkerToolDataStore.Get<string>("EndMarker");
+
+                if (startMarkerData && endMarkerData) {
+                    const currentTimeline =
+                        ResolveFunctions.GetCurrentTimeline();
+
+                    inPoint = ResolveFunctions.GetMarkerFrameID(
+                        startMarkerData,
+                        currentTimeline
+                    );
+                    outPoint = ResolveFunctions.GetMarkerFrameID(
+                        endMarkerData,
+                        currentTimeline
+                    );
+
+                    inPoint += currentTimeline.GetStartFrame();
+                    outPoint += currentTimeline.GetStartFrame();
+
+                    inPoint += 1; //marker Duration frame
+                }
+            }
+
+            renderSettings = {
+                SelectAllFrames: inPoint == 0 || outPoint == 0,
+                TargetDir: folder,
+                CustomName: SML.QuickRender.GetFileName(
+                    folder,
+                    fileName,
+                    fileExt
+                ),
+
+                MarkIn: inPoint,
+                MarkOut: outPoint,
+            };
+
+            project.SetRenderSettings(renderSettings);
+
+            project.AddRenderJob();
+
+            project.StartRendering();
+        },
+    };
 
     function UpdateDatastore(): void {
         _profiles = _profiles;
@@ -1228,22 +1655,26 @@
 
     let NewActionDropdown: string;
     function AddNewAction(): void {
-        let parameters: {[key: string]: any} = {};
-        for (const [actionName, actionInput] of Object.entries(ActionValueLookup[NewActionDropdown])) {
+        let parameters: { [key: string]: any } = {};
+        for (const [actionName, actionInput] of Object.entries(
+            ActionValueLookup[NewActionDropdown]
+        )) {
             parameters[actionName] = actionInput.value;
         }
 
         const newAction: Action = {
             Minimized: false,
             Name: NewActionDropdown,
-            Parameters: parameters
-        }
+            Parameters: parameters,
+        };
         _profiles[CurrentProfile][Common.GetRandomHash(8)] = newAction;
         UpdateDatastore();
     }
 
     function DeleteAction(actionUUID: string): void {
-        for (const [UUID, action] of Object.entries(_profiles[CurrentProfile])) {
+        for (const [UUID, action] of Object.entries(
+            _profiles[CurrentProfile]
+        )) {
             if (UUID == actionUUID) {
                 delete _profiles[CurrentProfile][UUID];
             }
@@ -1254,7 +1685,7 @@
     function AddNewProfile(): void {
         if (Object.keys(_profiles).includes("New Profile")) return;
 
-        _profiles["New Profile"] = {}
+        _profiles["New Profile"] = {};
         UpdateDatastore();
     }
 
@@ -1267,7 +1698,7 @@
         }
 
         CurrentProfile = Object.keys(_profiles)[0];
-        profileNameChangeInput.value = CurrentProfile
+        profileNameChangeInput.value = CurrentProfile;
         UpdateDatastore();
     }
 
@@ -1275,10 +1706,12 @@
         const currentTimeline = ResolveFunctions.GetCurrentTimeline();
         originPlayheadFrame = undefined;
         if (currentTimeline) {
-            originPlayheadFrame = ResolveFunctions.ConvertTimecodeToFrames(currentTimeline.GetCurrentTimecode());
+            originPlayheadFrame = ResolveFunctions.ConvertTimecodeToFrames(
+                currentTimeline.GetCurrentTimecode()
+            );
         }
         profileName = profileName ?? CurrentProfile;
-        
+
         for (const [UUID, action] of Object.entries(_profiles[profileName])) {
             const actionFunction = ActionFunctions[action.Name];
             const params = Object.values(action.Parameters);
@@ -1294,13 +1727,17 @@
         _profiles[profileNameChangeInput.value] = _profiles[CurrentProfile];
         delete _profiles[CurrentProfile];
 
-        CurrentProfile = profileNameChangeInput.value
+        CurrentProfile = profileNameChangeInput.value;
 
         UpdateDatastore();
     }
 
-    function ChooseFile(file: boolean, folder: boolean, defaultPath: string = ""): string[] {
-        let _properties: any = [] // {FileDialogOptions}
+    function ChooseFile(
+        file: boolean,
+        folder: boolean,
+        defaultPath: string = ""
+    ): string[] {
+        let _properties: any = []; // {FileDialogOptions}
         if (file) _properties.push("openFile");
         if (folder) _properties.push("openDirectory");
 
@@ -1308,19 +1745,25 @@
             title: `Choose a ${file ? "file" : "folder"}`,
             buttonLabel: "Choose",
             defaultPath: defaultPath,
-            properties: _properties
+            properties: _properties,
         });
-        
+
         return dialogResult;
     }
-    
-    function ChooseFileButton(file: boolean, folder: boolean, valueName: string, actionValue: string, parameters: {[key: string]: any}): void {
-        const mediaImportCase: string = parameters["File Or Folder"] ?? undefined;
+
+    function ChooseFileButton(
+        file: boolean,
+        folder: boolean,
+        valueName: string,
+        actionValue: string,
+        parameters: { [key: string]: any }
+    ): void {
+        const mediaImportCase: string =
+            parameters["File Or Folder"] ?? undefined;
         if (mediaImportCase == "File") {
             file = true;
             folder = false;
-        }
-        else if (mediaImportCase == "Folder") {
+        } else if (mediaImportCase == "Folder") {
             file = false;
             folder = true;
         }
@@ -1332,22 +1775,26 @@
         UpdateDatastore();
     }
 
-    function MoveActionInList(upOrDown: 'Back' | 'Forward', SelectedAction: string): void {
+    function MoveActionInList(
+        upOrDown: "Back" | "Forward",
+        SelectedAction: string
+    ): void {
         const action = _profiles[CurrentProfile][SelectedAction];
         const actionKeys = Object.keys(_profiles[CurrentProfile]);
         const actionIndex = actionKeys.indexOf(SelectedAction);
 
-        if (upOrDown == 'Back') {
+        if (upOrDown == "Back") {
             if (actionIndex == 0) return;
 
-            let actionToSwap = _profiles[CurrentProfile][actionKeys[actionIndex - 1]];
+            let actionToSwap =
+                _profiles[CurrentProfile][actionKeys[actionIndex - 1]];
             _profiles[CurrentProfile][actionKeys[actionIndex - 1]] = action;
             _profiles[CurrentProfile][actionKeys[actionIndex]] = actionToSwap;
-        }
-        else if (upOrDown == 'Forward') {
+        } else if (upOrDown == "Forward") {
             if (actionIndex == actionKeys.length - 1) return;
 
-            let actionToSwap = _profiles[CurrentProfile][actionKeys[actionIndex + 1]];
+            let actionToSwap =
+                _profiles[CurrentProfile][actionKeys[actionIndex + 1]];
             _profiles[CurrentProfile][actionKeys[actionIndex + 1]] = action;
             _profiles[CurrentProfile][actionKeys[actionIndex]] = actionToSwap;
         }
@@ -1359,105 +1806,225 @@
         const currentTimeline = ResolveFunctions.GetCurrentTimeline();
         originPlayheadFrame = undefined;
         if (currentTimeline) {
-            originPlayheadFrame = ResolveFunctions.ConvertTimecodeToFrames(currentTimeline.GetCurrentTimecode());
+            originPlayheadFrame = ResolveFunctions.ConvertTimecodeToFrames(
+                currentTimeline.GetCurrentTimecode()
+            );
         }
 
         const actionFunction = ActionFunctions[actionName];
-        const params = Object.values(_profiles[CurrentProfile][UUID].Parameters);
+        const params = Object.values(
+            _profiles[CurrentProfile][UUID].Parameters
+        );
         console.log(actionName, params);
         actionFunction(...params);
     }
 </script>
 
-
 <main id={componentID}>
     <div id="top">
-        <div id=topTitle>
+        <div id="topTitle">
             <h1>Quick Actions</h1>
-            <select id="actionProfiles" bind:value={CurrentProfile} on:change={() => {profileNameChangeInput.value = CurrentProfile}}>
+            <select
+                id="actionProfiles"
+                bind:value={CurrentProfile}
+                on:change={() => {
+                    profileNameChangeInput.value = CurrentProfile;
+                }}
+            >
                 {#each Object.keys(_profiles) as profile}
                     <option value={profile}>{profile}</option>
                 {/each}
             </select>
         </div>
 
-        <div id=profileNameContainer>
+        <div id="profileNameContainer">
             <p>Profile Name:</p>
-            <input type="text" bind:this={profileNameChangeInput} on:input={UpdateProfileKeyName} />
+            <input
+                type="text"
+                bind:this={profileNameChangeInput}
+                on:input={UpdateProfileKeyName}
+            />
         </div>
 
-        <div id=topButtons>
+        <div id="topButtons">
             <div>
-                <button class=buttonStyle on:click={AddNewProfile}>Add New</button>
-                <button class=buttonStyle on:click={() => { showConfirm = true }}>Remove Profile</button>
+                <button class="buttonStyle" on:click={AddNewProfile}
+                    >Add New</button
+                >
+                <button
+                    class="buttonStyle"
+                    on:click={() => {
+                        showConfirm = true;
+                    }}>Remove Profile</button
+                >
             </div>
-        
+
             <div>
-                <button class=buttonStyle on:click={() => { RunActions() }}>Run Actions</button>
+                <button
+                    class="buttonStyle"
+                    on:click={() => {
+                        RunActions();
+                    }}>Run Actions</button
+                >
             </div>
         </div>
     </div>
 
     <div id="actionList">
-
         <div id="autoGen">
             {#each Object.entries(_profiles[CurrentProfile]) as [UUID, action]}
-                <div class="action" id={`action-${UUID}`} transition:slide|local>
-                    <div class=actionHeader transition:fade>
-                        <div id=actionHeaderLeft>
+                <div
+                    class="action"
+                    id={`action-${UUID}`}
+                    transition:slide|local
+                >
+                    <div class="actionHeader" transition:fade>
+                        <div id="actionHeaderLeft">
                             {#if showActionArrows}
                                 <div id="moveContainer">
                                     <!-- svelte-ignore a11y-click-events-have-key-events -->
-                                    <div id="arrowUpContainer" on:click={() => { MoveActionInList('Back', UUID) }} ><img src="../src/assets/arrowUp.svg" alt="Up"></div>
+                                    <div
+                                        id="arrowUpContainer"
+                                        on:click={() => {
+                                            MoveActionInList("Back", UUID);
+                                        }}
+                                    >
+                                        <img
+                                            src="../src/assets/arrowUp.svg"
+                                            alt="Up"
+                                        />
+                                    </div>
                                     <!-- svelte-ignore a11y-click-events-have-key-events -->
-                                    <div id="arrowDownContainer" on:click={() => { MoveActionInList('Forward', UUID) }} ><img src="../src/assets/arrowDown.svg" alt="Up"></div>
+                                    <div
+                                        id="arrowDownContainer"
+                                        on:click={() => {
+                                            MoveActionInList("Forward", UUID);
+                                        }}
+                                    >
+                                        <img
+                                            src="../src/assets/arrowDown.svg"
+                                            alt="Up"
+                                        />
+                                    </div>
                                 </div>
                             {/if}
                             <!-- svelte-ignore a11y-click-events-have-key-events -->
-                            <h2 on:click={() => { RunSpecificAction(action.Name, UUID) }}>{action.Name}</h2>
+                            <h2
+                                on:click={() => {
+                                    RunSpecificAction(action.Name, UUID);
+                                }}
+                            >
+                                {action.Name}
+                            </h2>
                         </div>
                         <div>
-                            <button class="buttonStyle" on:click={() => { action.Minimized = !action.Minimized}}>{action.Minimized ? "Expand" : "Minimize"}</button>
-                            <button class=buttonStyle id=DeleteAction on:click={() => { DeleteAction(UUID)}}><b>-</b></button>
+                            <button
+                                class="buttonStyle"
+                                on:click={() => {
+                                    action.Minimized = !action.Minimized;
+                                }}
+                                >{action.Minimized
+                                    ? "Expand"
+                                    : "Minimize"}</button
+                            >
+                            <button
+                                class="buttonStyle"
+                                id="DeleteAction"
+                                on:click={() => {
+                                    DeleteAction(UUID);
+                                }}><b>-</b></button
+                            >
                         </div>
                     </div>
 
                     {#if !action.Minimized}
                         <div class="actionInputs" transition:slide|local>
                             {#each Object.entries(ActionValueLookup[action.Name]) as [valueName, actionInput]}
-
                                 <div class="actionInput">
                                     <label for={valueName}>{valueName}</label>
                                     <div>
                                         {#if actionInput.type == "string"}
-                                            <input type="text" bind:value={action.Parameters[valueName]} />
+                                            <input
+                                                type="text"
+                                                bind:value={action.Parameters[
+                                                    valueName
+                                                ]}
+                                            />
                                         {:else if actionInput.type == "number"}
-                                            <input type="number" bind:value={action.Parameters[valueName]} />
+                                            <input
+                                                type="number"
+                                                bind:value={action.Parameters[
+                                                    valueName
+                                                ]}
+                                            />
                                         {:else if actionInput.type == "boolean"}
-                                            <input type="checkbox" bind:checked={action.Parameters[valueName]} />
+                                            <input
+                                                type="checkbox"
+                                                bind:checked={action.Parameters[
+                                                    valueName
+                                                ]}
+                                            />
                                         {:else if actionInput.type == "dropdown"}
-                                            <select bind:value={action.Parameters[valueName]}>
+                                            <select
+                                                bind:value={action.Parameters[
+                                                    valueName
+                                                ]}
+                                            >
                                                 {#each actionInput["dropdownOptions"] as option}
-                                                    <option value={option}>{option}</option>
+                                                    <option value={option}
+                                                        >{option}</option
+                                                    >
                                                 {/each}
                                             </select>
                                         {:else if actionInput.type == "file"}
-                                            <input type="text" bind:value={action.Parameters[valueName]}>
-                                            <button class=buttonStyle on:click={() => { ChooseFileButton(true, false, valueName, actionInput.value, action.Parameters) }}>.../</button>
+                                            <input
+                                                type="text"
+                                                bind:value={action.Parameters[
+                                                    valueName
+                                                ]}
+                                            />
+                                            <button
+                                                class="buttonStyle"
+                                                on:click={() => {
+                                                    ChooseFileButton(
+                                                        true,
+                                                        false,
+                                                        valueName,
+                                                        actionInput.value,
+                                                        action.Parameters
+                                                    );
+                                                }}>.../</button
+                                            >
+                                        {:else if actionInput.type == "folder"}
+                                            <input
+                                                type="text"
+                                                bind:value={action.Parameters[
+                                                    valueName
+                                                ]}
+                                            />
+                                            <button
+                                                class="buttonStyle"
+                                                on:click={() => {
+                                                    ChooseFileButton(
+                                                        true,
+                                                        true,
+                                                        valueName,
+                                                        actionInput.value,
+                                                        action.Parameters
+                                                    );
+                                                }}>.../</button
+                                            >
                                         {/if}
                                     </div>
                                 </div>
-
                             {/each}
                         </div>
-                        
                     {/if}
                 </div>
-
             {/each}
         </div>
 
-        <div class="lineBreak"></div>
+        <div class="lineBreak" />
 
         <div id="addAction">
             <select id="actionDropdown" bind:value={NewActionDropdown}>
@@ -1465,9 +2032,10 @@
                     <option value={actionKey}>{actionKey}</option>
                 {/each}
             </select>
-            <button class=buttonStyle on:click={AddNewAction}>Add New Action</button>
+            <button class="buttonStyle" on:click={AddNewAction}
+                >Add New Action</button
+            >
         </div>
-
     </div>
 
     {#if showConfirm}
@@ -1475,15 +2043,24 @@
             <div class="confirmBox">
                 <h1>Are you sure you want to delete this profile?</h1>
                 <div>
-                    <button class=buttonStyle on:click={() => { showConfirm = false }}>Cancel</button>
-                    <button class=buttonStyle on:click={() => { RemoveProfile(); showConfirm = false }}>Delete</button>
+                    <button
+                        class="buttonStyle"
+                        on:click={() => {
+                            showConfirm = false;
+                        }}>Cancel</button
+                    >
+                    <button
+                        class="buttonStyle"
+                        on:click={() => {
+                            RemoveProfile();
+                            showConfirm = false;
+                        }}>Delete</button
+                    >
                 </div>
             </div>
         </div>
     {/if}
-
 </main>
-
 
 <style lang="scss">
     @use "../src/scss/Colors";
@@ -1622,7 +2199,8 @@
         background-color: Colors.$ColumnColor;
         color: Colors.$TextColor;
 
-        &:focus, &:hover {
+        &:focus,
+        &:hover {
             background-color: Colors.$BackgroundColor;
         }
 
@@ -1658,7 +2236,8 @@
 
         transition: background-color 0.1s ease-in-out;
 
-        &:focus, &:hover {
+        &:focus,
+        &:hover {
             background-color: Colors.$BackgroundColor;
         }
     }
@@ -1681,7 +2260,8 @@
 
         min-width: 10rem;
 
-        &:focus, &:hover {
+        &:focus,
+        &:hover {
             background-color: darken(Colors.$BackgroundColor, 3%);
         }
     }
@@ -1699,7 +2279,7 @@
             height: 1.4rem;
 
             cursor: pointer;
-            
+
             filter: invert(Colors.$IconInvertPercentage);
 
             &:hover {
@@ -1729,9 +2309,7 @@
         flex-direction: row;
         align-items: center;
         justify-content: center;
-
     }
-
 
     .buttonStyle {
         background-color: Colors.$ColumnColor;
@@ -1760,7 +2338,7 @@
     .lineBreak {
         width: 90%;
         height: 0.2rem;
-        
+
         background-color: Colors.$ColumnColor;
         opacity: 0.75;
 
@@ -1826,5 +2404,4 @@
             }
         }
     }
-
 </style>

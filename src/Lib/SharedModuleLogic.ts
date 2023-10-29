@@ -11,13 +11,13 @@ export module SML {
         function GetPlayHeadFrame(timeline?: Timeline): number {
             let currentTimeline: Timeline = timeline ?? ResolveFunctions.GetCurrentTimeline();
             if (!currentTimeline) return 0;
-    
+
             let playHead: string = currentTimeline.GetCurrentTimecode();
-    
+
             let playHeadFrame: number = ResolveFunctions.ConvertTimecodeToFrames(playHead);
-    
+
             playHeadFrame -= currentTimeline.GetStartFrame();
-    
+
             return playHeadFrame;
         }
 
@@ -25,11 +25,11 @@ export module SML {
             let timeline: Timeline = ResolveFunctions.GetCurrentTimeline();
             if (!timeline) return false;
             let markers = timeline.GetMarkers();
-    
+
             for (const [frameID, MarkerData] of Object.entries(markers)) {
                 if (MarkerData.customData == markerData) return true;
             }
-    
+
             return false;
         }
 
@@ -37,13 +37,13 @@ export module SML {
         export function CreateStartMarker(): void {
             let timeline: Timeline = ResolveFunctions.GetCurrentTimeline();
             if (!timeline) return;
-    
+
             let playHeadPosition = GetPlayHeadFrame(timeline);
-    
+
             if (CheckIfMarkerExists(StartMarkerData)) timeline.DeleteMarkerByCustomData(StartMarkerData);
-    
+
             const StartColor = _Settings.GetSettingValue("Start Marker Color");
-            
+
             timeline.AddMarker(
                 playHeadPosition,
                 StartColor,
@@ -58,11 +58,11 @@ export module SML {
         export function CreateEndMarker(): void {
             let timeline: Timeline = ResolveFunctions.GetCurrentTimeline();
             if (!timeline) return;
-    
+
             let playHeadPosition = GetPlayHeadFrame(timeline);
-    
-            if (CheckIfMarkerExists(EndMarkerData))  timeline.DeleteMarkerByCustomData(EndMarkerData);
-            
+
+            if (CheckIfMarkerExists(EndMarkerData)) timeline.DeleteMarkerByCustomData(EndMarkerData);
+
             const EndColor = _Settings.GetSettingValue("End Marker Color");
 
             timeline.AddMarker(
@@ -76,6 +76,105 @@ export module SML {
         }
     }
 
+    export module QuickRender {
+        export function GetCombinedTryPath(result: string, filePath: string, fileExt: string): string {
+            return (
+                filePath +
+                "\\" +
+                result +
+                "." +
+                fileExt
+            );
+        }
+
+        export function GetCombinedAlternativeTryPath(
+            result: string,
+            index: number,
+            filePath: string,
+            fileExt: string
+        ): string {
+            return (
+                filePath +
+                "\\" +
+                GetCombinedAlternativeTryName(result, index, fileExt)
+            );
+        }
+
+        export function GetCombinedAlternativeTryName(
+            result: string,
+            index: number,
+            fileExt: string
+        ): string {
+            return result + `_${index}.` + fileExt;
+        }
+
+        export function CheckIfIdenticalRenderJobExists(name: string): boolean {
+            const renderJobList =
+                ResolveFunctions.GetCurrentProject().GetRenderJobList();
+
+            for (let i = 0; i < renderJobList.length; i++) {
+                const renderJob = renderJobList[i];
+                if (renderJob.OutputFilename == name) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        export function GetFileName(filePath: string, fileName: string, fileExt: string): string {
+            let result: string = "";
+            result += fileName;
+
+            let amountOfFiles = 0;
+
+            let path = GetCombinedTryPath(
+                result,
+                filePath,
+                fileExt
+            );
+            let alternativePath =
+                GetCombinedAlternativeTryPath(
+                    result,
+                    amountOfFiles,
+                    filePath,
+                    fileExt
+                );
+
+            while (
+                Common.IO.FileExists(path) ||
+                Common.IO.FileExists(alternativePath) ||
+                CheckIfIdenticalRenderJobExists(
+                    GetCombinedAlternativeTryName(
+                        result,
+                        amountOfFiles,
+                        fileExt
+                    )
+                )
+            ) {
+                amountOfFiles++;
+                path = GetCombinedTryPath(
+                    result,
+                    filePath,
+                    fileExt
+                );
+                alternativePath =
+                    GetCombinedAlternativeTryPath(
+                        result,
+                        amountOfFiles,
+                        filePath,
+                        fileExt
+                    );
+            }
+
+            result += "_" + amountOfFiles;
+
+            result += "." + fileExt;
+
+            return result;
+        };
+    }
+
     export module Shared {
         export module Function {
             export const Subscription = {
@@ -86,22 +185,22 @@ export module SML {
                 "ImageClipboard.Paste": "ImageClipboard.Paste",
             } as const;
             export type Subscription = typeof Subscription[keyof typeof Subscription];
-    
+
             type CallbackData = {
                 function: Function,
                 type: string | Subscription
             }
             let Callbacks: { [key: string]: CallbackData } = {};
-    
+
             export function Add(event: string | Subscription, callback: Function): void {
                 if (!Subscription[event]) return;
                 const eventID = `${event}-${Common.GetRandomHash(8, true)}`
-    
+
                 Callbacks[eventID] = {} as CallbackData;
                 Callbacks[eventID].function = callback;
                 Callbacks[eventID].type = event;
             }
-    
+
             export function Run(event: string | Subscription, ...args: any[]): void {
                 if (!Subscription[event]) return;
                 for (const [_, callbackData] of Object.entries(Callbacks)) {

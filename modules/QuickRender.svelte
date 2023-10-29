@@ -167,7 +167,13 @@
             CurrentProfile = profile;
         }
 
-        console.log(GetFileName());
+        console.log(
+            SML.QuickRender.GetFileName(
+                CurrentProfile.FilePath,
+                CurrentProfile.FileName,
+                CurrentProfile.FileExtension
+            )
+        );
     }
 
     function ChangeCurrentProfile(profileName: string): void {
@@ -175,88 +181,6 @@
         if (profile != undefined) {
             CurrentProfile = profile;
         }
-    }
-
-    function GetCombinedTryPath(result: string): string {
-        return (
-            CurrentProfile.FilePath +
-            "\\" +
-            result +
-            "." +
-            CurrentProfile.FileExtension
-        );
-    }
-
-    function GetCombinedAlternativeTryPath(
-        result: string,
-        index: number
-    ): string {
-        return (
-            CurrentProfile.FilePath +
-            "\\" +
-            GetCombinedAlternativeTryName(result, index)
-        );
-    }
-
-    function GetCombinedAlternativeTryName(
-        result: string,
-        index: number
-    ): string {
-        return result + `_${index}.` + CurrentProfile.FileExtension;
-    }
-
-    function CheckIfIdenticalRenderJobExists(name: string): boolean {
-        const renderJobList =
-            ResolveFunctions.GetCurrentProject().GetRenderJobList();
-
-        for (let i = 0; i < renderJobList.length; i++) {
-            const renderJob = renderJobList[i];
-            if (renderJob.OutputFilename == name) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    function GetFileName(): string {
-        let result: string = "";
-        result += CurrentProfile.FileName;
-
-        if (CurrentProfile.UseSuffix) {
-            result += CurrentProfile.Suffix;
-        }
-
-        if (!CurrentProfile.Overwrite) {
-            let amountOfFiles = 0;
-
-            let path = GetCombinedTryPath(result);
-            let alternativePath = GetCombinedAlternativeTryPath(
-                result,
-                amountOfFiles
-            );
-
-            while (
-                Common.IO.FileExists(path) ||
-                Common.IO.FileExists(alternativePath) ||
-                CheckIfIdenticalRenderJobExists(
-                    GetCombinedAlternativeTryName(result, amountOfFiles)
-                )
-            ) {
-                amountOfFiles++;
-                path = GetCombinedTryPath(result);
-                alternativePath = GetCombinedAlternativeTryPath(
-                    result,
-                    amountOfFiles
-                );
-            }
-
-            result += "_" + amountOfFiles;
-        }
-
-        result += "." + CurrentProfile.FileExtension;
-
-        return result;
     }
 
     function AddRenderJob(): void {
@@ -309,7 +233,11 @@
         renderSettings = {
             SelectAllFrames: inPoint == 0 || outPoint == 0,
             TargetDir: CurrentProfile.FilePath,
-            CustomName: GetFileName(),
+            CustomName: SML.QuickRender.GetFileName(
+                CurrentProfile.FilePath,
+                CurrentProfile.FileName,
+                CurrentProfile.FileExtension
+            ),
 
             MarkIn: inPoint,
             MarkOut: outPoint,
