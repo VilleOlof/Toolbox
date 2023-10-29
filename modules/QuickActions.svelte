@@ -610,11 +610,13 @@
                 type: "boolean",
                 value: true,
             },
-            "Begin Render": {
-                type: "boolean",
-                value: true,
+            "Render Type": {
+                type: "dropdown",
+                value: "Both",
+                dropdownOptions: ["Both", "Render", "Add Render Job"],
             },
         },
+        "Remove Marker": {},
     };
 
     let ActionFunctions = {
@@ -1585,7 +1587,7 @@
             fileExt: string,
             markerTool: boolean,
             clearRenderJobs: boolean,
-            renderVideo: boolean
+            renderType: "Both" | "Render" | "Add Render Job"
         ) => {
             const project = ResolveFunctions.GetCurrentProject();
 
@@ -1648,9 +1650,33 @@
 
             project.SetRenderSettings(renderSettings);
 
-            project.AddRenderJob();
+            console.log(renderType);
+            if (renderType === "Both" || renderType === "Add Render Job") {
+                console.log("Adding Render Job");
+                project.AddRenderJob();
+            }
 
-            if (renderVideo) project.StartRendering();
+            if (renderType === "Both" || renderType === "Render")
+                project.StartRendering();
+        },
+        "Remove Marker": () => {
+            //DeleteMarkerAtFrame
+            const currentTimeline = ResolveFunctions.GetCurrentTimeline();
+            if (!currentTimeline) {
+                console.warn("No timeline selected");
+                return;
+            }
+
+            const timelineStartFrame = currentTimeline.GetStartFrame();
+
+            let Playhead =
+                ResolveFunctions.ConvertTimecodeToFrames(
+                    currentTimeline.GetCurrentTimecode()
+                ) - timelineStartFrame;
+
+            try {
+                currentTimeline.DeleteMarkerAtFrame(Playhead);
+            } catch (e) {}
         },
     };
 
