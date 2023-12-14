@@ -77,12 +77,12 @@ export namespace Common {
          * Common.IO.WriteFile("path/to/file", { "key": "value" }, true);
          * ```
          */
-        export function WriteFile(_path: string, content: any, json?:boolean, stringifyContentDefault: boolean = true): void {
+        export function WriteFile(_path: string, content: any, json?: boolean, stringifyContentDefault: boolean = true): void {
             if ((json || typeof content != "string") && stringifyContentDefault) content = JSON.stringify(content, null, 4);
 
             //Check if the directory exists
             let dir: string = _path.substring(0, _path.lastIndexOf(path.sep));
-            if (!fs.existsSync(dir)) {   
+            if (!fs.existsSync(dir)) {
                 //Create the directory
                 CreateDirectory(dir);
             }
@@ -142,6 +142,7 @@ export namespace Common {
          * @returns true if the file exists
          */
         export function FileExists(path: string): boolean {
+            // console.log("Checking if file exists: [", path, "]");
             return fs.existsSync(path);
         }
 
@@ -276,7 +277,7 @@ export namespace Common {
          * });
          * ```
          */
-        export function Dialog(options: FileDialogOptions): string[] { 
+        export function Dialog(options: FileDialogOptions): string[] {
             Common.LifeCyclePing(true); // Prevents the application from auto-closing
             /* @ts-ignore */
             const result = electron.remote.dialog.showOpenDialogSync(options);
@@ -610,7 +611,7 @@ export namespace Common {
         export function RegisterShortCutKeybindFunction(UnregisterAllKeybind?: string): void {
             if (AppSettings.GetSetting('Debug', false)) console.log(`Pressed ${UnregisterAllKeybind ?? 'undefined (called from button)'}: ${AppSettings.GetSetting('DisabledShortcuts', true)}`);
             DisableAllShortcutsAction();
-            
+
             UnregisterAllShortcuts();
             const indicationElement = document.querySelector('#shortcutsEnabledIndicator > img') as HTMLImageElement;
 

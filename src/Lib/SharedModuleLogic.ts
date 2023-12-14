@@ -79,11 +79,11 @@ export module SML {
     export module QuickRender {
         export function GetCombinedTryPath(result: string, filePath: string, fileExt: string): string {
             return (
-                `"${filePath +
+                `${filePath +
                 "\\" +
                 result +
                 "." +
-                fileExt}"`
+                fileExt}`
             );
         }
 
@@ -94,9 +94,9 @@ export module SML {
             fileExt: string
         ): string {
             return (
-                `"${filePath +
+                `${filePath +
                 "\\" +
-                GetCombinedAlternativeTryName(result, index, fileExt)}"`
+                GetCombinedAlternativeTryName(result, index, fileExt)}`
             );
         }
 
