@@ -105,7 +105,7 @@ export module SML {
             index: number,
             fileExt: string
         ): string {
-            return `"${result + `_${index}.` + fileExt}"`;
+            return result + `_${index}.` + fileExt;
         }
 
         export function CheckIfIdenticalRenderJobExists(name: string): boolean {
