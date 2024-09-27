@@ -3,17 +3,23 @@
     import { ResolveEnums } from "../src/Lib/ResolveEnums";
 
     import { DataStore } from "../src/Stores/DataStore";
-    import { Settings, GlobalSettings, SettingTypes } from '../src/Lib/Settings';
-    import { ModuleHandler } from '../src/Lib/ModuleHandler';
-    import { Common } from '../src/Lib/Common';
+    import {
+        Settings,
+        GlobalSettings,
+        SettingTypes,
+    } from "../src/Lib/Settings";
+    import { ModuleHandler } from "../src/Lib/ModuleHandler";
+    import { Common } from "../src/Lib/Common";
 
-    import { onMount } from 'svelte';
+    import { onMount } from "svelte";
     import { scale } from "svelte/transition";
 
     const componentID: string = "YoutubeChapters";
 
     onMount(() => {
-        ModuleHandler.RegisterModule(componentID, ModuleHandler.ComponentSize.Large,
+        ModuleHandler.RegisterModule(
+            componentID,
+            ModuleHandler.ComponentSize.Large,
             "Create Youtube chapter text based on markers in the timeline.",
         );
     });
@@ -21,22 +27,35 @@
     const _Settings = GlobalSettings.GetInstance(componentID);
     const _Datastore = new DataStore(componentID);
 
-    const markerColor: ResolveEnums.MarkerColor = _Settings.RegisterSetting('Marker Color', 'What color to search for when looking for markers.', ResolveEnums.MarkerColor.Rose, SettingTypes.Type.Dropdown, <SettingTypes.Dropdown>{ Options: Object.keys(ResolveEnums.MarkerColor)});
-    const UseMarkerTool: boolean = _Settings.RegisterSetting('Use Marker Tool', 'Use the marker tool to set the starting point using the "start marker"', false, SettingTypes.Type.Checkbox);
+    const markerColor: ResolveEnums.MarkerColor = _Settings.RegisterSetting(
+        "Marker Color",
+        "What color to search for when looking for markers.",
+        ResolveEnums.MarkerColor.Rose,
+        SettingTypes.Type.Dropdown,
+        <SettingTypes.Dropdown>{
+            Options: Object.keys(ResolveEnums.MarkerColor),
+        },
+    );
+    const UseMarkerTool: boolean = _Settings.RegisterSetting(
+        "Use Marker Tool",
+        'Use the marker tool to set the starting point using the "start marker"',
+        false,
+        SettingTypes.Type.Checkbox,
+    );
 
-    let StartMarkerName = _Datastore.Get<string>('DefaultMarkerName', 'Start')
-    $: _Datastore.Set('DefaultMarkerName', StartMarkerName);
+    let StartMarkerName = _Datastore.Get<string>("DefaultMarkerName", "Start");
+    $: _Datastore.Set("DefaultMarkerName", StartMarkerName);
 
     type ModuleMarker = {
         name: string;
         frameID: number;
-    }
+    };
 
     function GetAllMarkerData(): ModuleMarker[] {
         let markers: ModuleMarker[] = [];
 
         const currentTimeline = ResolveFunctions.GetCurrentTimeline();
-        const allMarkersInTimeline= currentTimeline.GetMarkers();
+        const allMarkersInTimeline = currentTimeline.GetMarkers();
 
         //marker at the start is at -1 for some reason and thus last;
         if (allMarkersInTimeline[-1] !== undefined) {
@@ -46,22 +65,26 @@
 
         let frameOffset: number = 0;
         if (UseMarkerTool) {
-            let markerDatastore = DataStore.GetDataStoreByID('MarkerTool')
+            let markerDatastore = DataStore.GetDataStoreByID("MarkerTool");
             if (!markerDatastore) return;
-            let startMarkerData = markerDatastore.Get<string>('StartMarker');
+            let startMarkerData = markerDatastore.Get<string>("StartMarker");
 
-            let Marker: ResolveFunctions.CheckMarker = ResolveFunctions.CheckIfMarkerExists(startMarkerData, true);
-            if (startMarkerData != null && Marker.Exists) frameOffset = Marker.MarkerData.frameId;
+            let Marker: ResolveFunctions.CheckMarker =
+                ResolveFunctions.CheckIfMarkerExists(startMarkerData, true);
+            if (startMarkerData != null && Marker.Exists)
+                frameOffset = Marker.MarkerData.frameId;
         }
 
-        for (const [frameId, markerData] of Object.entries(allMarkersInTimeline)) {
+        for (const [frameId, markerData] of Object.entries(
+            allMarkersInTimeline,
+        )) {
             if (markerData.color != markerColor) continue;
 
             if (parseInt(frameId) < frameOffset) continue;
 
             markers.push({
                 name: markerData.name,
-                frameID: ((parseInt(frameId)) + 1) - frameOffset
+                frameID: parseInt(frameId) + 1 - frameOffset,
             });
         }
 
@@ -70,17 +93,23 @@
 
     function FormatFrameToYTTimecode(frame: number): string {
         //format should be MM:SS
-        const seconds = Math.floor(frame / ResolveFunctions.GetTimelineFramerate());
+        const seconds = Math.floor(
+            frame / ResolveFunctions.GetTimelineFramerate(),
+        );
         const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
 
-        const secondsString = (seconds % 60).toString().padStart(2, '0');
-        const minutesString = minutes.toString().padStart(2, '0');
+        const secondsString = (seconds % 60).toString().padStart(2, "0");
+        const minutesString = minutes.toString().padStart(2, "0");
+        const hoursString = hours.toString();
 
-        return `${minutesString}:${secondsString}`;
+        if (hours == 0) return `${minutesString}:${secondsString}`;
+
+        return `${hoursString}:${minutesString}:${secondsString}`;
     }
-    
-    function GetTimeRanges(markers: ModuleMarker[]): {[key: string]: string} {
-        let timeRanges: {[key: string]: string} = {};
+
+    function GetTimeRanges(markers: ModuleMarker[]): { [key: string]: string } {
+        let timeRanges: { [key: string]: string } = {};
 
         //if the first marker isnt on frame 0, add one to the start
         if (markers[0].frameID > 1) {
@@ -95,12 +124,15 @@
         return timeRanges;
     }
 
-    function GetFinalText(timeRanges: {[key: string]: string}): string {
+    function GetFinalText(timeRanges: { [key: string]: string }): string {
         let finalText: string = "";
 
         for (const [name, timeRange] of Object.entries(timeRanges)) {
             //if its the last one, dont add a new line
-            if (Object.keys(timeRanges).indexOf(name) == Object.keys(timeRanges).length - 1) {
+            if (
+                Object.keys(timeRanges).indexOf(name) ==
+                Object.keys(timeRanges).length - 1
+            ) {
                 finalText += `${timeRange} - ${name}`;
                 continue;
             }
@@ -122,49 +154,56 @@
 
     function RunModule(): void {
         const markers: ModuleMarker[] = GetAllMarkerData();
-        const timeRanges: {[key: string]: string} = GetTimeRanges(markers);
+        const timeRanges: { [key: string]: string } = GetTimeRanges(markers);
         const text: string = GetFinalText(timeRanges);
-        
+
         const clipboard = Common.Electron.GetClipboard();
         clipboard.writeText(text);
 
         ShowCopiedNotification();
     }
-
 </script>
-
 
 <main id={componentID}>
     <div id="mainWrapper">
         {#if ShowNotis}
-            <div id=notification transition:scale|local>
+            <div id="notification" transition:scale|local>
                 <p>Copied To Clipboard!</p>
             </div>
         {/if}
 
-        <h1 id=title>Youtube Chapters</h1>
+        <h1 id="title">Youtube Chapters</h1>
 
-        <div id=inputContainer>
+        <div id="inputContainer">
             <label for="startInput">Default Start Chapter Name</label>
-            <input type="text" name="startInput" id="" placeholder="The First Chapter Name" bind:value={StartMarkerName}>
+            <input
+                type="text"
+                name="startInput"
+                id=""
+                placeholder="The First Chapter Name"
+                bind:value={StartMarkerName}
+            />
         </div>
-    
-        <div id=markerColorAndButton>
-            <div id=markerColorContainer>
+
+        <div id="markerColorAndButton">
+            <div id="markerColorContainer">
                 <p>Marker Color:</p>
-                <p id=markerColor style={`--markerText: #${ResolveFunctions.GetMarkerColorInHex(markerColor)}`}>
+                <p
+                    id="markerColor"
+                    style={`--markerText: #${ResolveFunctions.GetMarkerColorInHex(markerColor)}`}
+                >
                     <b>{markerColor}</b>
                 </p>
             </div>
 
-            <button id=ChapterButton on:click={RunModule}>Get Chapters</button>
+            <button id="ChapterButton" on:click={RunModule}>Get Chapters</button
+            >
         </div>
     </div>
 </main>
 
-
 <style lang="scss">
-    @use '../src/scss/Colors';
+    @use "../src/scss/Colors";
 
     #mainWrapper {
         margin: 0.5rem;
@@ -222,7 +261,7 @@
             max-width: 4rem;
 
             margin-left: 1rem;
-            
+
             &:hover {
                 background-color: darken(Colors.$ColumnColor, 3%);
             }
