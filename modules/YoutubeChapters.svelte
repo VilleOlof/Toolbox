@@ -92,12 +92,13 @@
     }
 
     function FormatFrameToYTTimecode(frame: number): string {
-        //format should be MM:SS
+        //format should be hh:MM:SS
         const seconds = Math.floor(
             frame / ResolveFunctions.GetTimelineFramerate(),
         );
-        const minutes = Math.floor(seconds / 60);
+        let minutes = Math.floor(seconds / 60);
         const hours = Math.floor(minutes / 60);
+        minutes = minutes % 60;
 
         const secondsString = (seconds % 60).toString().padStart(2, "0");
         const minutesString = minutes.toString().padStart(2, "0");
